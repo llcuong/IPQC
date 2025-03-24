@@ -1,3 +1,4 @@
 pyodbc==4.0.39
 pyserial==3.5
 python-barcode==0.15.1
+pillow==9.5.0
