@@ -83,6 +83,10 @@ class CustomOptionMenu(tk.OptionMenu):
 def update_dimensions():
     global screen_width, screen_height
     while True:
+
+        """Define height - width size parameters"""
+
+
         root.update_idletasks()
         screen_width = root.winfo_width()
         screen_height = root.winfo_height()
@@ -90,9 +94,28 @@ def update_dimensions():
         top_frame.config(width=int(screen_width), height=50)
         bottom_frame.config(width=int(screen_width), height=35)
 
-        middle_frame.place(x=0, y=50, width=screen_width, height=screen_height - 50 - 35)
+        middle_frame_height = screen_height - 50 - 50
+        middle_frame.place(x=0, y=50, width=screen_width, height=middle_frame_height)
+
+
+
+
+        middle_right_frame_width = 520
+        middle_center_frame_width =10
+        middle_left_frame_width = screen_width - middle_right_frame_width - middle_center_frame_width
+
+
+
+
+        middle_right_frame.place(x=middle_left_frame_width + middle_center_frame_width, y=0, width=middle_right_frame_width, height=middle_frame_height)
+        middle_center_frame.place(x=middle_left_frame_width, y=0, width=middle_center_frame_width, height=middle_frame_height)
+        middle_left_frame.place(x=0, y=0, width=middle_left_frame_width, height=middle_frame_height)
+
         top_frame_left_frame.place(x=0, y=0, width=int(screen_width * 0.3), height=50)
         top_frame_right_frame.place(x=int(screen_width * 0.3), y=0, width=int(screen_width * 0.7), height=50)
+
+        middle_left_weight_frame.place(x=0, y=0, width=middle_left_frame_width, height=middle_frame_height)
+        middle_left_thickness_frame.place(x=0, y=0, width=middle_left_frame_width, height=middle_frame_height)
 
         root.update_idletasks()
         root.update()
@@ -113,19 +136,27 @@ top_frame_right_frame.grid_columnconfigure(0, weight=1)
 middle_frame = tk.Frame(root, bg=bg_app_color)
 middle_frame.place(relx=0, rely=0, anchor="nw")
 
-middle_left_frame = tk.Frame(middle_frame, bg='white', width=int(screen_width))
-middle_left_frame.place(x=0, y=51, width=screen_width)
+middle_left_frame = tk.Frame(middle_frame, bg='white')
+middle_left_frame.place(x=0, y=0)
 
-middle_center_frame = tk.Frame(middle_frame, bg='#f4f4fe', width=int(screen_width * 0))
-middle_center_frame.place(x=0, y=51, width=screen_width * 0)
 
-middle_right_frame = tk.Frame(middle_frame, bg='white', width=int(screen_width * 0))
-middle_right_frame.place(x=0, y=51, width=screen_width * 0)
+
+middle_left_weight_frame = tk.Frame(middle_left_frame, bg='red')
+middle_left_thickness_frame = tk.Frame(middle_left_frame, bg='green')
+middle_left_weight_frame.pack(fill=tk.BOTH, expand=True)
+
+
+
+middle_center_frame = tk.Frame(middle_frame, bg=bg_app_color)
+middle_center_frame.place(x=0, y=0)
+
+middle_right_frame = tk.Frame(middle_frame, bg='white')
+middle_right_frame.place(x=0, y=0)
 
 
 
 bottom_frame = tk.Frame(root, bg=bg_app_color)
-bottom_frame.place(relx=0, rely=1.0, height=35, anchor="sw")
+bottom_frame.place(relx=0, rely=1.0, height=50, anchor="sw")
 
 
 
@@ -137,15 +168,15 @@ bottom_frame.place(relx=0, rely=1.0, height=35, anchor="sw")
 
 """Function"""
 def open_weight_frame():
-    set_registry_value("is_current_entry", "weight")
+    # set_registry_value("is_current_entry", "weight")
     middle_left_thickness_frame.pack_forget()
     middle_left_weight_frame.pack(fill=tk.BOTH, expand=True)
-
+    middle_left_weight_frame.lift()
 def open_thickness_frame():
-    set_registry_value("is_current_entry", "thickness")
+    # set_registry_value("is_current_entry", "thickness")
     middle_left_weight_frame.pack_forget()
     middle_left_thickness_frame.pack(fill=tk.BOTH, expand=True)
-
+    middle_left_thickness_frame.lift()
 
 """Entry"""
 
@@ -156,7 +187,7 @@ def on_leave_top_open_weight_frame_button(event):
     top_open_weight_frame_button.config(image=top_open_weight_frame_button_icon)
 top_open_weight_frame_button_icon = ImageTk.PhotoImage(Image.open("theme/icons/weight.png").resize((156, 36)))
 top_open_weight_frame_button_hover_icon = ImageTk.PhotoImage(Image.open("theme/icons/weight_hover.png").resize((156, 36)))
-top_open_weight_frame_button = tk.Button(top_frame_right_frame, image=top_open_weight_frame_button_icon, command=None, bg='#f0f2f6', width=156, height=36, relief="flat", borderwidth=0)
+top_open_weight_frame_button = tk.Button(top_frame_right_frame, image=top_open_weight_frame_button_icon, command=open_weight_frame, bg='#f0f2f6', width=156, height=36, relief="flat", borderwidth=0)
 top_open_weight_frame_button.grid(row=0, column=3, padx=10, pady=5, sticky="e")
 top_open_weight_frame_button.bind("<Enter>", on_enter_top_open_weight_frame_button)
 top_open_weight_frame_button.bind("<Leave>", on_leave_top_open_weight_frame_button)
@@ -168,7 +199,7 @@ def on_leave_top_open_thickness_frame_button(event):
     top_open_thickness_frame_button.config(image=top_open_thickness_frame_button_icon)
 top_open_thickness_frame_button_icon = ImageTk.PhotoImage(Image.open("theme/icons/thickness.png").resize((156, 36)))
 top_open_thickness_frame_button_hover_icon = ImageTk.PhotoImage(Image.open("theme/icons/thickness_hover.png").resize((156, 36)))
-top_open_thickness_frame_button = tk.Button(top_frame_right_frame, image=top_open_thickness_frame_button_icon, command=None, bg='#f0f2f6', width=156, height=36, relief="flat", borderwidth=0)
+top_open_thickness_frame_button = tk.Button(top_frame_right_frame, image=top_open_thickness_frame_button_icon, command=open_thickness_frame, bg='#f0f2f6', width=156, height=36, relief="flat", borderwidth=0)
 top_open_thickness_frame_button.grid(row=0, column=4, padx=5, pady=5, sticky="e")
 top_open_thickness_frame_button.bind("<Enter>", on_enter_top_open_thickness_frame_button)
 top_open_thickness_frame_button.bind("<Leave>", on_leave_top_open_thickness_frame_button)
