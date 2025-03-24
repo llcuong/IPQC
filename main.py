@@ -15,7 +15,13 @@ import socket
 import barcode
 from io import BytesIO
 from barcode.writer import ImageWriter
+import os
+import sys
 
+if getattr(sys, 'frozen', False):
+    base_path = sys._MEIPASS
+else:
+    base_path = os.path.abspath(".")
 """Set DPI awareness for better scaling on high-DPI screens"""
 ctypes.windll.shcore.SetProcessDpiAwareness(10)
 REG_PATH = r"SOFTWARE\IPQC\Settings"
@@ -100,9 +106,12 @@ def update_dimensions():
 
 
 
-        middle_right_frame_width = 520
-        middle_center_frame_width =10
+        middle_right_frame_width = 0 #340 #520
+        middle_center_frame_width = 0 #10
         middle_left_frame_width = screen_width - middle_right_frame_width - middle_center_frame_width
+        middle_left_col3_width = 420
+        middle_left_col2_width = 10
+        middle_left_col1_width = middle_left_frame_width - middle_left_col3_width - middle_left_col2_width
 
 
 
@@ -111,11 +120,22 @@ def update_dimensions():
         middle_center_frame.place(x=middle_left_frame_width, y=0, width=middle_center_frame_width, height=middle_frame_height)
         middle_left_frame.place(x=0, y=0, width=middle_left_frame_width, height=middle_frame_height)
 
-        top_frame_left_frame.place(x=0, y=0, width=int(screen_width * 0.3), height=50)
-        top_frame_right_frame.place(x=int(screen_width * 0.3), y=0, width=int(screen_width * 0.7), height=50)
+        top_left_frame.place(x=0, y=0, width=int(screen_width * 0.3), height=50)
+        top_right_frame.place(x=int(screen_width * 0.3), y=0, width=int(screen_width * 0.7), height=50)
 
         middle_left_weight_frame.place(x=0, y=0, width=middle_left_frame_width, height=middle_frame_height)
         middle_left_thickness_frame.place(x=0, y=0, width=middle_left_frame_width, height=middle_frame_height)
+
+        middle_left_weight_frame_col1_frame.place(x=0, y=0, width=middle_left_col1_width, height=middle_frame_height)
+        middle_left_weight_frame_col2_frame.place(x=middle_left_col1_width, y=0, width=middle_left_col2_width, height=middle_frame_height)
+        middle_left_weight_frame_col3_frame.place(x=middle_left_col1_width + middle_left_col2_width, y=0, width=middle_left_col3_width, height=middle_frame_height)
+
+        middle_left_thickness_frame_col1_frame.place(x=0, y=0, width=middle_left_col1_width, height=middle_frame_height)
+        middle_left_thickness_frame_col2_frame.place(x=middle_left_col1_width, y=0, width=middle_left_col2_width, height=middle_frame_height)
+        middle_left_thickness_frame_col3_frame.place(x=middle_left_col1_width + middle_left_col2_width, y=0, width=middle_left_col3_width, height=middle_frame_height)
+
+        middle_right_runcard_frame.place(x=middle_left_frame_width + middle_center_frame_width, y=0, width=middle_right_frame_width-5, height=middle_frame_height)
+        middle_right_setting_frame.place(x=middle_left_frame_width + middle_center_frame_width, y=0, width=middle_right_frame_width-5, height=middle_frame_height)
 
         root.update_idletasks()
         root.update()
@@ -125,9 +145,9 @@ def update_dimensions():
 top_frame = tk.Frame(root, bg=bg_app_color)
 top_frame.place(relx=0, rely=0, height=50, anchor="nw")
 
-top_frame_left_frame = tk.Frame(top_frame, bg=bg_app_color)
-top_frame_right_frame = tk.Frame(top_frame, height=50, bg=bg_app_color)
-top_frame_right_frame.grid_columnconfigure(0, weight=1)
+top_left_frame = tk.Frame(top_frame, bg=bg_app_color)
+top_right_frame = tk.Frame(top_frame, height=50, bg=bg_app_color)
+top_right_frame.grid_columnconfigure(0, weight=1)
 
 
 
@@ -136,22 +156,34 @@ top_frame_right_frame.grid_columnconfigure(0, weight=1)
 middle_frame = tk.Frame(root, bg=bg_app_color)
 middle_frame.place(relx=0, rely=0, anchor="nw")
 
-middle_left_frame = tk.Frame(middle_frame, bg='white')
+middle_left_frame = tk.Frame(middle_frame, bg=bg_app_color)
 middle_left_frame.place(x=0, y=0)
 
 
 
-middle_left_weight_frame = tk.Frame(middle_left_frame, bg='red')
-middle_left_thickness_frame = tk.Frame(middle_left_frame, bg='green')
+middle_left_weight_frame = tk.Frame(middle_left_frame, bg=bg_app_color)
+middle_left_thickness_frame = tk.Frame(middle_left_frame, bg=bg_app_color)
 middle_left_weight_frame.pack(fill=tk.BOTH, expand=True)
 
 
+middle_left_weight_frame_col1_frame = tk.Frame(middle_left_weight_frame, bg='red')
+middle_left_weight_frame_col2_frame = tk.Frame(middle_left_weight_frame, bg=bg_app_color)
+middle_left_weight_frame_col3_frame = tk.Frame(middle_left_weight_frame, bg='red')
+
+middle_left_thickness_frame_col1_frame = tk.Frame(middle_left_thickness_frame, bg='green')
+middle_left_thickness_frame_col2_frame = tk.Frame(middle_left_thickness_frame, bg=bg_app_color)
+middle_left_thickness_frame_col3_frame = tk.Frame(middle_left_thickness_frame, bg='green')
 
 middle_center_frame = tk.Frame(middle_frame, bg=bg_app_color)
 middle_center_frame.place(x=0, y=0)
 
 middle_right_frame = tk.Frame(middle_frame, bg='white')
 middle_right_frame.place(x=0, y=0)
+
+
+middle_right_runcard_frame = tk.Frame(middle_right_frame, bg='white')
+middle_right_setting_frame = tk.Frame(middle_right_frame, bg='white')
+
 
 
 
@@ -177,8 +209,30 @@ def open_thickness_frame():
     middle_left_weight_frame.pack_forget()
     middle_left_thickness_frame.pack(fill=tk.BOTH, expand=True)
     middle_left_thickness_frame.lift()
+def open_runcard_frame():
+    global showing_settings, showing_runcards
+    showing_settings = False
+    showing_runcards = True
+    middle_right_setting_frame.pack_forget()
+    middle_right_runcard_frame.pack(fill=tk.BOTH, expand=True)
+    middle_right_runcard_frame.lift()
+    # set_registry_value("is_runcard_open", 1)
+
+
+
+
+
 
 """Entry"""
+
+
+
+
+
+
+
+
+
 
 """Button"""
 def on_enter_top_open_weight_frame_button(event):
@@ -187,7 +241,7 @@ def on_leave_top_open_weight_frame_button(event):
     top_open_weight_frame_button.config(image=top_open_weight_frame_button_icon)
 top_open_weight_frame_button_icon = ImageTk.PhotoImage(Image.open("theme/icons/weight.png").resize((156, 36)))
 top_open_weight_frame_button_hover_icon = ImageTk.PhotoImage(Image.open("theme/icons/weight_hover.png").resize((156, 36)))
-top_open_weight_frame_button = tk.Button(top_frame_right_frame, image=top_open_weight_frame_button_icon, command=open_weight_frame, bg='#f0f2f6', width=156, height=36, relief="flat", borderwidth=0)
+top_open_weight_frame_button = tk.Button(top_right_frame, image=top_open_weight_frame_button_icon, command=open_weight_frame, bg='#f0f2f6', width=156, height=36, relief="flat", borderwidth=0)
 top_open_weight_frame_button.grid(row=0, column=3, padx=10, pady=5, sticky="e")
 top_open_weight_frame_button.bind("<Enter>", on_enter_top_open_weight_frame_button)
 top_open_weight_frame_button.bind("<Leave>", on_leave_top_open_weight_frame_button)
@@ -199,11 +253,22 @@ def on_leave_top_open_thickness_frame_button(event):
     top_open_thickness_frame_button.config(image=top_open_thickness_frame_button_icon)
 top_open_thickness_frame_button_icon = ImageTk.PhotoImage(Image.open("theme/icons/thickness.png").resize((156, 36)))
 top_open_thickness_frame_button_hover_icon = ImageTk.PhotoImage(Image.open("theme/icons/thickness_hover.png").resize((156, 36)))
-top_open_thickness_frame_button = tk.Button(top_frame_right_frame, image=top_open_thickness_frame_button_icon, command=open_thickness_frame, bg='#f0f2f6', width=156, height=36, relief="flat", borderwidth=0)
+top_open_thickness_frame_button = tk.Button(top_right_frame, image=top_open_thickness_frame_button_icon, command=open_thickness_frame, bg='#f0f2f6', width=156, height=36, relief="flat", borderwidth=0)
 top_open_thickness_frame_button.grid(row=0, column=4, padx=5, pady=5, sticky="e")
 top_open_thickness_frame_button.bind("<Enter>", on_enter_top_open_thickness_frame_button)
 top_open_thickness_frame_button.bind("<Leave>", on_leave_top_open_thickness_frame_button)
 
+
+def on_enter_middle_open_runcard_frame_button(event):
+    middle_open_runcard_frame_button.config(image=barcode_hover_icon)
+def on_leave_middle_open_runcard_frame_button(event):
+    middle_open_runcard_frame_button.config(image=barcode_icon)
+barcode_icon = ImageTk.PhotoImage(Image.open(os.path.join(base_path, "theme", "icons", "barcode.png")).resize((42, 42)))
+barcode_hover_icon = ImageTk.PhotoImage(Image.open(os.path.join(base_path, "theme", "icons", "barcode_hover.png")).resize((42, 42)))
+middle_open_runcard_frame_button = tk.Button(top_left_frame, image=barcode_icon, bd=0, command=open_runcard_frame, bg="#f4f4fe")
+middle_open_runcard_frame_button.grid(row=0, column=1, padx=5, pady=5, sticky="w")
+middle_open_runcard_frame_button.bind("<Enter>", on_enter_middle_open_runcard_frame_button)
+middle_open_runcard_frame_button.bind("<Leave>", on_leave_middle_open_runcard_frame_button)
 
 
 """Update loop"""

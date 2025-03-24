@@ -1300,52 +1300,103 @@ def update_current_thickness_entry(event):
 
 for entry in thickness_entry_list:
     entry.bind("<FocusIn>", update_current_thickness_entry)
+
+#
+# def thickness_frame_com_port_insert_data():
+#     global current_thickness_entry
+#     if "COM" in get_registry_value("COM2", ""):
+#         print(f"Thickness COM: {selected_com2.get()}")
+#         ser = serial.Serial(selected_com2.get(), baudrate=9600, timeout=1)
+#         try:
+#             while True:
+#                 if ser.is_open:
+#                     value = str(ser.readline())  # ser.readline().decode('utf-8')
+#                     if value != "b''":
+#                         threading.Thread(target=show_error_message, args=(f"{value}", 9, 3000), daemon=True).start()
+#                         if "B+" in value:
+#                             first_index = value.rfind('B+')
+#                             last_index = value.rfind('\\r')
+#                             thickness_value = float(value[first_index + 2:last_index])
+#                             if len(entry_thickness_runcard_id_entry.get()) > 0:
+#                                 if current_thickness_entry and current_thickness_entry in thickness_entry_list:
+#                                     current_thickness_entry.delete(0, tk.END)
+#                                     current_thickness_entry.insert(0, thickness_value)
+#                                     current_index = thickness_entry_list.index(current_thickness_entry)
+#                                     if current_index < len(thickness_entry_list) - 1:
+#                                         next_entry = thickness_entry_list[current_index + 1]
+#                                         next_entry.focus_set()
+#                                     else:
+#                                         entry_thickness_dau_ngon_tay_entry.event_generate("<Return>")
+#                                 else:
+#                                     entry_thickness_runcard_id_entry.event_generate("<Return>")
+#                                     first_entry = thickness_entry_list[0]
+#                                     first_entry.delete(0, tk.END)
+#                                     first_entry.insert(0, thickness_value)
+#                                     next_entry = thickness_entry_list[1] if len(thickness_entry_list) > 1 else None
+#                                     if next_entry:
+#                                         next_entry.focus_set()
+#                             else:
+#                                 threading.Thread(target=show_error_message,
+#                                                  args=("Chưa nhập giá trị Runcard!", 0, 3000), daemon=True).start()
+#                 else:
+#                     ser.open()
+#         except Exception as e:
+#             threading.Thread(target=show_error_message, args=(f"{e}", 0, 3000), daemon=True).start()
+#             pass
+#         finally:
+#             if ser.is_open:
+#                 ser.close()
+#     else:
+#         pass
+
+
+
+
 def thickness_frame_com_port_insert_data():
     global current_thickness_entry
-    if "COM" in get_registry_value("COM2", ""):
-        print(f"Thickness COM: {selected_com2.get()}")
-        ser = serial.Serial(selected_com2.get(), baudrate=9600, timeout=1)
-        try:
-            while True:
-                if ser.is_open:
-                    value = str(ser.readline())  # ser.readline().decode('utf-8')
-                    if value != "b''":
-                        threading.Thread(target=show_error_message, args=(f"{value}", 9, 3000), daemon=True).start()
-                        if "B+" in value:
-                            first_index = value.rfind('B+')
-                            last_index = value.rfind('\\r')
-                            thickness_value = float(value[first_index + 2:last_index])
-                            if len(entry_thickness_runcard_id_entry.get()) > 0:
-                                if current_thickness_entry and current_thickness_entry in thickness_entry_list:
-                                    current_thickness_entry.delete(0, tk.END)
-                                    current_thickness_entry.insert(0, thickness_value)
-                                    current_index = thickness_entry_list.index(current_thickness_entry)
-                                    if current_index < len(thickness_entry_list) - 1:
-                                        next_entry = thickness_entry_list[current_index + 1]
-                                        next_entry.focus_set()
-                                    else:
-                                        entry_thickness_dau_ngon_tay_entry.event_generate("<Return>")
+    com_port = get_registry_value("COM2", "")
+    if "COM" not in com_port:
+        return
+    print(f"Thickness COM: {selected_com2.get()}")
+    try:
+        ser = serial.Serial(selected_com2.get(), baudrate=9600, timeout=0.5)  # Reduce timeout for faster reads
+
+        while ser.is_open:
+            if ser.in_waiting > 0:
+                raw_value = ser.readline().decode('utf-8').strip()
+                if raw_value:
+                    match = re.search(r"B\+([\d.]+)", raw_value)
+                    if match:
+                        thickness_value = float(match.group(1))
+                        print(f"Thickness Value: {thickness_value}")
+                        if entry_thickness_runcard_id_entry.get():
+                            if current_thickness_entry and current_thickness_entry in thickness_entry_list:
+                                current_thickness_entry.delete(0, tk.END)
+                                current_thickness_entry.insert(0, thickness_value)
+                                current_index = thickness_entry_list.index(current_thickness_entry)
+                                if current_index < len(thickness_entry_list) - 1:
+                                    thickness_entry_list[current_index + 1].focus_set()
                                 else:
-                                    entry_thickness_runcard_id_entry.event_generate("<Return>")
-                                    first_entry = thickness_entry_list[0]
-                                    first_entry.delete(0, tk.END)
-                                    first_entry.insert(0, thickness_value)
-                                    next_entry = thickness_entry_list[1] if len(thickness_entry_list) > 1 else None
-                                    if next_entry:
-                                        next_entry.focus_set()
+                                    entry_thickness_dau_ngon_tay_entry.event_generate("<Return>")
                             else:
-                                threading.Thread(target=show_error_message,
-                                                 args=("Chưa nhập giá trị Runcard!", 0, 3000), daemon=True).start()
-                else:
-                    ser.open()
-        except Exception as e:
-            threading.Thread(target=show_error_message, args=(f"{e}", 0, 3000), daemon=True).start()
-            pass
-        finally:
-            if ser.is_open:
-                ser.close()
-    else:
-        pass
+                                entry_thickness_runcard_id_entry.event_generate("<Return>")
+                                thickness_entry_list[0].delete(0, tk.END)
+                                thickness_entry_list[0].insert(0, thickness_value)
+                                if len(thickness_entry_list) > 1:
+                                    thickness_entry_list[1].focus_set()
+                        else:
+                            threading.Thread(target=show_error_message, args=("Chưa nhập giá trị Runcard!", 0, 3000),
+                                             daemon=True).start()
+
+    except serial.SerialException as e:
+        threading.Thread(target=show_error_message, args=(f"Serial Error: {e}", 0, 3000), daemon=True).start()
+    except ValueError:
+        threading.Thread(target=show_error_message, args=("Invalid thickness value!", 0, 3000), daemon=True).start()
+    finally:
+        if ser and ser.is_open:
+            ser.close()
+
+
 
 def weight_frame_com_port_insert_data():
     global weight_record_log_id
