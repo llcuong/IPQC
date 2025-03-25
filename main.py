@@ -59,8 +59,11 @@ font_name = 'Arial'
 font_size_base_on_ratio = int(screen_height * 0.015)
 button_width_base_on_ratio = int(screen_width * 0.012)
 
-bg_app_color = "#96afea"
+bg_app_color = "#f4f4fe"
 
+
+showing_settings = False
+showing_runcards = False
 
 
 class CustomOptionMenu(tk.OptionMenu):
@@ -87,7 +90,7 @@ class CustomOptionMenu(tk.OptionMenu):
         if command:
             variable.trace_add("write", lambda *args: command(variable.get()))
 def update_dimensions():
-    global screen_width, screen_height
+    global screen_width, screen_height, showing_settings, showing_runcards
     while True:
 
         """Define height - width size parameters"""
@@ -106,12 +109,29 @@ def update_dimensions():
 
 
 
-        middle_right_frame_width = 0 #340 #520
-        middle_center_frame_width = 0 #10
-        middle_left_frame_width = screen_width - middle_right_frame_width - middle_center_frame_width
-        middle_left_col3_width = 420
-        middle_left_col2_width = 10
-        middle_left_col1_width = middle_left_frame_width - middle_left_col3_width - middle_left_col2_width
+
+        if showing_settings:
+            middle_right_frame_width = 340
+            middle_center_frame_width = 10
+            middle_left_frame_width = screen_width - middle_right_frame_width - middle_center_frame_width
+            middle_left_col3_width = 0
+            middle_left_col2_width = 0
+            middle_left_col1_width = middle_left_frame_width - middle_left_col3_width - middle_left_col2_width
+        elif showing_runcards:
+            middle_right_frame_width = 520
+            middle_center_frame_width = 10
+            middle_left_frame_width = screen_width - middle_right_frame_width - middle_center_frame_width
+            middle_left_col3_width = 0
+            middle_left_col2_width = 0
+            middle_left_col1_width = middle_left_frame_width - middle_left_col3_width - middle_left_col2_width
+        else:
+            middle_right_frame_width = 0
+            middle_center_frame_width = 0
+            middle_left_frame_width = screen_width - middle_right_frame_width - middle_center_frame_width
+            middle_left_col3_width = 420
+            middle_left_col2_width = 10
+            middle_left_col1_width = middle_left_frame_width - middle_left_col3_width - middle_left_col2_width
+
 
 
 
@@ -217,7 +237,13 @@ def open_runcard_frame():
     middle_right_runcard_frame.pack(fill=tk.BOTH, expand=True)
     middle_right_runcard_frame.lift()
     # set_registry_value("is_runcard_open", 1)
-
+def open_setting_frame():
+    global showing_settings, showing_runcards
+    showing_settings = True
+    showing_runcards = False
+    middle_right_runcard_frame.pack_forget()
+    middle_right_setting_frame.pack(fill=tk.BOTH, expand=True)
+    middle_right_setting_frame.lift()
 
 
 
@@ -239,8 +265,8 @@ def on_enter_top_open_weight_frame_button(event):
     top_open_weight_frame_button.config(image=top_open_weight_frame_button_hover_icon)
 def on_leave_top_open_weight_frame_button(event):
     top_open_weight_frame_button.config(image=top_open_weight_frame_button_icon)
-top_open_weight_frame_button_icon = ImageTk.PhotoImage(Image.open("theme/icons/weight.png").resize((156, 36)))
-top_open_weight_frame_button_hover_icon = ImageTk.PhotoImage(Image.open("theme/icons/weight_hover.png").resize((156, 36)))
+top_open_weight_frame_button_icon = ImageTk.PhotoImage(Image.open(os.path.join(base_path, "theme", "icons", "weight.png")).resize((156, 36)))
+top_open_weight_frame_button_hover_icon = ImageTk.PhotoImage(Image.open(os.path.join(base_path, "theme", "icons", "weight_hover.png")).resize((156, 36)))
 top_open_weight_frame_button = tk.Button(top_right_frame, image=top_open_weight_frame_button_icon, command=open_weight_frame, bg='#f0f2f6', width=156, height=36, relief="flat", borderwidth=0)
 top_open_weight_frame_button.grid(row=0, column=3, padx=10, pady=5, sticky="e")
 top_open_weight_frame_button.bind("<Enter>", on_enter_top_open_weight_frame_button)
@@ -251,12 +277,24 @@ def on_enter_top_open_thickness_frame_button(event):
     top_open_thickness_frame_button.config(image=top_open_thickness_frame_button_hover_icon)
 def on_leave_top_open_thickness_frame_button(event):
     top_open_thickness_frame_button.config(image=top_open_thickness_frame_button_icon)
-top_open_thickness_frame_button_icon = ImageTk.PhotoImage(Image.open("theme/icons/thickness.png").resize((156, 36)))
-top_open_thickness_frame_button_hover_icon = ImageTk.PhotoImage(Image.open("theme/icons/thickness_hover.png").resize((156, 36)))
+top_open_thickness_frame_button_icon = ImageTk.PhotoImage(Image.open(os.path.join(base_path, "theme", "icons", "thickness.png")).resize((156, 36)))
+top_open_thickness_frame_button_hover_icon = ImageTk.PhotoImage(Image.open(os.path.join(base_path, "theme", "icons", "thickness_hover.png")).resize((156, 36)))
 top_open_thickness_frame_button = tk.Button(top_right_frame, image=top_open_thickness_frame_button_icon, command=open_thickness_frame, bg='#f0f2f6', width=156, height=36, relief="flat", borderwidth=0)
 top_open_thickness_frame_button.grid(row=0, column=4, padx=5, pady=5, sticky="e")
 top_open_thickness_frame_button.bind("<Enter>", on_enter_top_open_thickness_frame_button)
 top_open_thickness_frame_button.bind("<Leave>", on_leave_top_open_thickness_frame_button)
+
+
+def on_enter_middle_open_setting_frame_button(event):
+    middle_open_setting_frame_button.config(image=setting_hover_icon)
+def on_leave_middle_open_setting_frame_button(event):
+    middle_open_setting_frame_button.config(image=setting_icon)
+setting_icon = ImageTk.PhotoImage(Image.open(os.path.join(base_path, "theme", "icons", "setting.png")).resize((42, 42)))
+setting_hover_icon = ImageTk.PhotoImage(Image.open(os.path.join(base_path, "theme", "icons", "setting_hover.png")).resize((42, 42)))
+middle_open_setting_frame_button = tk.Button(top_left_frame, image=setting_icon, bd=0, command=open_setting_frame, bg=bg_app_color)
+middle_open_setting_frame_button.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+middle_open_setting_frame_button.bind("<Enter>", on_enter_middle_open_setting_frame_button)
+middle_open_setting_frame_button.bind("<Leave>", on_leave_middle_open_setting_frame_button)
 
 
 def on_enter_middle_open_runcard_frame_button(event):
@@ -265,7 +303,7 @@ def on_leave_middle_open_runcard_frame_button(event):
     middle_open_runcard_frame_button.config(image=barcode_icon)
 barcode_icon = ImageTk.PhotoImage(Image.open(os.path.join(base_path, "theme", "icons", "barcode.png")).resize((42, 42)))
 barcode_hover_icon = ImageTk.PhotoImage(Image.open(os.path.join(base_path, "theme", "icons", "barcode_hover.png")).resize((42, 42)))
-middle_open_runcard_frame_button = tk.Button(top_left_frame, image=barcode_icon, bd=0, command=open_runcard_frame, bg="#f4f4fe")
+middle_open_runcard_frame_button = tk.Button(top_left_frame, image=barcode_icon, bd=0, command=open_runcard_frame, bg=bg_app_color)
 middle_open_runcard_frame_button.grid(row=0, column=1, padx=5, pady=5, sticky="w")
 middle_open_runcard_frame_button.bind("<Enter>", on_enter_middle_open_runcard_frame_button)
 middle_open_runcard_frame_button.bind("<Leave>", on_leave_middle_open_runcard_frame_button)
