@@ -67,6 +67,9 @@ bg_param_color = "white"   #          => #414141
 showing_settings = False
 showing_runcards = False
 showing_advance_setting = False
+showing_thickness_frame = False
+showing_weight_frame = False
+
 
 class CustomOptionMenu(tk.OptionMenu):
     def __init__(self, master, variable, *options, command=None, **kwargs):
@@ -116,18 +119,22 @@ def update_dimensions():
             middle_right_frame_width = 332
             middle_center_frame_width = 10
             middle_left_frame_width = screen_width - middle_right_frame_width - middle_center_frame_width
-            middle_left_col3_width = 0
-            middle_left_col2_width = 0
+            middle_left_col3_width = 210
+            middle_left_col2_width = 10
             middle_left_col1_width = middle_left_frame_width - middle_left_col3_width - middle_left_col2_width
         elif showing_runcards:
             middle_right_frame_width = 520
             middle_center_frame_width = 10
             middle_left_frame_width = screen_width - middle_right_frame_width - middle_center_frame_width
-            middle_left_col3_width = 0
-            middle_left_col2_width = 0
+            if showing_thickness_frame:
+                middle_left_col3_width = 0
+                middle_left_col2_width = 0
+            elif showing_weight_frame:
+                middle_left_col3_width = 210
+                middle_left_col2_width = 10
             middle_left_col1_width = middle_left_frame_width - middle_left_col3_width - middle_left_col2_width
         elif showing_advance_setting:
-            middle_right_frame_width = 520
+            middle_right_frame_width = 552
             middle_center_frame_width = 10
             middle_left_frame_width = screen_width - middle_right_frame_width - middle_center_frame_width
             middle_left_col3_width = 0
@@ -171,8 +178,8 @@ def update_dimensions():
         middle_right_advance_setting_frame.place(x=0, y=0, width=middle_right_frame_width-5, height=middle_frame_height)
 
         middle_right_setting_frame_row1.place(x=0, y=0, width=middle_right_frame_width, height=40)
-        middle_right_setting_frame_row2.place(x=0, y=40, width=middle_right_frame_width, height=middle_frame_height - 40 - 50)
-        middle_right_setting_frame_row3.place(x=0, y=middle_frame_height - 40, width=middle_right_frame_width, height=50)
+        middle_right_setting_frame_row2.place(x=0, y=40, width=middle_right_frame_width, height=180)
+        middle_right_setting_frame_row3.place(x=0, y=40 + 200, width=middle_right_frame_width, height=50)
 
         middle_right_advance_setting_frame_row1.place(x=0, y=0, width=middle_right_frame_width, height=40)
         middle_right_advance_setting_frame_row2.place(x=0, y=40, width=middle_right_frame_width, height=middle_frame_height - 40 - 50)
@@ -189,6 +196,40 @@ def update_dimensions():
 
         middle_right_advance_setting_frame_row3_col1.place(x=int((middle_right_frame_width/2-154)/2), y=0, width=154, height=40)
         middle_right_advance_setting_frame_row3_col2.place(x=int((middle_right_frame_width/2-154)/2+middle_right_frame_width/2), y=0, width=154, height=40)
+
+        middle_right_setting_frame_row2_row1.place(x=0, y=20, width=int(middle_right_frame_width), height=160)
+
+        middle_right_advance_setting_frame_row2_col1.place(x=0, y=0, width=332, height=middle_frame_height - 40 - 50)
+        middle_right_advance_setting_frame_row2_col2.place(x=332, y=0, width=10, height=middle_frame_height - 40 - 50)
+        middle_right_advance_setting_frame_row2_col3.place(x=342, y=0, width=middle_right_frame_width - 10 - 332, height=middle_frame_height - 40 - 50)
+
+        middle_right_advance_setting_frame_row2_col1_row1.place(x=0, y=0, width=332, height=20)
+        middle_right_advance_setting_frame_row2_col1_row2.place(x=0, y=20, width=332, height=160)
+        middle_right_advance_setting_frame_row2_col1_row3.place(x=0, y=180, width=332, height=20)
+        middle_right_advance_setting_frame_row2_col1_row4.place(x=0, y=200, width=332, height=10)
+        middle_right_advance_setting_frame_row2_col1_row5.place(x=0, y=210, width=332, height=180)
+        middle_right_advance_setting_frame_row2_col1_row6.place(x=0, y=390, width=332, height=20)
+        middle_right_advance_setting_frame_row2_col1_row7.place(x=0, y=410, width=332, height=10)
+        middle_right_advance_setting_frame_row2_col1_row8.place(x=0, y=420, width=332, height=50)
+
+        middle_right_advance_setting_frame_row2_col1_row5_col1.place(x=0, y=0, width=170, height=180)
+        middle_right_advance_setting_frame_row2_col1_row5_col2.place(x=170, y=0, width=162, height=180)
+
+        middle_right_advance_setting_frame_row2_col1_row8_col1.place(x=0, y=0, width=170, height=180)
+        middle_right_advance_setting_frame_row2_col1_row8_col2.place(x=170, y=0, width=162, height=180)
+
+        middle_right_advance_setting_frame_row2_col1_row5_col1_row1.place(x=0, y=0, width=170, height=40)
+        middle_right_advance_setting_frame_row2_col1_row5_col1_row2.place(x=0, y=40, width=170, height=40)
+        middle_right_advance_setting_frame_row2_col1_row5_col1_row3.place(x=0, y=80, width=170, height=40)
+        middle_right_advance_setting_frame_row2_col1_row5_col1_row4.place(x=0, y=120, width=170, height=40)
+
+        middle_right_advance_setting_frame_row2_col1_row5_col2_row1.place(x=0, y=0, width=162, height=40)
+        middle_right_advance_setting_frame_row2_col1_row5_col2_row2.place(x=0, y=40, width=162, height=40)
+        middle_right_advance_setting_frame_row2_col1_row5_col2_row3.place(x=0, y=80, width=162, height=40)
+        middle_right_advance_setting_frame_row2_col1_row5_col2_row4.place(x=0, y=120, width=162, height=40)
+
+        middle_right_advance_setting_frame_row2_col1_row8_col1_row1.place(x=0, y=0, width=170, height=40)
+        middle_right_advance_setting_frame_row2_col1_row8_col2_row1.place(x=0, y=0, width=162, height=40)
 
         root.update_idletasks()
         root.update()
@@ -249,7 +290,7 @@ middle_right_setting_frame_row2 = tk.Frame(middle_right_setting_frame, bg=bg_par
 middle_right_setting_frame_row3 = tk.Frame(middle_right_setting_frame, bg=bg_app_color)
 
 middle_right_advance_setting_frame_row1 = tk.Frame(middle_right_advance_setting_frame, bg=bg_app_color)
-middle_right_advance_setting_frame_row2 = tk.Frame(middle_right_advance_setting_frame, bg=bg_param_color)
+middle_right_advance_setting_frame_row2 = tk.Frame(middle_right_advance_setting_frame, bg=bg_app_color)
 middle_right_advance_setting_frame_row3 = tk.Frame(middle_right_advance_setting_frame, bg=bg_app_color)
 
 middle_right_setting_frame_row1_col1 = tk.Frame(middle_right_setting_frame_row1, bg=bg_app_color)
@@ -274,11 +315,40 @@ bottom_right_frame = tk.Frame(bottom_frame, bg=bg_app_color)
 bottom_right_frame.grid_columnconfigure(0, weight=1)
 
 
+middle_right_setting_frame_row2_row1 = tk.Frame(middle_right_setting_frame_row2, bg=bg_param_color)
+
+middle_right_advance_setting_frame_row2_col1 = tk.Frame(middle_right_advance_setting_frame_row2, bg=bg_app_color)
+middle_right_advance_setting_frame_row2_col2 = tk.Frame(middle_right_advance_setting_frame_row2, bg=bg_app_color)
+middle_right_advance_setting_frame_row2_col3 = tk.Frame(middle_right_advance_setting_frame_row2, bg=bg_param_color)
+
+middle_right_advance_setting_frame_row2_col1_row1 = tk.Frame(middle_right_advance_setting_frame_row2_col1, bg=bg_param_color)
+middle_right_advance_setting_frame_row2_col1_row2 = tk.Frame(middle_right_advance_setting_frame_row2_col1, bg=bg_param_color)
+middle_right_advance_setting_frame_row2_col1_row3 = tk.Frame(middle_right_advance_setting_frame_row2_col1, bg=bg_app_color)
+middle_right_advance_setting_frame_row2_col1_row4 = tk.Frame(middle_right_advance_setting_frame_row2_col1, bg=bg_param_color)
+middle_right_advance_setting_frame_row2_col1_row5 = tk.Frame(middle_right_advance_setting_frame_row2_col1, bg=bg_param_color)
+middle_right_advance_setting_frame_row2_col1_row6 = tk.Frame(middle_right_advance_setting_frame_row2_col1, bg=bg_app_color)
+middle_right_advance_setting_frame_row2_col1_row7 = tk.Frame(middle_right_advance_setting_frame_row2_col1, bg=bg_param_color)
+middle_right_advance_setting_frame_row2_col1_row8 = tk.Frame(middle_right_advance_setting_frame_row2_col1, bg=bg_param_color)
+
+middle_right_advance_setting_frame_row2_col1_row5_col1 = tk.Frame(middle_right_advance_setting_frame_row2_col1_row5, bg=bg_param_color)
+middle_right_advance_setting_frame_row2_col1_row5_col2 = tk.Frame(middle_right_advance_setting_frame_row2_col1_row5, bg=bg_param_color)
+
+middle_right_advance_setting_frame_row2_col1_row8_col1 = tk.Frame(middle_right_advance_setting_frame_row2_col1_row8, bg=bg_param_color)
+middle_right_advance_setting_frame_row2_col1_row8_col2 = tk.Frame(middle_right_advance_setting_frame_row2_col1_row8, bg=bg_param_color)
+
+middle_right_advance_setting_frame_row2_col1_row5_col1_row1 = tk.Frame(middle_right_advance_setting_frame_row2_col1_row5_col1, bg=bg_param_color)
+middle_right_advance_setting_frame_row2_col1_row5_col1_row2 = tk.Frame(middle_right_advance_setting_frame_row2_col1_row5_col1, bg=bg_param_color)
+middle_right_advance_setting_frame_row2_col1_row5_col1_row3 = tk.Frame(middle_right_advance_setting_frame_row2_col1_row5_col1, bg=bg_param_color)
+middle_right_advance_setting_frame_row2_col1_row5_col1_row4 = tk.Frame(middle_right_advance_setting_frame_row2_col1_row5_col1, bg=bg_param_color)
+
+middle_right_advance_setting_frame_row2_col1_row5_col2_row1 = tk.Frame(middle_right_advance_setting_frame_row2_col1_row5_col2, bg=bg_param_color)
+middle_right_advance_setting_frame_row2_col1_row5_col2_row2 = tk.Frame(middle_right_advance_setting_frame_row2_col1_row5_col2, bg=bg_param_color)
+middle_right_advance_setting_frame_row2_col1_row5_col2_row3 = tk.Frame(middle_right_advance_setting_frame_row2_col1_row5_col2, bg=bg_param_color)
+middle_right_advance_setting_frame_row2_col1_row5_col2_row4 = tk.Frame(middle_right_advance_setting_frame_row2_col1_row5_col2, bg=bg_param_color)
 
 
-
-
-
+middle_right_advance_setting_frame_row2_col1_row8_col1_row1 = tk.Frame(middle_right_advance_setting_frame_row2_col1_row8_col1, bg=bg_param_color)
+middle_right_advance_setting_frame_row2_col1_row8_col2_row1 = tk.Frame(middle_right_advance_setting_frame_row2_col1_row8_col2, bg=bg_param_color)
 
 
 """Function"""
@@ -298,13 +368,25 @@ def set_registry_value(name, value):
     except Exception as e:
         print(e)
         # threading.Thread(target=show_error_message, args=(f"{e}", 0, 3000), daemon=True).start()
+
+if get_registry_value("is_current_entry", "weight") == "weight":
+    showing_thickness_frame, showing_weight_frame = False, True
+else:
+    showing_thickness_frame, showing_weight_frame = True, False
+
 def open_weight_frame():
+    global showing_thickness_frame, showing_weight_frame
     set_registry_value("is_current_entry", "weight")
+    showing_thickness_frame = False
+    showing_weight_frame = True
     middle_left_thickness_frame.pack_forget()
     middle_left_weight_frame.pack(fill=tk.BOTH, expand=True)
     middle_left_weight_frame.lift()
 def open_thickness_frame():
+    global showing_thickness_frame, showing_weight_frame
     set_registry_value("is_current_entry", "thickness")
+    showing_weight_frame = False
+    showing_thickness_frame = True
     middle_left_weight_frame.pack_forget()
     middle_left_thickness_frame.pack(fill=tk.BOTH, expand=True)
     middle_left_thickness_frame.lift()
@@ -357,6 +439,174 @@ middle_right_setting_frame_row1_col1_label.grid(row=0, column=0, padx=5, pady=5,
 
 middle_right_advance_setting_frame_row1_col1_label = tk.Label(middle_right_advance_setting_frame_row1_col1, text="Cài đặt bổ sung", font=(font_name, 18, "bold"), bg=bg_app_color)
 middle_right_advance_setting_frame_row1_col1_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+
+
+
+
+"""Settings"""
+def update_com_ports(*menus):
+    try:
+        def monitor_com_ports():
+            global com_ports
+            while True:
+                new_com_ports = [port.device for port in serial.tools.list_ports.comports() if "Bluetooth" not in port.description]
+                if set(new_com_ports) != set(com_ports):
+                    com_ports = new_com_ports
+                    root.after(0, lambda: populate_com_menus(menus))
+                time.sleep(2)
+        def populate_com_menus(menus):
+            for menu in menus:
+                menu['menu'].delete(0, 'end')
+                menu['menu'].add_command(label="-------", command=lambda m=menu: m.setvar(m.cget("textvariable"), value="-------"))
+                for port in com_ports:
+                    menu['menu'].add_command(label=port, command=lambda p=port, m=menu: m.setvar(m.cget("textvariable"), value=p))
+        global com_ports
+        com_ports = [port.device for port in serial.tools.list_ports.comports() if "Bluetooth" not in port.description]
+        populate_com_menus(menus)
+        if not hasattr(update_com_ports, "thread_started"):
+            update_com_ports.thread_started = True
+            com_port_thread = threading.Thread(target=monitor_com_ports, daemon=True)
+            com_port_thread.start()
+    except Exception as e:
+        # threading.Thread(target=show_error_message, args=(f"{e}", 0, 3000), daemon=True).start()
+        pass
+
+def get_selected_frame():
+    """Retrieve the last selected frame from the Windows Registry."""
+    return get_registry_value("SelectedFrame", "Trọng lượng")
+
+def set_selected_frame(value):
+    """Save the selected frame to the Windows Registry."""
+    set_registry_value("SelectedFrame", value)
+
+weight_com_thread = None
+thickness_com_thread = None
+def switch_middle_left_frame(*args):
+    global weight_com_thread, thickness_com_thread
+    try:
+        print(f"Switching to: {selected_middle_left_frame.get()}")
+        if selected_middle_left_frame.get() == "Trọng lượng":
+            middle_left_thickness_frame.pack_forget()
+            middle_left_weight_frame.pack(fill=tk.BOTH, expand=True)
+        else:
+            middle_left_weight_frame.pack_forget()
+            middle_left_thickness_frame.pack(fill=tk.BOTH, expand=True)
+        if "COM" in str(get_registry_value("selected_weight_com", "")):
+            if weight_com_thread is None or not weight_com_thread.is_alive():
+                pass
+                # weight_com_thread = threading.Thread(target=weight_frame_com_port_insert_data, daemon=True)
+                # weight_com_thread.start()
+        if "COM" in str(get_registry_value("selected_thickness_com", "")):
+            if thickness_com_thread is None or not thickness_com_thread.is_alive():
+                pass
+                # thickness_com_thread = threading.Thread(target=thickness_frame_com_port_insert_data, daemon=True)
+                # thickness_com_thread.start()
+    except Exception as e:
+        # threading.Thread(target=show_error_message, args=(f"{e}", 0, 3000), daemon=True).start()
+        pass
+
+def save_setting_frame():
+    try:
+        # threading.Thread(target=show_error_message, args=(f"Save setting", 1, 3000), daemon=True).start()
+        set_registry_value("COM1", selected_weight_com.get())
+        set_registry_value("COM2", selected_thickness_com.get())
+        # set_registry_value("ServerIP", server_ip.get())
+        # set_registry_value("is_check_runcard", setting_check_runcard_switch.get())
+        # set_registry_value("is_plant_name", plant_name.get())
+        # set_registry_value("is_show_runcard", setting_show_runcard_switch.get())
+        switch_middle_left_frame()
+        set_selected_frame(selected_middle_left_frame.get())
+        # database_test_connection()
+        # manage_machine_buttons(middle_right_runcard_frame_col1, get_registry_value('is_plant_name', ""))
+        # manage_line_buttons()
+        # messagebox.showinfo("Success", "Save setting success!\nApplication will close automatically\nRe-open the app")
+        # root.destroy()
+    except Exception as e:
+        # threading.Thread(target=show_error_message, args=(f"{e}", 0, 3000), daemon=True).start()
+        pass
+
+
+selected_middle_left_frame = tk.StringVar(value=get_selected_frame())
+switch_middle_left_frame()
+
+selected_weight_com = tk.StringVar(value=get_registry_value("COM1", ""))
+selected_thickness_com = tk.StringVar(value=get_registry_value("COM2", ""))
+
+weight_label = tk.Label(middle_right_setting_frame_row2_row1, text="Trọng lượng:   ", font=(font_name, 18), bg='white')
+weight_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+weight_menu = CustomOptionMenu(middle_right_setting_frame_row2_row1, selected_weight_com, "")
+weight_menu.grid(row=0, column=1, padx=5, pady=5, sticky="w")
+
+thickness_label = tk.Label(middle_right_setting_frame_row2_row1, text="Độ dày:", font=(font_name, 18), bg='white')
+thickness_label.grid(row=1, column=0, padx=5, pady=5, sticky="w")
+thickness_menu = CustomOptionMenu(middle_right_setting_frame_row2_row1, selected_thickness_com, "")
+thickness_menu.grid(row=1, column=1, padx=5, pady=5, sticky="w")
+
+frame_select_label = tk.Label(middle_right_setting_frame_row2_row1, text="Mặc định:", font=(font_name, 18), bg='white')
+frame_select_label.grid(row=2, column=0, padx=5, pady=5, sticky="w")
+frame_select_menu = CustomOptionMenu(middle_right_setting_frame_row2_row1, selected_middle_left_frame, "Trọng lượng", "Độ dày",command=switch_middle_left_frame)
+frame_select_menu.grid(row=2, column=1, padx=5, pady=5, sticky="w")
+
+
+advance_weight_label = tk.Label(middle_right_advance_setting_frame_row2_col1_row2, text="Trọng lượng:   ", font=(font_name, 18), bg='white')
+advance_weight_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+advance_weight_menu = CustomOptionMenu(middle_right_advance_setting_frame_row2_col1_row2, selected_weight_com, "")
+advance_weight_menu.grid(row=0, column=1, padx=5, pady=5, sticky="w")
+
+advance_thickness_label = tk.Label(middle_right_advance_setting_frame_row2_col1_row2, text="Độ dày:", font=(font_name, 18), bg='white')
+advance_thickness_label.grid(row=1, column=0, padx=5, pady=5, sticky="w")
+advance_thickness_menu = CustomOptionMenu(middle_right_advance_setting_frame_row2_col1_row2, selected_thickness_com, "")
+advance_thickness_menu.grid(row=1, column=1, padx=5, pady=5, sticky="w")
+
+advance_frame_select_label = tk.Label(middle_right_advance_setting_frame_row2_col1_row2, text="Mặc định:", font=(font_name, 18), bg='white')
+advance_frame_select_label.grid(row=2, column=0, padx=5, pady=5, sticky="w")
+advance_frame_select_menu = CustomOptionMenu(middle_right_advance_setting_frame_row2_col1_row2, selected_middle_left_frame, "Trọng lượng", "Độ dày",command=switch_middle_left_frame)
+advance_frame_select_menu.grid(row=2, column=1, padx=5, pady=5, sticky="w")
+
+update_com_ports(weight_menu, thickness_menu)
+update_com_ports(advance_weight_menu, advance_thickness_menu)
+
+
+
+server_ip_label = tk.Label(middle_right_advance_setting_frame_row2_col1_row5_col1_row1, text="Server IP:       ", font=(font_name, 18), bg='white')
+server_ip_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+server_ip = tk.StringVar(value=get_registry_value("ServerIP", ""))
+server_ip_entry = tk.Entry(middle_right_advance_setting_frame_row2_col1_row5_col2_row1, textvariable=server_ip, font=(font_name, 16), width=12, bg='white')
+server_ip_entry.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+
+
+db_name_label = tk.Label(middle_right_advance_setting_frame_row2_col1_row5_col1_row2, text="Database:", font=(font_name, 18), bg='white')
+db_name_label.grid(row=1, column=0, padx=5, pady=5, sticky="w")
+db_name = tk.StringVar(value=get_registry_value("Database", "PMG_DEVICE"))
+db_name_entry = tk.Entry(middle_right_advance_setting_frame_row2_col1_row5_col2_row2, textvariable=db_name, font=(font_name, 16), width=12, bg='white', fg='red', readonlybackground='white', state='readonly')
+db_name_entry.grid(row=1, column=0, padx=5, pady=5, sticky="w")
+
+
+user_id_label = tk.Label(middle_right_advance_setting_frame_row2_col1_row5_col1_row3, text="User ID:", font=(font_name, 18), bg='white')
+user_id_label.grid(row=2, column=0, padx=5, pady=5, sticky="w")
+user_id = tk.StringVar(value=get_registry_value("UserID", "scadauser"))
+user_id_entry = tk.Entry(middle_right_advance_setting_frame_row2_col1_row5_col2_row3, textvariable=user_id, font=(font_name, 16), width=12, bg='white', fg='red', readonlybackground='white', state='readonly')
+user_id_entry.grid(row=2, column=0, padx=5, pady=5, sticky="w")
+
+
+
+
+password_label = tk.Label(middle_right_advance_setting_frame_row2_col1_row5_col1_row4, text="Password:", font=(font_name, 18), bg='white')
+password_label.grid(row=3, column=0, padx=5, pady=5, sticky="w")
+password = tk.StringVar(value=get_registry_value("Password", "pmgscada+123"))
+password_entry = tk.Entry(middle_right_advance_setting_frame_row2_col1_row5_col2_row4, textvariable=password, font=(font_name, 16), width=12, show='*', bg='white', fg='red', readonlybackground='white', state='readonly')
+password_entry.grid(row=3, column=0, padx=5, pady=5, sticky="w")
+
+
+plant_name_label = tk.Label(middle_right_advance_setting_frame_row2_col1_row8_col1_row1, text="Plant name:    ", font=(font_name, 18), bg='white')
+plant_name_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+plant_name = tk.StringVar(value=get_registry_value("is_plant_name", ""))
+plant_name_entry = tk.Entry(middle_right_advance_setting_frame_row2_col1_row8_col2_row1, textvariable=plant_name, font=(font_name, 16), width=12, bg='white')
+plant_name_entry.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+
+
+
+
 
 
 
@@ -470,6 +720,17 @@ close_advance_setting_frame_button = tk.Button(middle_right_advance_setting_fram
 close_advance_setting_frame_button.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
 close_advance_setting_frame_button.bind("<Enter>", on_enter_close_advance_setting_frame_button)
 close_advance_setting_frame_button.bind("<Leave>", on_leave_close_advance_setting_frame_button)
+
+save_icon = ImageTk.PhotoImage(Image.open(os.path.join(base_path, "theme", "icons", "save.png")).resize((134, 34)))
+save_icon_hover = ImageTk.PhotoImage(Image.open(os.path.join(base_path, "theme", "icons", "save_hover.png")).resize((134, 34)))
+def on_enter_save_setting_frame_button(event):
+    save_setting_frame_button.config(image=save_icon_hover)
+def on_leave_save_setting_frame_button(event):
+    save_setting_frame_button.config(image=save_icon)
+save_setting_frame_button = tk.Button(middle_right_setting_frame_row3_col1, image=save_icon, command=save_setting_frame, bg=bg_app_color, width=134, height=34, relief="flat", borderwidth=0)
+save_setting_frame_button.grid(row=0, column=1, padx=5, pady=5, sticky="e")
+save_setting_frame_button.bind("<Enter>", on_enter_save_setting_frame_button)
+save_setting_frame_button.bind("<Leave>", on_leave_save_setting_frame_button)
 
 
 def on_enter_bottom_exit_button(event):
