@@ -208,9 +208,10 @@ def update_dimensions():
         middle_right_advance_setting_frame_row2_col1_row3.place(x=0, y=180, width=332, height=20)
         middle_right_advance_setting_frame_row2_col1_row4.place(x=0, y=200, width=332, height=10)
         middle_right_advance_setting_frame_row2_col1_row5.place(x=0, y=210, width=332, height=180)
+        #Add one frame here for "test connection" button
         middle_right_advance_setting_frame_row2_col1_row6.place(x=0, y=390, width=332, height=20)
         middle_right_advance_setting_frame_row2_col1_row7.place(x=0, y=410, width=332, height=10)
-        middle_right_advance_setting_frame_row2_col1_row8.place(x=0, y=420, width=332, height=50)
+        middle_right_advance_setting_frame_row2_col1_row8.place(x=0, y=420, width=332, height=40)
 
         middle_right_advance_setting_frame_row2_col1_row5_col1.place(x=0, y=0, width=170, height=180)
         middle_right_advance_setting_frame_row2_col1_row5_col2.place(x=170, y=0, width=162, height=180)
