@@ -83,6 +83,8 @@ error_fg_color = "red"
 error_thread = None
 error_event = threading.Event()
 
+weight_record_id = 0
+
 class CustomOptionMenu(tk.OptionMenu):
     def __init__(self, master, variable, *options, command=None, **kwargs):
         if options is None:
@@ -307,8 +309,8 @@ def update_dimensions():
 
 
         if hasattr(weight_frame_write_insert_value, "tree"):
-            treeview_width = middle_left_weight_frame_left_2_canvas.winfo_width()
-            treeview_height = middle_left_weight_frame_left_2_canvas.winfo_height()
+            treeview_width = middle_left_col1_width
+            treeview_height = middle_frame_height - 80
             weight_frame_write_insert_value.tree.config(height=int(treeview_height / 20))
             weight_frame_write_insert_value.tree.pack(fill="both", expand=True)
             for index, col in enumerate(weight_frame_write_insert_value.tree["columns"]):
@@ -726,7 +728,7 @@ def weight_frame_write_insert_value(device_id, operator_id, runcard_id, weight_v
         weight_record_id += 1
         root.update_idletasks()
         root.update()
-        frame_width = int(middle_left_weight_frame_left_2_canvas.winfo_width())
+        frame_width = int(500)
         if not hasattr(weight_frame_write_insert_value, "tree"):
             columns = ("ID", "Device ID", "Operator ID", "Runcard ID", "Weight", "Timestamp")
             style = ttk.Style()
@@ -1103,33 +1105,33 @@ switch_middle_left_frame()
 selected_weight_com = tk.StringVar(value=get_registry_value("COM1", ""))
 selected_thickness_com = tk.StringVar(value=get_registry_value("COM2", ""))
 
-weight_label = tk.Label(middle_right_setting_frame_row2_row1, text="Trọng lượng:   ", font=(font_name, 18), bg=bg_param_color)
+weight_label = tk.Label(middle_right_setting_frame_row2_row1, text="Trọng lượng:   ", font=(font_name, 14, "bold"), bg=bg_param_color)
 weight_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 weight_menu = CustomOptionMenu(middle_right_setting_frame_row2_row1, selected_weight_com, "")
 weight_menu.grid(row=0, column=1, padx=5, pady=5, sticky="w")
 
-thickness_label = tk.Label(middle_right_setting_frame_row2_row1, text="Độ dày:", font=(font_name, 18), bg=bg_param_color)
+thickness_label = tk.Label(middle_right_setting_frame_row2_row1, text="Độ dày:", font=(font_name, 14, "bold"), bg=bg_param_color)
 thickness_label.grid(row=1, column=0, padx=5, pady=5, sticky="w")
 thickness_menu = CustomOptionMenu(middle_right_setting_frame_row2_row1, selected_thickness_com, "")
 thickness_menu.grid(row=1, column=1, padx=5, pady=5, sticky="w")
 
-frame_select_label = tk.Label(middle_right_setting_frame_row2_row1, text="Mặc định:", font=(font_name, 18), bg=bg_param_color)
+frame_select_label = tk.Label(middle_right_setting_frame_row2_row1, text="Mặc định:", font=(font_name, 14, "bold"), bg=bg_param_color)
 frame_select_label.grid(row=2, column=0, padx=5, pady=5, sticky="w")
 frame_select_menu = CustomOptionMenu(middle_right_setting_frame_row2_row1, selected_middle_left_frame, "Trọng lượng", "Độ dày",command=switch_middle_left_frame)
 frame_select_menu.grid(row=2, column=1, padx=5, pady=5, sticky="w")
 
 
-advance_weight_label = tk.Label(middle_right_advance_setting_frame_row2_col1_row2, text="Trọng lượng:   ", font=(font_name, 18), bg='white')
+advance_weight_label = tk.Label(middle_right_advance_setting_frame_row2_col1_row2, text="Trọng lượng: ", font=(font_name, 14, "bold"), bg='white')
 advance_weight_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 advance_weight_menu = CustomOptionMenu(middle_right_advance_setting_frame_row2_col1_row2, selected_weight_com, "")
 advance_weight_menu.grid(row=0, column=1, padx=5, pady=5, sticky="w")
 
-advance_thickness_label = tk.Label(middle_right_advance_setting_frame_row2_col1_row2, text="Độ dày:", font=(font_name, 18), bg='white')
+advance_thickness_label = tk.Label(middle_right_advance_setting_frame_row2_col1_row2, text="Độ dày:", font=(font_name, 14, "bold"), bg='white')
 advance_thickness_label.grid(row=1, column=0, padx=5, pady=5, sticky="w")
 advance_thickness_menu = CustomOptionMenu(middle_right_advance_setting_frame_row2_col1_row2, selected_thickness_com, "")
 advance_thickness_menu.grid(row=1, column=1, padx=5, pady=5, sticky="w")
 
-advance_frame_select_label = tk.Label(middle_right_advance_setting_frame_row2_col1_row2, text="Mặc định:", font=(font_name, 18), bg='white')
+advance_frame_select_label = tk.Label(middle_right_advance_setting_frame_row2_col1_row2, text="Mặc định:", font=(font_name, 14, "bold"), bg='white')
 advance_frame_select_label.grid(row=2, column=0, padx=5, pady=5, sticky="w")
 advance_frame_select_menu = CustomOptionMenu(middle_right_advance_setting_frame_row2_col1_row2, selected_middle_left_frame, "Trọng lượng", "Độ dày",command=switch_middle_left_frame)
 advance_frame_select_menu.grid(row=2, column=1, padx=5, pady=5, sticky="w")
@@ -1139,21 +1141,21 @@ update_com_ports(advance_weight_menu, advance_thickness_menu)
 
 
 
-server_ip_label = tk.Label(middle_right_advance_setting_frame_row2_col1_row5_col1_row1, text="Server IP:       ", font=(font_name, 18), bg='white')
+server_ip_label = tk.Label(middle_right_advance_setting_frame_row2_col1_row5_col1_row1, text="Server IP:", font=(font_name, 14, "bold"), bg='white')
 server_ip_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 server_ip = tk.StringVar(value=get_registry_value("ServerIP", ""))
 server_ip_entry = tk.Entry(middle_right_advance_setting_frame_row2_col1_row5_col2_row1, textvariable=server_ip, font=(font_name, 16), width=12, bg='white')
 server_ip_entry.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 
 
-db_name_label = tk.Label(middle_right_advance_setting_frame_row2_col1_row5_col1_row2, text="Database:", font=(font_name, 18), bg='white')
+db_name_label = tk.Label(middle_right_advance_setting_frame_row2_col1_row5_col1_row2, text="Database:", font=(font_name, 14, "bold"), bg='white')
 db_name_label.grid(row=1, column=0, padx=5, pady=5, sticky="w")
 db_name = tk.StringVar(value=get_registry_value("Database", "PMG_DEVICE"))
 db_name_entry = tk.Entry(middle_right_advance_setting_frame_row2_col1_row5_col2_row2, textvariable=db_name, font=(font_name, 16), width=12, bg='white', fg='red', readonlybackground='white', state='readonly')
 db_name_entry.grid(row=1, column=0, padx=5, pady=5, sticky="w")
 
 
-user_id_label = tk.Label(middle_right_advance_setting_frame_row2_col1_row5_col1_row3, text="User ID:", font=(font_name, 18), bg='white')
+user_id_label = tk.Label(middle_right_advance_setting_frame_row2_col1_row5_col1_row3, text="User ID:", font=(font_name, 14, "bold"), bg='white')
 user_id_label.grid(row=2, column=0, padx=5, pady=5, sticky="w")
 user_id = tk.StringVar(value=get_registry_value("UserID", "scadauser"))
 user_id_entry = tk.Entry(middle_right_advance_setting_frame_row2_col1_row5_col2_row3, textvariable=user_id, font=(font_name, 16), width=12, bg='white', fg='red', readonlybackground='white', state='readonly')
@@ -1161,14 +1163,14 @@ user_id_entry.grid(row=2, column=0, padx=5, pady=5, sticky="w")
 
 
 
-password_label = tk.Label(middle_right_advance_setting_frame_row2_col1_row5_col1_row4, text="Password:", font=(font_name, 18), bg='white')
+password_label = tk.Label(middle_right_advance_setting_frame_row2_col1_row5_col1_row4, text="Password:", font=(font_name, 14, "bold"), bg='white')
 password_label.grid(row=3, column=0, padx=5, pady=5, sticky="w")
 password = tk.StringVar(value=get_registry_value("Password", "pmgscada+123"))
 password_entry = tk.Entry(middle_right_advance_setting_frame_row2_col1_row5_col2_row4, textvariable=password, font=(font_name, 16), width=12, show='*', bg='white', fg='red', readonlybackground='white', state='readonly')
 password_entry.grid(row=3, column=0, padx=5, pady=5, sticky="w")
 
 
-plant_name_label = tk.Label(middle_right_advance_setting_frame_row2_col1_row9_col1_row1, text="Plant name:    ", font=(font_name, 18), bg='white')
+plant_name_label = tk.Label(middle_right_advance_setting_frame_row2_col1_row9_col1_row1, text="Plant name:", font=(font_name, 14, "bold"), bg='white')
 plant_name_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 plant_name = tk.StringVar(value=get_registry_value("is_plant_name", ""))
 plant_name.trace_add("write", lambda *args: convert_to_uppercase(plant_name, 3, 1))
@@ -1176,26 +1178,26 @@ plant_name_entry = tk.Entry(middle_right_advance_setting_frame_row2_col1_row9_co
 plant_name_entry.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 
 
-runcard_setting_label = tk.Label(middle_right_advance_setting_frame_row2_col1_row12, text="Runcard", font=(font_name, 14, "bold"), bg=bg_param_color)
+runcard_setting_label = tk.Label(middle_right_advance_setting_frame_row2_col1_row12, text="Runcard", font=(font_name, 14, "bold"), bg=bg_app_color)
 runcard_setting_label.grid(row=0, column=0, padx=0, pady=0)
 
 
 
-is_show_runcard_label = tk.Label(middle_right_advance_setting_frame_row2_col1_row14_col1_row1, text="Show Runcard:", font=(font_name, 18), bg=bg_param_color)
+is_show_runcard_label = tk.Label(middle_right_advance_setting_frame_row2_col1_row14_col1_row1, text="Runcard show:", font=(font_name, 12, "bold"), bg=bg_param_color)
 is_show_runcard_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 is_show_runcard_switch = tk.StringVar(value=get_registry_value("is_show_runcard", "0"))
 is_show_runcard_switch_button = ttk.Checkbutton(middle_right_advance_setting_frame_row2_col1_row14_col2_row1, variable=is_show_runcard_switch, onvalue='1', offvalue='0', style="Switch")
 is_show_runcard_switch_button.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 
 
-is_check_runcard_label = tk.Label(middle_right_advance_setting_frame_row2_col1_row14_col1_row2, text="Check Runcard:", font=(font_name, 18), bg=bg_param_color)
+is_check_runcard_label = tk.Label(middle_right_advance_setting_frame_row2_col1_row14_col1_row2, text="Runcard check:", font=(font_name, 12, "bold"), bg=bg_param_color)
 is_check_runcard_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 is_check_runcard_switch = tk.StringVar(value=get_registry_value("is_check_runcard_switch", "0"))
 is_check_runcard_switch_button = ttk.Checkbutton(middle_right_advance_setting_frame_row2_col1_row14_col2_row2, variable=is_check_runcard_switch, onvalue='1', offvalue='0', style="Switch")
 is_check_runcard_switch_button.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 
 
-is_input_runcard_label = tk.Label(middle_right_advance_setting_frame_row2_col1_row14_col1_row3, text="Input Runcard:", font=(font_name, 18), bg=bg_param_color)
+is_input_runcard_label = tk.Label(middle_right_advance_setting_frame_row2_col1_row14_col1_row3, text="Runcard input:", font=(font_name, 12, "bold"), bg=bg_param_color)
 is_input_runcard_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 is_input_runcard_switch = tk.StringVar(value=get_registry_value("is_input_runcard_switch", "0"))
 is_input_runcard_switch_button = ttk.Checkbutton(middle_right_advance_setting_frame_row2_col1_row14_col2_row3, variable=is_input_runcard_switch, onvalue='1', offvalue='0', style="Switch")
@@ -1206,21 +1208,21 @@ is_input_runcard_switch_button.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 weight_setting_label = tk.Label(middle_right_advance_setting_frame_row2_col3_row1, text="Trọng lượng", font=(font_name, 14, "bold"), bg=bg_app_color)
 weight_setting_label.grid(row=0, column=0, padx=0, pady=0)
 
-is_weight_keyboard_label = tk.Label(middle_right_advance_setting_frame_row2_col3_row3_11, text="Keyboard:", font=(font_name, 14), bg=bg_param_color)
+is_weight_keyboard_label = tk.Label(middle_right_advance_setting_frame_row2_col3_row3_11, text="Keyboard:", font=(font_name, 12, "bold"), bg=bg_param_color)
 is_weight_keyboard_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 is_weight_keyboard = tk.StringVar(value=get_registry_value("is_weight_keyboard", "0"))
 is_weight_keyboard_button = ttk.Checkbutton(middle_right_advance_setting_frame_row2_col3_row3_12, variable=is_weight_keyboard, onvalue='1', offvalue='0', style="Switch")
 is_weight_keyboard_button.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 
-is_weight_timeout_label = tk.Label(middle_right_advance_setting_frame_row2_col3_row3_21, text="Timeout:", font=(font_name, 14), bg=bg_param_color)
+is_weight_timeout_label = tk.Label(middle_right_advance_setting_frame_row2_col3_row3_21, text="Timeout:", font=(font_name, 12, "bold"), bg=bg_param_color)
 is_weight_timeout_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 is_weight_timeout = tk.StringVar(value=get_registry_value("is_weight_timeout", "0.3"))
-is_weight_timeout_entry = tk.Entry(middle_right_advance_setting_frame_row2_col3_row3_22, textvariable=is_weight_timeout, font=(font_name, 16), width=6, bg='white', fg='black')
+is_weight_timeout_entry = tk.Entry(middle_right_advance_setting_frame_row2_col3_row3_22, textvariable=is_weight_timeout, font=(font_name, 14), width=6, bg='white', fg='black')
 is_weight_timeout_entry.grid(row=1, column=0, padx=5, pady=5, sticky="w")
 
-is_weight_delay_label = tk.Label(middle_right_advance_setting_frame_row2_col3_row3_31, text="Delay:", font=(font_name, 14), bg=bg_param_color)
+is_weight_delay_label = tk.Label(middle_right_advance_setting_frame_row2_col3_row3_31, text="Delay:", font=(font_name, 12, "bold"), bg=bg_param_color)
 is_weight_delay_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
-is_weight_delay = tk.StringVar(value=get_registry_value("is_weight_delay", "0"))
+is_weight_delay = tk.StringVar(value=get_registry_value("is_weight_delay", "0.0"))
 is_weight_delay_entry = tk.Entry(middle_right_advance_setting_frame_row2_col3_row3_32, textvariable=is_weight_delay, font=(font_name, 14), width=6, bg='white', fg='black')
 is_weight_delay_entry.grid(row=1, column=0, padx=5, pady=5, sticky="w")
 
@@ -1228,19 +1230,19 @@ thickness_setting_label = tk.Label(middle_right_advance_setting_frame_row2_col3_
 thickness_setting_label.grid(row=0, column=0, padx=0, pady=0)
 
 
-is_thickness_keyboard_label = tk.Label(middle_right_advance_setting_frame_row2_col3_row7_11, text="Keyboard:", font=(font_name, 14), bg=bg_param_color)
+is_thickness_keyboard_label = tk.Label(middle_right_advance_setting_frame_row2_col3_row7_11, text="Keyboard:", font=(font_name, 12, "bold"), bg=bg_param_color)
 is_thickness_keyboard_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 is_thickness_keyboard = tk.StringVar(value=get_registry_value("is_thickness_keyboard", "0"))
 is_thickness_keyboard_button = ttk.Checkbutton(middle_right_advance_setting_frame_row2_col3_row7_12, variable=is_thickness_keyboard, onvalue='1', offvalue='0', style="Switch")
 is_thickness_keyboard_button.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 
-is_thickness_timeout_label = tk.Label(middle_right_advance_setting_frame_row2_col3_row7_21, text="Timeout:", font=(font_name, 14), bg=bg_param_color)
+is_thickness_timeout_label = tk.Label(middle_right_advance_setting_frame_row2_col3_row7_21, text="Timeout:", font=(font_name, 12, "bold"), bg=bg_param_color)
 is_thickness_timeout_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 is_thickness_timeout = tk.StringVar(value=get_registry_value("is_thickness_timeout", "0.3"))
-is_thickness_timeout_entry = tk.Entry(middle_right_advance_setting_frame_row2_col3_row7_22, textvariable=is_thickness_timeout, font=(font_name, 16), width=6, bg='white', fg='black')
+is_thickness_timeout_entry = tk.Entry(middle_right_advance_setting_frame_row2_col3_row7_22, textvariable=is_thickness_timeout, font=(font_name, 14), width=6, bg='white', fg='black')
 is_thickness_timeout_entry.grid(row=1, column=0, padx=5, pady=5, sticky="w")
 
-is_thickness_delay_label = tk.Label(middle_right_advance_setting_frame_row2_col3_row7_31, text="Delay:", font=(font_name, 14), bg=bg_param_color)
+is_thickness_delay_label = tk.Label(middle_right_advance_setting_frame_row2_col3_row7_31, text="Delay:", font=(font_name, 12, "bold"), bg=bg_param_color)
 is_thickness_delay_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 is_thickness_delay = tk.StringVar(value=get_registry_value("is_thickness_delay", "0"))
 is_thickness_delay_entry = tk.Entry(middle_right_advance_setting_frame_row2_col3_row7_32, textvariable=is_thickness_delay, font=(font_name, 14), width=6, bg='white', fg='black')
