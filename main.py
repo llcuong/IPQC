@@ -958,6 +958,20 @@ entry_thickness_dau_ngon_tay_entry.bind('<Return>', thickness_frame_hit_enter_bu
 middle_left_thickness_frame_col1_frame_row1.columnconfigure(5, weight=1)
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 """Settings"""
 def update_com_ports(*menus):
     try:
@@ -1010,9 +1024,8 @@ def switch_middle_left_frame(*args):
             middle_left_thickness_frame.lift()
         if "COM" in str(get_registry_value("selected_weight_com", "")):
             if weight_com_thread is None or not weight_com_thread.is_alive():
-                pass
-                # weight_com_thread = threading.Thread(target=weight_frame_com_port_insert_data, daemon=True)
-                # weight_com_thread.start()
+                weight_com_thread = threading.Thread(target=weight_frame_com_port_insert_data, daemon=True)
+                weight_com_thread.start()
         if "COM" in str(get_registry_value("selected_thickness_com", "")):
             if thickness_com_thread is None or not thickness_com_thread.is_alive():
                 pass
