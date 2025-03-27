@@ -84,6 +84,7 @@ error_thread = None
 error_event = threading.Event()
 
 weight_record_id = 0
+thickness_record_id = 0
 
 class CustomOptionMenu(tk.OptionMenu):
     def __init__(self, master, variable, *options, command=None, **kwargs):
