@@ -677,7 +677,7 @@ middle_left_weight_frame_col1_frame_row1.columnconfigure(2, weight=1)
 
 entry_weight_weight_value_var = tk.StringVar()
 entry_weight_weight_value_var.trace_add("write", lambda *args: convert_to_uppercase(entry_weight_weight_value_var, 10, 0))
-entry_weight_weight_value_label = tk.Label(middle_left_weight_frame_col1_frame_row1, text="Trọng lượng", bg="#f4f4fe", bd=0, font=(font_name, 16, "bold"))
+entry_weight_weight_value_label = tk.Label(middle_left_weight_frame_col1_frame_row1, text="Trọng lượng", bg="#f4f4fe", bd=0, font=("Helvetica", 16, "bold"))
 entry_weight_weight_value_label.grid(row=0, column=3, padx=5, pady=0, sticky='ew')
 entry_weight_weight_value_entry = tk.Entry(middle_left_weight_frame_col1_frame_row1, font=(font_name, 18), bd=2, textvariable=entry_weight_weight_value_var)
 entry_weight_weight_value_entry.name_var = "entry_weight_weight_value_entry"
