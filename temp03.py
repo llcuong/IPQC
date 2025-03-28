@@ -26,7 +26,7 @@ REG_PATH = r"SOFTWARE\IPQC\Config"
 
 user32 = ctypes.windll.user32
 monitor_width, monitor_height = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
-print(f"Screen Resolution: {monitor_width}x{monitor_height}")
+# print(f"Screen Resolution: {monitor_width}x{monitor_height}")
 
 """Main window setup"""
 root = tk.Tk()
@@ -37,10 +37,10 @@ user32 = ctypes.windll.user32
 user32.SetProcessDPIAware()
 dpi = user32.GetDpiForSystem()
 scaling = dpi / 96
-print(f"scaling ==> {scaling}")
+# print(f"scaling ==> {scaling}")
 screen_width = min(1600, int(0.9*root.winfo_screenwidth()*scaling))
 screen_height = min(900, int(0.9*root.winfo_screenheight()*scaling))
-print(f"Window size: {screen_width}x{screen_height}")
+# print(f"Window size: {screen_width}x{screen_height}")
 
 root.iconbitmap("theme/icons/logo.ico")
 root.minsize(screen_width, screen_height)
@@ -58,14 +58,10 @@ font_name = 'Arial'
 font_size_base_on_ratio = int(screen_height * 0.015)
 button_width_base_on_ratio = int(screen_width * 0.012)
 
-bg_app_color = "#f4f4fe"   #00B9FF    => #333333
-bg_param_color = "white"   #          => #414141
+bg_app_class_color_layer_1 = "#f4f4fe"   #00B9FF    => #333333
+bg_app_class_color_layer_2 = "#ffffff"   #          => #414141
+fg_app_class_color_layer_1 = '#000000'
 
-bg_app_color_layer1 = '#f4f4fe'
-bg_app_color_layer2 = '#fefefe'
-
-fg_app_color_layer1 = 'black'
-gb_app_color_layer2 = '#333333'
 
 showing_settings = False
 showing_runcards = False
@@ -185,11 +181,11 @@ def update_dimensions():
         middle_left_thickness_frame_col1_frame_row1.place(x=0, y=0, width=middle_left_col1_width, height=80)
         middle_left_thickness_frame_col1_frame_row2.place(x=0, y=80, width=middle_left_col1_width, height=middle_frame_height - 80)
 
-        middle_left_weight_frame_left_2_canvas.place(x=0, y=0, width=middle_left_col1_width, height=middle_frame_height - 80)
-        middle_left_weight_frame_left_2_scrollbar.place(x=middle_left_col1_width - 20, y=0, width=20, height=middle_frame_height - 80)
-        middle_left_weight_frame_left_2_scrollable_frame.place(x=0, y=0, width=middle_left_col1_width - 20, height=middle_frame_height - 80)
-
-
+        # middle_left_weight_frame_left_2_canvas.place(x=0, y=0, width=middle_left_col1_width, height=middle_frame_height - 80)
+        # middle_left_weight_frame_left_2_scrollbar.place(x=middle_left_col1_width - 20, y=0, width=20, height=middle_frame_height - 80)
+        # middle_left_weight_frame_left_2_scrollable_frame.place(x=0, y=0, width=middle_left_col1_width - 20, height=middle_frame_height - 80)
+        #
+        #
 
 
 
@@ -308,28 +304,25 @@ def update_dimensions():
         root.update_idletasks()
         root.update()
 
-def clear_error_message():
-    error_msg.set("")
-    error_display_entry.config(fg="red")
+
 def show_error_message(msg, fg_color_code, time_show):
     global error_thread, error_event
     if error_thread and error_thread.is_alive():
         error_event.set()
         error_thread.join()
     error_event = threading.Event()
+    def clear_error_message():
+        error_msg.set("")
+        error_display_entry.config(fg=bg_app_class_color_layer_1)
     def update_message():
         if fg_color_code == 1:
-            fg_color = "green"
-            fg_icon = "✔"
+            fg_color, fg_icon = "green", "✔"
         elif fg_color_code == 0:
-            fg_color = "red"
-            fg_icon = "❌"
+            fg_color, fg_icon = "red", "❌"
         elif fg_color_code == -1:
-            fg_color = "#595959"
-            fg_icon = "↻"
+            fg_color, fg_icon = "#595959", "↻"
         else:
-            fg_color = "#7F7F7F"
-            fg_icon = "ⓘ"
+            fg_color, fg_icon = "#7F7F7F", "ⓘ"
         error_msg.set(f"{fg_icon} {msg}")
         root.after(0, lambda: error_display_entry.config(fg=fg_color))
         if not error_event.wait(time_show / 1000):
@@ -354,193 +347,6 @@ def convert_to_uppercase(entry_name, max_char, accept_char):
     except Exception as e:
         threading.Thread(target=show_error_message, args=(f"{e}", 0, 3000), daemon=True).start()
         pass
-
-"""Frame"""
-top_frame = tk.Frame(root, bg=bg_app_color)
-top_frame.place(relx=0, rely=0, height=50, anchor="nw")
-
-top_left_frame = tk.Frame(top_frame, bg=bg_app_color)
-top_right_frame = tk.Frame(top_frame, height=50, bg=bg_app_color)
-top_right_frame.grid_columnconfigure(0, weight=1)
-
-
-
-
-
-middle_frame = tk.Frame(root, bg=bg_app_color)
-middle_frame.place(relx=0, rely=0, anchor="nw")
-
-middle_left_frame = tk.Frame(middle_frame, bg=bg_app_color)
-middle_left_frame.place(x=0, y=0)
-
-
-
-middle_left_weight_frame = tk.Frame(middle_left_frame, bg=bg_app_color)
-middle_left_thickness_frame = tk.Frame(middle_left_frame, bg=bg_app_color)
-middle_left_weight_frame.pack(fill=tk.BOTH, expand=True)
-
-
-middle_left_weight_frame_col1_frame = tk.Frame(middle_left_weight_frame, bg=bg_param_color)
-middle_left_weight_frame_col2_frame = tk.Frame(middle_left_weight_frame, bg=bg_app_color)
-middle_left_weight_frame_col3_frame = tk.Frame(middle_left_weight_frame, bg=bg_param_color)
-
-middle_left_thickness_frame_col1_frame = tk.Frame(middle_left_thickness_frame, bg='green')
-middle_left_thickness_frame_col2_frame = tk.Frame(middle_left_thickness_frame, bg=bg_app_color)
-middle_left_thickness_frame_col3_frame = tk.Frame(middle_left_thickness_frame, bg=bg_param_color)
-
-
-
-middle_left_weight_frame_col1_frame_row1 = tk.Frame(middle_left_weight_frame_col1_frame, bg=bg_app_color)
-middle_left_weight_frame_col1_frame_row2 = tk.Frame(middle_left_weight_frame_col1_frame, bg=bg_app_color)
-
-
-
-middle_left_thickness_frame_col1_frame_row1 = tk.Frame(middle_left_thickness_frame_col1_frame, bg=bg_app_color)
-middle_left_thickness_frame_col1_frame_row2 = tk.Frame(middle_left_thickness_frame_col1_frame, bg=bg_app_color)
-
-
-
-
-
-
-middle_center_frame = tk.Frame(middle_frame, bg=bg_app_color)
-middle_center_frame.place(x=0, y=0)
-
-middle_right_frame = tk.Frame(middle_frame, bg=bg_app_color)
-middle_right_frame.place(x=0, y=0)
-
-
-
-middle_right_runcard_frame = tk.Frame(middle_right_frame, bg=bg_app_color)
-middle_right_runcard_frame.place(x=0, y=0)
-
-middle_right_setting_frame = tk.Frame(middle_right_frame, bg=bg_app_color)
-middle_right_setting_frame.place(x=0, y=0)
-
-middle_right_advance_setting_frame = tk.Frame(middle_right_frame, bg=bg_app_color)
-middle_right_advance_setting_frame.place(x=0, y=0)
-
-middle_right_setting_frame_row1 = tk.Frame(middle_right_setting_frame, bg=bg_app_color)
-middle_right_setting_frame_row2 = tk.Frame(middle_right_setting_frame, bg=bg_param_color)
-middle_right_setting_frame_row3 = tk.Frame(middle_right_setting_frame, bg=bg_app_color)
-
-middle_right_advance_setting_frame_row1 = tk.Frame(middle_right_advance_setting_frame, bg=bg_app_color)
-middle_right_advance_setting_frame_row2 = tk.Frame(middle_right_advance_setting_frame, bg=bg_app_color)
-middle_right_advance_setting_frame_row3 = tk.Frame(middle_right_advance_setting_frame, bg=bg_app_color)
-
-middle_right_setting_frame_row1_col1 = tk.Frame(middle_right_setting_frame_row1, bg=bg_app_color)
-middle_right_setting_frame_row1_col2 = tk.Frame(middle_right_setting_frame_row1, bg=bg_app_color)
-middle_right_setting_frame_row1_col2.grid_columnconfigure(0, weight=1)
-
-middle_right_setting_frame_row3_col1 = tk.Frame(middle_right_setting_frame_row3, bg=bg_app_color)
-middle_right_setting_frame_row3_col2 = tk.Frame(middle_right_setting_frame_row3, bg=bg_app_color)
-
-middle_right_advance_setting_frame_row1_col1 = tk.Frame(middle_right_advance_setting_frame_row1, bg=bg_app_color)
-middle_right_advance_setting_frame_row1_col2 = tk.Frame(middle_right_advance_setting_frame_row1, bg=bg_app_color)
-middle_right_advance_setting_frame_row1_col2.grid_columnconfigure(0, weight=1)
-
-middle_right_advance_setting_frame_row3_col1 = tk.Frame(middle_right_advance_setting_frame_row3, bg=bg_app_color)
-middle_right_advance_setting_frame_row3_col2 = tk.Frame(middle_right_advance_setting_frame_row3, bg=bg_app_color)
-
-bottom_frame = tk.Frame(root, bg=bg_app_color)
-bottom_frame.place(relx=0, rely=1.0, height=50, anchor="sw")
-
-bottom_left_frame = tk.Frame(bottom_frame, bg=bg_app_color)
-bottom_right_frame = tk.Frame(bottom_frame, bg=bg_app_color)
-bottom_right_frame.grid_columnconfigure(0, weight=1)
-
-
-middle_right_setting_frame_row2_row1 = tk.Frame(middle_right_setting_frame_row2, bg=bg_param_color)
-
-middle_right_advance_setting_frame_row2_col1 = tk.Frame(middle_right_advance_setting_frame_row2, bg=bg_app_color)
-middle_right_advance_setting_frame_row2_col2 = tk.Frame(middle_right_advance_setting_frame_row2, bg=bg_app_color)
-middle_right_advance_setting_frame_row2_col3 = tk.Frame(middle_right_advance_setting_frame_row2, bg=bg_app_color)
-
-middle_right_advance_setting_frame_row2_col1_row1 = tk.Frame(middle_right_advance_setting_frame_row2_col1, bg=bg_param_color)
-middle_right_advance_setting_frame_row2_col1_row2 = tk.Frame(middle_right_advance_setting_frame_row2_col1, bg=bg_param_color)
-middle_right_advance_setting_frame_row2_col1_row3 = tk.Frame(middle_right_advance_setting_frame_row2_col1, bg=bg_app_color)
-middle_right_advance_setting_frame_row2_col1_row4 = tk.Frame(middle_right_advance_setting_frame_row2_col1, bg=bg_param_color)
-middle_right_advance_setting_frame_row2_col1_row5 = tk.Frame(middle_right_advance_setting_frame_row2_col1, bg=bg_param_color)
-middle_right_advance_setting_frame_row2_col1_row6 = tk.Frame(middle_right_advance_setting_frame_row2_col1, bg=bg_param_color)
-middle_right_advance_setting_frame_row2_col1_row7 = tk.Frame(middle_right_advance_setting_frame_row2_col1, bg=bg_app_color)
-middle_right_advance_setting_frame_row2_col1_row8 = tk.Frame(middle_right_advance_setting_frame_row2_col1, bg=bg_param_color)
-middle_right_advance_setting_frame_row2_col1_row9 = tk.Frame(middle_right_advance_setting_frame_row2_col1, bg=bg_param_color)
-middle_right_advance_setting_frame_row2_col1_row10 = tk.Frame(middle_right_advance_setting_frame_row2_col1, bg=bg_param_color)
-middle_right_advance_setting_frame_row2_col1_row11 = tk.Frame(middle_right_advance_setting_frame_row2_col1, bg=bg_app_color)
-middle_right_advance_setting_frame_row2_col1_row12 = tk.Frame(middle_right_advance_setting_frame_row2_col1, bg=bg_app_color)
-middle_right_advance_setting_frame_row2_col1_row13 = tk.Frame(middle_right_advance_setting_frame_row2_col1, bg=bg_app_color)
-middle_right_advance_setting_frame_row2_col1_row14 = tk.Frame(middle_right_advance_setting_frame_row2_col1, bg=bg_app_color)
-middle_right_advance_setting_frame_row2_col1_row15 = tk.Frame(middle_right_advance_setting_frame_row2_col1, bg=bg_app_color)
-
-
-
-middle_right_advance_setting_frame_row2_col1_row5_col1 = tk.Frame(middle_right_advance_setting_frame_row2_col1_row5, bg=bg_param_color)
-middle_right_advance_setting_frame_row2_col1_row5_col2 = tk.Frame(middle_right_advance_setting_frame_row2_col1_row5, bg=bg_param_color)
-
-middle_right_advance_setting_frame_row2_col1_row9_col1 = tk.Frame(middle_right_advance_setting_frame_row2_col1_row9, bg=bg_param_color)
-middle_right_advance_setting_frame_row2_col1_row9_col2 = tk.Frame(middle_right_advance_setting_frame_row2_col1_row9, bg=bg_param_color)
-
-middle_right_advance_setting_frame_row2_col1_row5_col1_row1 = tk.Frame(middle_right_advance_setting_frame_row2_col1_row5_col1, bg=bg_param_color)
-middle_right_advance_setting_frame_row2_col1_row5_col1_row2 = tk.Frame(middle_right_advance_setting_frame_row2_col1_row5_col1, bg=bg_param_color)
-middle_right_advance_setting_frame_row2_col1_row5_col1_row3 = tk.Frame(middle_right_advance_setting_frame_row2_col1_row5_col1, bg=bg_param_color)
-middle_right_advance_setting_frame_row2_col1_row5_col1_row4 = tk.Frame(middle_right_advance_setting_frame_row2_col1_row5_col1, bg=bg_param_color)
-
-middle_right_advance_setting_frame_row2_col1_row5_col2_row1 = tk.Frame(middle_right_advance_setting_frame_row2_col1_row5_col2, bg=bg_param_color)
-middle_right_advance_setting_frame_row2_col1_row5_col2_row2 = tk.Frame(middle_right_advance_setting_frame_row2_col1_row5_col2, bg=bg_param_color)
-middle_right_advance_setting_frame_row2_col1_row5_col2_row3 = tk.Frame(middle_right_advance_setting_frame_row2_col1_row5_col2, bg=bg_param_color)
-middle_right_advance_setting_frame_row2_col1_row5_col2_row4 = tk.Frame(middle_right_advance_setting_frame_row2_col1_row5_col2, bg=bg_param_color)
-
-middle_right_advance_setting_frame_row2_col1_row9_col1_row1 = tk.Frame(middle_right_advance_setting_frame_row2_col1_row9_col1, bg=bg_param_color)
-middle_right_advance_setting_frame_row2_col1_row9_col2_row1 = tk.Frame(middle_right_advance_setting_frame_row2_col1_row9_col2, bg=bg_param_color)
-
-
-
-
-
-middle_right_advance_setting_frame_row2_col3_row1 = tk.Frame(middle_right_advance_setting_frame_row2_col3, bg=bg_app_color)
-middle_right_advance_setting_frame_row2_col3_row2 = tk.Frame(middle_right_advance_setting_frame_row2_col3, bg=bg_param_color)
-middle_right_advance_setting_frame_row2_col3_row3 = tk.Frame(middle_right_advance_setting_frame_row2_col3, bg=bg_param_color)
-middle_right_advance_setting_frame_row2_col3_row4 = tk.Frame(middle_right_advance_setting_frame_row2_col3, bg=bg_app_color)
-middle_right_advance_setting_frame_row2_col3_row5 = tk.Frame(middle_right_advance_setting_frame_row2_col3, bg=bg_app_color)
-middle_right_advance_setting_frame_row2_col3_row6 = tk.Frame(middle_right_advance_setting_frame_row2_col3, bg=bg_param_color)
-middle_right_advance_setting_frame_row2_col3_row7 = tk.Frame(middle_right_advance_setting_frame_row2_col3, bg=bg_param_color)
-middle_right_advance_setting_frame_row2_col3_row8 = tk.Frame(middle_right_advance_setting_frame_row2_col3, bg=bg_app_color)
-middle_right_advance_setting_frame_row2_col3_row9 = tk.Frame(middle_right_advance_setting_frame_row2_col3, bg=bg_app_color)
-middle_right_advance_setting_frame_row2_col3_row10 = tk.Frame(middle_right_advance_setting_frame_row2_col3, bg=bg_param_color)
-middle_right_advance_setting_frame_row2_col3_row11 = tk.Frame(middle_right_advance_setting_frame_row2_col3, bg=bg_param_color)
-
-
-middle_right_advance_setting_frame_row2_col3_row3_11 = tk.Frame(middle_right_advance_setting_frame_row2_col3_row3, bg=bg_param_color)
-middle_right_advance_setting_frame_row2_col3_row3_12 = tk.Frame(middle_right_advance_setting_frame_row2_col3_row3, bg=bg_param_color)
-middle_right_advance_setting_frame_row2_col3_row3_21 = tk.Frame(middle_right_advance_setting_frame_row2_col3_row3, bg=bg_param_color)
-middle_right_advance_setting_frame_row2_col3_row3_22 = tk.Frame(middle_right_advance_setting_frame_row2_col3_row3, bg=bg_param_color)
-middle_right_advance_setting_frame_row2_col3_row3_31 = tk.Frame(middle_right_advance_setting_frame_row2_col3_row3, bg=bg_param_color)
-middle_right_advance_setting_frame_row2_col3_row3_32 = tk.Frame(middle_right_advance_setting_frame_row2_col3_row3, bg=bg_param_color)
-
-
-middle_right_advance_setting_frame_row2_col3_row7_11 = tk.Frame(middle_right_advance_setting_frame_row2_col3_row7, bg=bg_param_color)
-middle_right_advance_setting_frame_row2_col3_row7_12 = tk.Frame(middle_right_advance_setting_frame_row2_col3_row7, bg=bg_param_color)
-middle_right_advance_setting_frame_row2_col3_row7_21 = tk.Frame(middle_right_advance_setting_frame_row2_col3_row7, bg=bg_param_color)
-middle_right_advance_setting_frame_row2_col3_row7_22 = tk.Frame(middle_right_advance_setting_frame_row2_col3_row7, bg=bg_param_color)
-middle_right_advance_setting_frame_row2_col3_row7_31 = tk.Frame(middle_right_advance_setting_frame_row2_col3_row7, bg=bg_param_color)
-middle_right_advance_setting_frame_row2_col3_row7_32 = tk.Frame(middle_right_advance_setting_frame_row2_col3_row7, bg=bg_param_color)
-
-
-middle_right_advance_setting_frame_row2_col3_row11_11 = tk.Frame(middle_right_advance_setting_frame_row2_col3_row11, bg=bg_param_color)
-middle_right_advance_setting_frame_row2_col3_row11_12 = tk.Frame(middle_right_advance_setting_frame_row2_col3_row11, bg=bg_param_color)
-
-middle_right_advance_setting_frame_row2_col3_row11_21 = tk.Frame(middle_right_advance_setting_frame_row2_col3_row11, bg=bg_param_color)
-middle_right_advance_setting_frame_row2_col3_row11_22 = tk.Frame(middle_right_advance_setting_frame_row2_col3_row11, bg=bg_param_color)
-
-middle_right_advance_setting_frame_row2_col3_row11_31 = tk.Frame(middle_right_advance_setting_frame_row2_col3_row11, bg=bg_param_color)
-middle_right_advance_setting_frame_row2_col3_row11_32 = tk.Frame(middle_right_advance_setting_frame_row2_col3_row11, bg=bg_param_color)
-
-
-
-
-
-
-"""Function"""
 def get_registry_value(name, default=""):
     """Retrieve a value from the Windows Registry."""
     try:
@@ -548,7 +354,6 @@ def get_registry_value(name, default=""):
             return winreg.QueryValueEx(key, name)[0]
     except FileNotFoundError as e:
         return default
-
 def set_registry_value(name, value):
     """Set a value in the Windows Registry."""
     try:
@@ -557,6 +362,196 @@ def set_registry_value(name, value):
     except Exception as e:
         print(e)
         threading.Thread(target=show_error_message, args=(f"{e}", 0, 3000), daemon=True).start()
+
+
+
+"""Frame"""
+top_frame = tk.Frame(root, bg=bg_app_class_color_layer_1)
+top_frame.place(relx=0, rely=0, height=50, anchor="nw")
+
+top_left_frame = tk.Frame(top_frame, bg=bg_app_class_color_layer_1)
+top_right_frame = tk.Frame(top_frame, height=50, bg=bg_app_class_color_layer_1)
+top_right_frame.grid_columnconfigure(0, weight=1)
+
+
+
+
+
+middle_frame = tk.Frame(root, bg=bg_app_class_color_layer_1)
+middle_frame.place(relx=0, rely=0, anchor="nw")
+
+middle_left_frame = tk.Frame(middle_frame, bg=bg_app_class_color_layer_1)
+middle_left_frame.place(x=0, y=0)
+
+
+
+middle_left_weight_frame = tk.Frame(middle_left_frame, bg=bg_app_class_color_layer_1)
+middle_left_thickness_frame = tk.Frame(middle_left_frame, bg=bg_app_class_color_layer_1)
+middle_left_weight_frame.pack(fill=tk.BOTH, expand=True)
+
+
+middle_left_weight_frame_col1_frame = tk.Frame(middle_left_weight_frame, bg=bg_app_class_color_layer_2 )
+middle_left_weight_frame_col2_frame = tk.Frame(middle_left_weight_frame, bg=bg_app_class_color_layer_1)
+middle_left_weight_frame_col3_frame = tk.Frame(middle_left_weight_frame, bg=bg_app_class_color_layer_2 )
+
+middle_left_thickness_frame_col1_frame = tk.Frame(middle_left_thickness_frame, bg=bg_app_class_color_layer_2 )
+middle_left_thickness_frame_col2_frame = tk.Frame(middle_left_thickness_frame, bg=bg_app_class_color_layer_1)
+middle_left_thickness_frame_col3_frame = tk.Frame(middle_left_thickness_frame, bg=bg_app_class_color_layer_2 )
+
+
+
+middle_left_weight_frame_col1_frame_row1 = tk.Frame(middle_left_weight_frame_col1_frame, bg=bg_app_class_color_layer_1)
+middle_left_weight_frame_col1_frame_row2 = tk.Frame(middle_left_weight_frame_col1_frame, bg=bg_app_class_color_layer_1)
+
+
+
+middle_left_thickness_frame_col1_frame_row1 = tk.Frame(middle_left_thickness_frame_col1_frame, bg=bg_app_class_color_layer_1 )
+middle_left_thickness_frame_col1_frame_row2 = tk.Frame(middle_left_thickness_frame_col1_frame, bg=bg_app_class_color_layer_1 )
+
+
+
+
+
+
+middle_center_frame = tk.Frame(middle_frame, bg=bg_app_class_color_layer_1 )
+middle_center_frame.place(x=0, y=0)
+
+middle_right_frame = tk.Frame(middle_frame, bg=bg_app_class_color_layer_1 )
+middle_right_frame.place(x=0, y=0)
+
+
+
+middle_right_runcard_frame = tk.Frame(middle_right_frame, bg=bg_app_class_color_layer_1 )
+middle_right_runcard_frame.place(x=0, y=0)
+
+middle_right_setting_frame = tk.Frame(middle_right_frame, bg=bg_app_class_color_layer_1 )
+middle_right_setting_frame.place(x=0, y=0)
+
+middle_right_advance_setting_frame = tk.Frame(middle_right_frame, bg=bg_app_class_color_layer_1 )
+middle_right_advance_setting_frame.place(x=0, y=0)
+
+middle_right_setting_frame_row1 = tk.Frame(middle_right_setting_frame, bg=bg_app_class_color_layer_1 )
+middle_right_setting_frame_row2 = tk.Frame(middle_right_setting_frame, bg=bg_app_class_color_layer_2 )
+middle_right_setting_frame_row3 = tk.Frame(middle_right_setting_frame, bg=bg_app_class_color_layer_1 )
+
+middle_right_advance_setting_frame_row1 = tk.Frame(middle_right_advance_setting_frame, bg=bg_app_class_color_layer_1 )
+middle_right_advance_setting_frame_row2 = tk.Frame(middle_right_advance_setting_frame, bg=bg_app_class_color_layer_1 )
+middle_right_advance_setting_frame_row3 = tk.Frame(middle_right_advance_setting_frame, bg=bg_app_class_color_layer_1 )
+
+middle_right_setting_frame_row1_col1 = tk.Frame(middle_right_setting_frame_row1, bg=bg_app_class_color_layer_1 )
+middle_right_setting_frame_row1_col2 = tk.Frame(middle_right_setting_frame_row1, bg=bg_app_class_color_layer_1 )
+middle_right_setting_frame_row1_col2.grid_columnconfigure(0, weight=1)
+
+middle_right_setting_frame_row3_col1 = tk.Frame(middle_right_setting_frame_row3, bg=bg_app_class_color_layer_1 )
+middle_right_setting_frame_row3_col2 = tk.Frame(middle_right_setting_frame_row3, bg=bg_app_class_color_layer_1 )
+
+middle_right_advance_setting_frame_row1_col1 = tk.Frame(middle_right_advance_setting_frame_row1, bg=bg_app_class_color_layer_1 )
+middle_right_advance_setting_frame_row1_col2 = tk.Frame(middle_right_advance_setting_frame_row1, bg=bg_app_class_color_layer_1 )
+middle_right_advance_setting_frame_row1_col2.grid_columnconfigure(0, weight=1)
+
+middle_right_advance_setting_frame_row3_col1 = tk.Frame(middle_right_advance_setting_frame_row3, bg=bg_app_class_color_layer_1 )
+middle_right_advance_setting_frame_row3_col2 = tk.Frame(middle_right_advance_setting_frame_row3, bg=bg_app_class_color_layer_1 )
+
+bottom_frame = tk.Frame(root, bg=bg_app_class_color_layer_1 )
+bottom_frame.place(relx=0, rely=1.0, height=50, anchor="sw")
+
+bottom_left_frame = tk.Frame(bottom_frame, bg=bg_app_class_color_layer_1 )
+bottom_right_frame = tk.Frame(bottom_frame, bg=bg_app_class_color_layer_1 )
+bottom_right_frame.grid_columnconfigure(0, weight=1)
+
+
+middle_right_setting_frame_row2_row1 = tk.Frame(middle_right_setting_frame_row2, bg=bg_app_class_color_layer_2 )
+
+middle_right_advance_setting_frame_row2_col1 = tk.Frame(middle_right_advance_setting_frame_row2, bg=bg_app_class_color_layer_1 )
+middle_right_advance_setting_frame_row2_col2 = tk.Frame(middle_right_advance_setting_frame_row2, bg=bg_app_class_color_layer_1 )
+middle_right_advance_setting_frame_row2_col3 = tk.Frame(middle_right_advance_setting_frame_row2, bg=bg_app_class_color_layer_1 )
+
+middle_right_advance_setting_frame_row2_col1_row1 = tk.Frame(middle_right_advance_setting_frame_row2_col1, bg=bg_app_class_color_layer_2 )
+middle_right_advance_setting_frame_row2_col1_row2 = tk.Frame(middle_right_advance_setting_frame_row2_col1, bg=bg_app_class_color_layer_2 )
+middle_right_advance_setting_frame_row2_col1_row3 = tk.Frame(middle_right_advance_setting_frame_row2_col1, bg=bg_app_class_color_layer_1 )
+middle_right_advance_setting_frame_row2_col1_row4 = tk.Frame(middle_right_advance_setting_frame_row2_col1, bg=bg_app_class_color_layer_2 )
+middle_right_advance_setting_frame_row2_col1_row5 = tk.Frame(middle_right_advance_setting_frame_row2_col1, bg=bg_app_class_color_layer_2 )
+middle_right_advance_setting_frame_row2_col1_row6 = tk.Frame(middle_right_advance_setting_frame_row2_col1, bg=bg_app_class_color_layer_2 )
+middle_right_advance_setting_frame_row2_col1_row7 = tk.Frame(middle_right_advance_setting_frame_row2_col1, bg=bg_app_class_color_layer_1 )
+middle_right_advance_setting_frame_row2_col1_row8 = tk.Frame(middle_right_advance_setting_frame_row2_col1, bg=bg_app_class_color_layer_2 )
+middle_right_advance_setting_frame_row2_col1_row9 = tk.Frame(middle_right_advance_setting_frame_row2_col1, bg=bg_app_class_color_layer_2 )
+middle_right_advance_setting_frame_row2_col1_row10 = tk.Frame(middle_right_advance_setting_frame_row2_col1, bg=bg_app_class_color_layer_2 )
+middle_right_advance_setting_frame_row2_col1_row11 = tk.Frame(middle_right_advance_setting_frame_row2_col1, bg=bg_app_class_color_layer_1 )
+middle_right_advance_setting_frame_row2_col1_row12 = tk.Frame(middle_right_advance_setting_frame_row2_col1, bg=bg_app_class_color_layer_1 )
+middle_right_advance_setting_frame_row2_col1_row13 = tk.Frame(middle_right_advance_setting_frame_row2_col1, bg=bg_app_class_color_layer_1 )
+middle_right_advance_setting_frame_row2_col1_row14 = tk.Frame(middle_right_advance_setting_frame_row2_col1, bg=bg_app_class_color_layer_1 )
+middle_right_advance_setting_frame_row2_col1_row15 = tk.Frame(middle_right_advance_setting_frame_row2_col1, bg=bg_app_class_color_layer_1 )
+
+
+
+middle_right_advance_setting_frame_row2_col1_row5_col1 = tk.Frame(middle_right_advance_setting_frame_row2_col1_row5, bg=bg_app_class_color_layer_2 )
+middle_right_advance_setting_frame_row2_col1_row5_col2 = tk.Frame(middle_right_advance_setting_frame_row2_col1_row5, bg=bg_app_class_color_layer_2 )
+
+middle_right_advance_setting_frame_row2_col1_row9_col1 = tk.Frame(middle_right_advance_setting_frame_row2_col1_row9, bg=bg_app_class_color_layer_2 )
+middle_right_advance_setting_frame_row2_col1_row9_col2 = tk.Frame(middle_right_advance_setting_frame_row2_col1_row9, bg=bg_app_class_color_layer_2 )
+
+middle_right_advance_setting_frame_row2_col1_row5_col1_row1 = tk.Frame(middle_right_advance_setting_frame_row2_col1_row5_col1, bg=bg_app_class_color_layer_2 )
+middle_right_advance_setting_frame_row2_col1_row5_col1_row2 = tk.Frame(middle_right_advance_setting_frame_row2_col1_row5_col1, bg=bg_app_class_color_layer_2 )
+middle_right_advance_setting_frame_row2_col1_row5_col1_row3 = tk.Frame(middle_right_advance_setting_frame_row2_col1_row5_col1, bg=bg_app_class_color_layer_2 )
+middle_right_advance_setting_frame_row2_col1_row5_col1_row4 = tk.Frame(middle_right_advance_setting_frame_row2_col1_row5_col1, bg=bg_app_class_color_layer_2 )
+
+middle_right_advance_setting_frame_row2_col1_row5_col2_row1 = tk.Frame(middle_right_advance_setting_frame_row2_col1_row5_col2, bg=bg_app_class_color_layer_2 )
+middle_right_advance_setting_frame_row2_col1_row5_col2_row2 = tk.Frame(middle_right_advance_setting_frame_row2_col1_row5_col2, bg=bg_app_class_color_layer_2 )
+middle_right_advance_setting_frame_row2_col1_row5_col2_row3 = tk.Frame(middle_right_advance_setting_frame_row2_col1_row5_col2, bg=bg_app_class_color_layer_2 )
+middle_right_advance_setting_frame_row2_col1_row5_col2_row4 = tk.Frame(middle_right_advance_setting_frame_row2_col1_row5_col2, bg=bg_app_class_color_layer_2 )
+
+middle_right_advance_setting_frame_row2_col1_row9_col1_row1 = tk.Frame(middle_right_advance_setting_frame_row2_col1_row9_col1, bg=bg_app_class_color_layer_2 )
+middle_right_advance_setting_frame_row2_col1_row9_col2_row1 = tk.Frame(middle_right_advance_setting_frame_row2_col1_row9_col2, bg=bg_app_class_color_layer_2 )
+
+
+
+
+
+middle_right_advance_setting_frame_row2_col3_row1 = tk.Frame(middle_right_advance_setting_frame_row2_col3, bg=bg_app_class_color_layer_1 )
+middle_right_advance_setting_frame_row2_col3_row2 = tk.Frame(middle_right_advance_setting_frame_row2_col3, bg=bg_app_class_color_layer_2 )
+middle_right_advance_setting_frame_row2_col3_row3 = tk.Frame(middle_right_advance_setting_frame_row2_col3, bg=bg_app_class_color_layer_2 )
+middle_right_advance_setting_frame_row2_col3_row4 = tk.Frame(middle_right_advance_setting_frame_row2_col3, bg=bg_app_class_color_layer_1 )
+middle_right_advance_setting_frame_row2_col3_row5 = tk.Frame(middle_right_advance_setting_frame_row2_col3, bg=bg_app_class_color_layer_1 )
+middle_right_advance_setting_frame_row2_col3_row6 = tk.Frame(middle_right_advance_setting_frame_row2_col3, bg=bg_app_class_color_layer_2 )
+middle_right_advance_setting_frame_row2_col3_row7 = tk.Frame(middle_right_advance_setting_frame_row2_col3, bg=bg_app_class_color_layer_2 )
+middle_right_advance_setting_frame_row2_col3_row8 = tk.Frame(middle_right_advance_setting_frame_row2_col3, bg=bg_app_class_color_layer_1 )
+middle_right_advance_setting_frame_row2_col3_row9 = tk.Frame(middle_right_advance_setting_frame_row2_col3, bg=bg_app_class_color_layer_1 )
+middle_right_advance_setting_frame_row2_col3_row10 = tk.Frame(middle_right_advance_setting_frame_row2_col3, bg=bg_app_class_color_layer_2 )
+middle_right_advance_setting_frame_row2_col3_row11 = tk.Frame(middle_right_advance_setting_frame_row2_col3, bg=bg_app_class_color_layer_2 )
+
+
+middle_right_advance_setting_frame_row2_col3_row3_11 = tk.Frame(middle_right_advance_setting_frame_row2_col3_row3, bg=bg_app_class_color_layer_2 )
+middle_right_advance_setting_frame_row2_col3_row3_12 = tk.Frame(middle_right_advance_setting_frame_row2_col3_row3, bg=bg_app_class_color_layer_2 )
+middle_right_advance_setting_frame_row2_col3_row3_21 = tk.Frame(middle_right_advance_setting_frame_row2_col3_row3, bg=bg_app_class_color_layer_2 )
+middle_right_advance_setting_frame_row2_col3_row3_22 = tk.Frame(middle_right_advance_setting_frame_row2_col3_row3, bg=bg_app_class_color_layer_2 )
+middle_right_advance_setting_frame_row2_col3_row3_31 = tk.Frame(middle_right_advance_setting_frame_row2_col3_row3, bg=bg_app_class_color_layer_2 )
+middle_right_advance_setting_frame_row2_col3_row3_32 = tk.Frame(middle_right_advance_setting_frame_row2_col3_row3, bg=bg_app_class_color_layer_2 )
+
+
+middle_right_advance_setting_frame_row2_col3_row7_11 = tk.Frame(middle_right_advance_setting_frame_row2_col3_row7, bg=bg_app_class_color_layer_2 )
+middle_right_advance_setting_frame_row2_col3_row7_12 = tk.Frame(middle_right_advance_setting_frame_row2_col3_row7, bg=bg_app_class_color_layer_2 )
+middle_right_advance_setting_frame_row2_col3_row7_21 = tk.Frame(middle_right_advance_setting_frame_row2_col3_row7, bg=bg_app_class_color_layer_2 )
+middle_right_advance_setting_frame_row2_col3_row7_22 = tk.Frame(middle_right_advance_setting_frame_row2_col3_row7, bg=bg_app_class_color_layer_2 )
+middle_right_advance_setting_frame_row2_col3_row7_31 = tk.Frame(middle_right_advance_setting_frame_row2_col3_row7, bg=bg_app_class_color_layer_2 )
+middle_right_advance_setting_frame_row2_col3_row7_32 = tk.Frame(middle_right_advance_setting_frame_row2_col3_row7, bg=bg_app_class_color_layer_2 )
+
+
+middle_right_advance_setting_frame_row2_col3_row11_11 = tk.Frame(middle_right_advance_setting_frame_row2_col3_row11, bg=bg_app_class_color_layer_2 )
+middle_right_advance_setting_frame_row2_col3_row11_12 = tk.Frame(middle_right_advance_setting_frame_row2_col3_row11, bg=bg_app_class_color_layer_2 )
+
+middle_right_advance_setting_frame_row2_col3_row11_21 = tk.Frame(middle_right_advance_setting_frame_row2_col3_row11, bg=bg_app_class_color_layer_2 )
+middle_right_advance_setting_frame_row2_col3_row11_22 = tk.Frame(middle_right_advance_setting_frame_row2_col3_row11, bg=bg_app_class_color_layer_2 )
+
+middle_right_advance_setting_frame_row2_col3_row11_31 = tk.Frame(middle_right_advance_setting_frame_row2_col3_row11, bg=bg_app_class_color_layer_2 )
+middle_right_advance_setting_frame_row2_col3_row11_32 = tk.Frame(middle_right_advance_setting_frame_row2_col3_row11, bg=bg_app_class_color_layer_2 )
+
+
+
+
+
+
+"""Function"""
+
 
 
 if get_registry_value("is_current_entry", "weight") == "weight":
@@ -623,7 +618,7 @@ def exit():
 
 
 
-error_display_entry = tk.Entry(bottom_left_frame, textvariable=error_msg, font=("Cambria", 12), bg=bg_app_color, fg=error_fg_color, bd=0, highlightthickness=0, readonlybackground=bg_app_color, state="readonly")
+error_display_entry = tk.Entry(bottom_left_frame, textvariable=error_msg, font=("Cambria", 12), bg=bg_app_class_color_layer_1 , fg=error_fg_color, bd=0, highlightthickness=0, readonlybackground=bg_app_class_color_layer_1 , state="readonly")
 
 
 
@@ -694,15 +689,15 @@ middle_left_weight_frame_col1_frame_row1.columnconfigure(3, weight=1)
 
 
 
-middle_left_weight_frame_left_2_canvas = tk.Canvas(middle_left_weight_frame_col1_frame_row2, bg=bg_param_color, highlightthickness=0)
-middle_left_weight_frame_left_2_scrollbar = tk.Scrollbar(middle_left_weight_frame_col1_frame_row2, orient="vertical", command=middle_left_weight_frame_left_2_canvas.yview)
-middle_left_weight_frame_left_2_canvas.configure(yscrollcommand=middle_left_weight_frame_left_2_scrollbar.set)
-middle_left_weight_frame_left_2_scrollable_frame = tk.Frame(middle_left_weight_frame_left_2_canvas, bg='white')
-middle_left_weight_frame_left_2_canvas.create_window((0, 0), window=middle_left_weight_frame_left_2_scrollable_frame, anchor="nw")
-middle_left_weight_frame_left_2_scrollable_frame.bind("<Configure>", lambda e: middle_left_weight_frame_left_2_canvas.configure(scrollregion=middle_left_weight_frame_left_2_canvas.bbox("all")))
-middle_left_weight_frame_left_2_canvas.pack(side="left", fill="both", expand=True)
-middle_left_weight_frame_left_2_scrollbar.pack(side="right", fill="y")
-all_entries = []
+# middle_left_weight_frame_left_2_canvas = tk.Canvas(middle_left_weight_frame_col1_frame_row2, bg=bg_app_class_color_layer_2 , highlightthickness=0)
+# middle_left_weight_frame_left_2_scrollbar = tk.Scrollbar(middle_left_weight_frame_col1_frame_row2, orient="vertical", command=middle_left_weight_frame_left_2_canvas.yview)
+# middle_left_weight_frame_left_2_canvas.configure(yscrollcommand=middle_left_weight_frame_left_2_scrollbar.set)
+# middle_left_weight_frame_left_2_scrollable_frame = tk.Frame(middle_left_weight_frame_left_2_canvas, bg='white')
+# middle_left_weight_frame_left_2_canvas.create_window((0, 0), window=middle_left_weight_frame_left_2_scrollable_frame, anchor="nw")
+# middle_left_weight_frame_left_2_scrollable_frame.bind("<Configure>", lambda e: middle_left_weight_frame_left_2_canvas.configure(scrollregion=middle_left_weight_frame_left_2_canvas.bbox("all")))
+# middle_left_weight_frame_left_2_canvas.pack(side="left", fill="both", expand=True)
+# middle_left_weight_frame_left_2_scrollbar.pack(side="right", fill="y")
+# all_entries = []
 
 
 
@@ -852,7 +847,7 @@ def on_leave_middle_open_setting_frame_button(event):
     middle_open_setting_frame_button.config(image=setting_icon)
 setting_icon = ImageTk.PhotoImage(Image.open(os.path.join(base_path, "theme", "icons", "setting.png")).resize((42, 42)))
 setting_hover_icon = ImageTk.PhotoImage(Image.open(os.path.join(base_path, "theme", "icons", "setting_hover.png")).resize((42, 42)))
-middle_open_setting_frame_button = tk.Button(top_left_frame, image=setting_icon, bd=0, command=open_setting_frame, bg=bg_app_color)
+middle_open_setting_frame_button = tk.Button(top_left_frame, image=setting_icon, bd=0, command=open_setting_frame, bg=bg_app_class_color_layer_1 )
 middle_open_setting_frame_button.grid(row=0, column=1, padx=5, pady=5, sticky="w")
 middle_open_setting_frame_button.bind("<Enter>", on_enter_middle_open_setting_frame_button)
 middle_open_setting_frame_button.bind("<Leave>", on_leave_middle_open_setting_frame_button)
@@ -865,7 +860,7 @@ def on_leave_middle_open_advance_setting_frame_button(event):
     middle_open_advance_setting_frame_button.config(image=advance_setting_icon)
 advance_setting_icon = ImageTk.PhotoImage(Image.open(os.path.join(base_path, "theme", "icons", "advance_setting.png")).resize((21, 21)))
 advance_setting_hover_icon = ImageTk.PhotoImage(Image.open(os.path.join(base_path, "theme", "icons", "advance_setting_hover.png")).resize((21, 21)))
-middle_open_advance_setting_frame_button = tk.Button(middle_right_setting_frame_row1_col2, image=advance_setting_icon, bd=0, command=open_advance_setting_frame, bg=bg_app_color)
+middle_open_advance_setting_frame_button = tk.Button(middle_right_setting_frame_row1_col2, image=advance_setting_icon, bd=0, command=open_advance_setting_frame, bg=bg_app_class_color_layer_1 )
 middle_open_advance_setting_frame_button.grid(row=0, column=0, padx=20, pady=5, sticky="e")
 middle_open_advance_setting_frame_button.bind("<Enter>", on_enter_middle_open_advance_setting_frame_button)
 middle_open_advance_setting_frame_button.bind("<Leave>", on_leave_middle_open_advance_setting_frame_button)
@@ -878,7 +873,7 @@ def on_leave_middle_open_return_frame_button(event):
     middle_open_return_frame_button.config(image=return_icon)
 return_icon = ImageTk.PhotoImage(Image.open(os.path.join(base_path, "theme", "icons", "return.png")).resize((21, 21)))
 return_hover_icon = ImageTk.PhotoImage(Image.open(os.path.join(base_path, "theme", "icons", "return_hover.png")).resize((21, 21)))
-middle_open_return_frame_button = tk.Button(middle_right_advance_setting_frame_row1_col2, image=return_icon, bd=0, command=open_setting_frame, bg=bg_app_color)
+middle_open_return_frame_button = tk.Button(middle_right_advance_setting_frame_row1_col2, image=return_icon, bd=0, command=open_setting_frame, bg=bg_app_class_color_layer_1 )
 middle_open_return_frame_button.grid(row=0, column=0, padx=20, pady=5, sticky="e")
 middle_open_return_frame_button.bind("<Enter>", on_enter_middle_open_return_frame_button)
 middle_open_return_frame_button.bind("<Leave>", on_leave_middle_open_return_frame_button)
@@ -891,7 +886,7 @@ def on_leave_middle_open_runcard_frame_button(event):
     middle_open_runcard_frame_button.config(image=barcode_icon)
 barcode_icon = ImageTk.PhotoImage(Image.open(os.path.join(base_path, "theme", "icons", "barcode.png")).resize((42, 42)))
 barcode_hover_icon = ImageTk.PhotoImage(Image.open(os.path.join(base_path, "theme", "icons", "barcode_hover.png")).resize((42, 42)))
-middle_open_runcard_frame_button = tk.Button(top_left_frame, image=barcode_icon, bd=0, command=open_runcard_frame, bg=bg_app_color)
+middle_open_runcard_frame_button = tk.Button(top_left_frame, image=barcode_icon, bd=0, command=open_runcard_frame, bg=bg_app_class_color_layer_1 )
 middle_open_runcard_frame_button.grid(row=0, column=2, padx=5, pady=5, sticky="w")
 middle_open_runcard_frame_button.bind("<Enter>", on_enter_middle_open_runcard_frame_button)
 middle_open_runcard_frame_button.bind("<Leave>", on_leave_middle_open_runcard_frame_button)
@@ -904,7 +899,7 @@ def on_enter_close_setting_frame_button(event):
     close_setting_frame_button.config(image=close_icon_hover)
 def on_leave_close_setting_frame_button(event):
     close_setting_frame_button.config(image=close_icon)
-close_setting_frame_button = tk.Button(middle_right_setting_frame_row3_col2, image=close_icon, command=close_frame, bg=bg_app_color, width=134, height=34, relief="flat", borderwidth=0)
+close_setting_frame_button = tk.Button(middle_right_setting_frame_row3_col2, image=close_icon, command=close_frame, bg=bg_app_class_color_layer_1 , width=134, height=34, relief="flat", borderwidth=0)
 close_setting_frame_button.grid(row=0, column=1, padx=5, pady=5, sticky="e")
 close_setting_frame_button.bind("<Enter>", on_enter_close_setting_frame_button)
 close_setting_frame_button.bind("<Leave>", on_leave_close_setting_frame_button)
@@ -913,7 +908,7 @@ def on_enter_close_advance_setting_frame_button(event):
     close_advance_setting_frame_button.config(image=close_icon_hover)
 def on_leave_close_advance_setting_frame_button(event):
     close_advance_setting_frame_button.config(image=close_icon)
-close_advance_setting_frame_button = tk.Button(middle_right_advance_setting_frame_row3_col2, image=close_icon, command=close_frame, bg=bg_app_color, width=134, height=34, relief="flat", borderwidth=0)
+close_advance_setting_frame_button = tk.Button(middle_right_advance_setting_frame_row3_col2, image=close_icon, command=close_frame, bg=bg_app_class_color_layer_1 , width=134, height=34, relief="flat", borderwidth=0)
 close_advance_setting_frame_button.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
 close_advance_setting_frame_button.bind("<Enter>", on_enter_close_advance_setting_frame_button)
 close_advance_setting_frame_button.bind("<Leave>", on_leave_close_advance_setting_frame_button)
@@ -926,7 +921,7 @@ def on_enter_save_setting_frame_button(event):
     save_setting_frame_button.config(image=save_icon_hover)
 def on_leave_save_setting_frame_button(event):
     save_setting_frame_button.config(image=save_icon)
-save_setting_frame_button = tk.Button(middle_right_setting_frame_row3_col1, image=save_icon, command=None, bg=bg_app_color, width=134, height=34, relief="flat", borderwidth=0)
+save_setting_frame_button = tk.Button(middle_right_setting_frame_row3_col1, image=save_icon, command=None, bg=bg_app_class_color_layer_1 , width=134, height=34, relief="flat", borderwidth=0)
 save_setting_frame_button.grid(row=0, column=0, padx=5, pady=5, sticky="e")
 save_setting_frame_button.bind("<Enter>", on_enter_save_setting_frame_button)
 save_setting_frame_button.bind("<Leave>", on_leave_save_setting_frame_button)
@@ -935,7 +930,7 @@ def on_enter_save_advance_setting_frame_button(event):
     save_advance_setting_frame_button.config(image=save_icon_hover)
 def on_leave_save_advance_setting_frame_button(event):
     save_advance_setting_frame_button.config(image=save_icon)
-save_advance_setting_frame_button = tk.Button(middle_right_advance_setting_frame_row3_col1, image=save_icon, command=None, bg=bg_app_color, width=134, height=34, relief="flat", borderwidth=0)
+save_advance_setting_frame_button = tk.Button(middle_right_advance_setting_frame_row3_col1, image=save_icon, command=None, bg=bg_app_class_color_layer_1 , width=134, height=34, relief="flat", borderwidth=0)
 save_advance_setting_frame_button.grid(row=0, column=0, padx=5, pady=5, sticky="e")
 save_advance_setting_frame_button.bind("<Enter>", on_enter_save_advance_setting_frame_button)
 save_advance_setting_frame_button.bind("<Leave>", on_leave_save_advance_setting_frame_button)
@@ -971,3 +966,4 @@ bottom_exit_button.bind("<Leave>", on_leave_bottom_exit_button)
 update_thread = threading.Thread(target=update_dimensions, daemon=True)
 update_thread.start()
 root.mainloop()
+
