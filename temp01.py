@@ -283,14 +283,21 @@ def update_dimensions():
 
 
         middle_right_advance_setting_frame_row2_col3_row1.place(x=0, y=0, width=middle_right_frame_width - 10 - 332 - 10, height=30)
-
         middle_right_advance_setting_frame_row2_col3_row2.place(x=0, y=30, width=middle_right_frame_width - 10 - 332 - 10, height=10)
         middle_right_advance_setting_frame_row2_col3_row3.place(x=0, y=40, width=middle_right_frame_width - 10 - 332 - 10, height=200)
+
         middle_right_advance_setting_frame_row2_col3_row4.place(x=0, y=240, width=middle_right_frame_width - 10 - 332 - 10, height=30)
 
         middle_right_advance_setting_frame_row2_col3_row5.place(x=0, y=270, width=middle_right_frame_width - 10 - 332 - 10, height=30)
         middle_right_advance_setting_frame_row2_col3_row6.place(x=0, y=300, width=middle_right_frame_width - 10 - 332 - 10, height=10)
         middle_right_advance_setting_frame_row2_col3_row7.place(x=0, y=310, width=middle_right_frame_width - 10 - 332 - 10, height=200)
+
+        middle_right_advance_setting_frame_row2_col3_row8.place(x=0, y=510, width=middle_right_frame_width - 10 - 332 - 10, height=30)
+
+        middle_right_advance_setting_frame_row2_col3_row9.place(x=0, y=540, width=middle_right_frame_width - 10 - 332 - 10, height=30)
+        middle_right_advance_setting_frame_row2_col3_row10.place(x=0, y=570, width=middle_right_frame_width - 10 - 332 - 10, height=10)
+        middle_right_advance_setting_frame_row2_col3_row11.place(x=0, y=580, width=middle_right_frame_width - 10 - 332 - 10, height=200)
+
 
         middle_right_advance_setting_frame_row2_col3_row3_11.place(x=0, y=0, width=110, height=40)
         middle_right_advance_setting_frame_row2_col3_row3_12.place(x=110, y=0, width=80, height=40)
@@ -305,6 +312,20 @@ def update_dimensions():
         middle_right_advance_setting_frame_row2_col3_row7_22.place(x=110, y=40, width=70, height=40)
         middle_right_advance_setting_frame_row2_col3_row7_31.place(x=0, y=80, width=110, height=40)
         middle_right_advance_setting_frame_row2_col3_row7_32.place(x=110, y=80, width=70, height=40)
+
+        middle_right_advance_setting_frame_row2_col3_row11_11.place(x=0, y=0, width=140, height=40)
+        middle_right_advance_setting_frame_row2_col3_row11_12.place(x=140, y=0, width=50, height=40)
+
+        middle_right_advance_setting_frame_row2_col3_row11_21.place(x=0, y=40, width=140, height=40)
+        middle_right_advance_setting_frame_row2_col3_row11_22.place(x=140, y=40, width=50, height=40)
+
+        middle_right_advance_setting_frame_row2_col3_row11_31.place(x=0, y=80, width=140, height=40)
+        middle_right_advance_setting_frame_row2_col3_row11_32.place(x=140, y=80, width=50, height=40)
+
+        middle_left_thickness_frame_col3_frame_row1.place(x=0, y=0, width=middle_left_col3_width, height=80)
+        middle_left_thickness_frame_col3_frame_row2.place(x=0, y=80, width=middle_left_col3_width, height=80)
+
+
 
         error_display_entry.place(x=5, y=10, width=int(screen_width * 0.7), height=25)
 
@@ -402,7 +423,8 @@ middle_left_thickness_frame_col1_frame_row1 = tk.Frame(middle_left_thickness_fra
 middle_left_thickness_frame_col1_frame_row2 = tk.Frame(middle_left_thickness_frame_col1_frame, bg=bg_app_color)
 
 
-
+middle_left_thickness_frame_col3_frame_row1 = tk.Frame(middle_left_thickness_frame_col1_frame, bg=bg_app_color)
+middle_left_thickness_frame_col3_frame_row2 = tk.Frame(middle_left_thickness_frame_col1_frame, bg='red')
 
 
 
@@ -517,6 +539,10 @@ middle_right_advance_setting_frame_row2_col3_row4 = tk.Frame(middle_right_advanc
 middle_right_advance_setting_frame_row2_col3_row5 = tk.Frame(middle_right_advance_setting_frame_row2_col3, bg=bg_app_color)
 middle_right_advance_setting_frame_row2_col3_row6 = tk.Frame(middle_right_advance_setting_frame_row2_col3, bg=bg_param_color)
 middle_right_advance_setting_frame_row2_col3_row7 = tk.Frame(middle_right_advance_setting_frame_row2_col3, bg=bg_param_color)
+middle_right_advance_setting_frame_row2_col3_row8 = tk.Frame(middle_right_advance_setting_frame_row2_col3, bg=bg_app_color)
+middle_right_advance_setting_frame_row2_col3_row9 = tk.Frame(middle_right_advance_setting_frame_row2_col3, bg=bg_app_color)
+middle_right_advance_setting_frame_row2_col3_row10 = tk.Frame(middle_right_advance_setting_frame_row2_col3, bg=bg_param_color)
+middle_right_advance_setting_frame_row2_col3_row11 = tk.Frame(middle_right_advance_setting_frame_row2_col3, bg=bg_param_color)
 
 
 middle_right_advance_setting_frame_row2_col3_row3_11 = tk.Frame(middle_right_advance_setting_frame_row2_col3_row3, bg=bg_param_color)
@@ -535,7 +561,14 @@ middle_right_advance_setting_frame_row2_col3_row7_31 = tk.Frame(middle_right_adv
 middle_right_advance_setting_frame_row2_col3_row7_32 = tk.Frame(middle_right_advance_setting_frame_row2_col3_row7, bg=bg_param_color)
 
 
+middle_right_advance_setting_frame_row2_col3_row11_11 = tk.Frame(middle_right_advance_setting_frame_row2_col3_row11, bg=bg_param_color)
+middle_right_advance_setting_frame_row2_col3_row11_12 = tk.Frame(middle_right_advance_setting_frame_row2_col3_row11, bg=bg_param_color)
 
+middle_right_advance_setting_frame_row2_col3_row11_21 = tk.Frame(middle_right_advance_setting_frame_row2_col3_row11, bg=bg_param_color)
+middle_right_advance_setting_frame_row2_col3_row11_22 = tk.Frame(middle_right_advance_setting_frame_row2_col3_row11, bg=bg_param_color)
+
+middle_right_advance_setting_frame_row2_col3_row11_31 = tk.Frame(middle_right_advance_setting_frame_row2_col3_row11, bg=bg_param_color)
+middle_right_advance_setting_frame_row2_col3_row11_32 = tk.Frame(middle_right_advance_setting_frame_row2_col3_row11, bg=bg_param_color)
 
 
 
@@ -871,6 +904,7 @@ all_entries = []
 
 
 
+
 def thickness_frame_mouser_pointer_in(event):
     global current_thickness_entry
     if 'name_var' in event.widget.__dict__:
@@ -1008,61 +1042,6 @@ def set_selected_frame(value):
     """Save the selected frame to the Windows Registry."""
     set_registry_value("SelectedFrame", value)
 
-def weight_frame_com_port_insert_data():
-    global weight_record_log_id
-    if "COM" in get_registry_value("COM1", ""):
-        print(f"Weight COM: {selected_weight_com.get()}")
-        ser = serial.Serial(selected_weight_com.get(), baudrate=9600, timeout=float(get_registry_value("is_weight_timeout", "0.3")))
-        try:
-            while True:
-                if ser.is_open:
-                    value = ser.readline().decode('utf-8').strip()
-                    if len(value):
-                        weight_record_log_id += 1
-                        # threading.Thread(target=root.after, args=(
-                        # 0, update_com_port_weight_log_display, f"{str(weight_record_log_id).zfill(4)}   {value}"),
-                        #                  daemon=True).start()
-                        if "g" not in value[-2:]:
-                            threading.Thread(target=show_error_message,
-                                             args=(f"Change your weight unit to gram!", 0, 3000), daemon=True).start()
-                        if 'ST' in value:
-                            weight_value = float(
-                                re.sub(r'[a-zA-Z]', '', ((value.replace(" ", "")).split(':')[-1])[:-1]))
-                            if weight_value >= 0:
-                                entry_weight_runcard_id_entry.event_generate("<Return>")
-                                entry_weight_weight_value_entry.insert(0, weight_value)
-                                entry_weight_weight_value_entry.event_generate("<Return>")
-                                entry_weight_weight_value_entry.delete(0, tk.END)
-                                entry_weight_runcard_id_entry.delete(0, tk.END)
-                                entry_weight_runcard_id_entry.focus_set()
-                else:
-                    ser.open()
-        except Exception as e:
-            threading.Thread(target=show_error_message, args=(f"{e}", 0, 3000), daemon=True).start()
-            pass
-        finally:
-            if ser.is_open:
-                ser.close()
-    else:
-        pass
-
-com_data_labels = []
-def update_com_port_weight_log_display(data):
-    try:
-        global com_data_labels
-        def add_data():
-            label = tk.Label(middle_left_weight_frame_right_frame_log_scrollable_frame, text=data, font=("Arial", 13), bg='white', anchor="w", justify="left")
-            label.pack(fill="x", padx=5, pady=2)
-            com_data_labels.append(label)
-            if len(com_data_labels) > 20:
-                com_data_labels[0].destroy()
-                com_data_labels.pop(0)
-            middle_left_weight_frame_right_frame_log_scrollable_frame.update_idletasks()
-            middle_left_weight_frame_right_frame_log_canvas.configure(scrollregion=middle_left_weight_frame_right_frame_log_canvas.bbox("all"))
-        root.after(0, add_data)
-    except Exception as e:
-        threading.Thread(target=show_error_message, args=(f"{e}", 0, 3000), daemon=True).start()
-        pass
 
 weight_com_thread = None
 thickness_com_thread = None
@@ -1170,8 +1149,6 @@ def database_test_connection():
         threading.Thread(target=show_error_message, args=(f"{e}", 0, 3000), daemon=True).start()
         pass
 selected_middle_left_frame = tk.StringVar(value=get_selected_frame())
-switch_middle_left_frame()
-
 selected_weight_com = tk.StringVar(value=get_registry_value("COM1", ""))
 selected_thickness_com = tk.StringVar(value=get_registry_value("COM2", ""))
 
@@ -1248,30 +1225,6 @@ plant_name_entry = tk.Entry(middle_right_advance_setting_frame_row2_col1_row9_co
 plant_name_entry.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 
 
-runcard_setting_label = tk.Label(middle_right_advance_setting_frame_row2_col1_row12, text="Runcard", font=(font_name, 14, "bold"), bg=bg_app_color)
-runcard_setting_label.grid(row=0, column=0, padx=0, pady=0)
-
-
-
-is_show_runcard_label = tk.Label(middle_right_advance_setting_frame_row2_col1_row14_col1_row1, text="Runcard show:", font=(font_name, 12, "bold"), bg=bg_param_color)
-is_show_runcard_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
-is_show_runcard_switch = tk.StringVar(value=get_registry_value("is_show_runcard", "0"))
-is_show_runcard_switch_button = ttk.Checkbutton(middle_right_advance_setting_frame_row2_col1_row14_col2_row1, variable=is_show_runcard_switch, onvalue='1', offvalue='0', style="Switch")
-is_show_runcard_switch_button.grid(row=0, column=0, padx=5, pady=5, sticky="w")
-
-
-is_check_runcard_label = tk.Label(middle_right_advance_setting_frame_row2_col1_row14_col1_row2, text="Runcard check:", font=(font_name, 12, "bold"), bg=bg_param_color)
-is_check_runcard_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
-is_check_runcard_switch = tk.StringVar(value=get_registry_value("is_check_runcard_switch", "0"))
-is_check_runcard_switch_button = ttk.Checkbutton(middle_right_advance_setting_frame_row2_col1_row14_col2_row2, variable=is_check_runcard_switch, onvalue='1', offvalue='0', style="Switch")
-is_check_runcard_switch_button.grid(row=0, column=0, padx=5, pady=5, sticky="w")
-
-
-is_input_runcard_label = tk.Label(middle_right_advance_setting_frame_row2_col1_row14_col1_row3, text="Runcard input:", font=(font_name, 12, "bold"), bg=bg_param_color)
-is_input_runcard_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
-is_input_runcard_switch = tk.StringVar(value=get_registry_value("is_input_runcard_switch", "0"))
-is_input_runcard_switch_button = ttk.Checkbutton(middle_right_advance_setting_frame_row2_col1_row14_col2_row3, variable=is_input_runcard_switch, onvalue='1', offvalue='0', style="Switch")
-is_input_runcard_switch_button.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 
 
 
@@ -1318,6 +1271,34 @@ is_thickness_delay = tk.StringVar(value=get_registry_value("is_thickness_delay",
 is_thickness_delay_entry = tk.Entry(middle_right_advance_setting_frame_row2_col3_row7_32, textvariable=is_thickness_delay, font=(font_name, 14), width=6, bg='white', fg='black')
 is_thickness_delay_entry.grid(row=1, column=0, padx=5, pady=5, sticky="w")
 
+
+
+
+
+runcard_setting_label = tk.Label(middle_right_advance_setting_frame_row2_col3_row9, text="Runcard", font=(font_name, 14, "bold"), bg=bg_app_color)
+runcard_setting_label.grid(row=0, column=0, padx=0, pady=0)
+
+
+
+is_show_runcard_label = tk.Label(middle_right_advance_setting_frame_row2_col3_row11_11, text="Runcard show:", font=(font_name, 12, "bold"), bg=bg_param_color)
+is_show_runcard_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+is_show_runcard_switch = tk.StringVar(value=get_registry_value("is_show_runcard", "0"))
+is_show_runcard_switch_button = ttk.Checkbutton(middle_right_advance_setting_frame_row2_col3_row11_12, variable=is_show_runcard_switch, onvalue='1', offvalue='0', style="Switch")
+is_show_runcard_switch_button.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+
+
+is_check_runcard_label = tk.Label(middle_right_advance_setting_frame_row2_col3_row11_21, text="Runcard check:", font=(font_name, 12, "bold"), bg=bg_param_color)
+is_check_runcard_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+is_check_runcard_switch = tk.StringVar(value=get_registry_value("is_check_runcard_switch", "0"))
+is_check_runcard_switch_button = ttk.Checkbutton(middle_right_advance_setting_frame_row2_col3_row11_22, variable=is_check_runcard_switch, onvalue='1', offvalue='0', style="Switch")
+is_check_runcard_switch_button.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+
+
+is_input_runcard_label = tk.Label(middle_right_advance_setting_frame_row2_col3_row11_31, text="Runcard input:", font=(font_name, 12, "bold"), bg=bg_param_color)
+is_input_runcard_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+is_input_runcard_switch = tk.StringVar(value=get_registry_value("is_input_runcard_switch", "0"))
+is_input_runcard_switch_button = ttk.Checkbutton(middle_right_advance_setting_frame_row2_col3_row11_32, variable=is_input_runcard_switch, onvalue='1', offvalue='0', style="Switch")
+is_input_runcard_switch_button.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 
 
 
