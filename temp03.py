@@ -18,10 +18,8 @@ from barcode.writer import ImageWriter
 import os
 import sys
 
-if getattr(sys, 'frozen', False):
-    base_path = sys._MEIPASS
-else:
-    base_path = os.path.abspath(".")
+base_path = sys._MEIPASS if getattr(sys, 'frozen', False) else os.path.abspath(".")
+
 """Set DPI awareness for better scaling on high-DPI screens"""
 ctypes.windll.shcore.SetProcessDpiAwareness(10)
 REG_PATH = r"SOFTWARE\IPQC\Config"
@@ -76,6 +74,7 @@ showing_thickness_frame = False
 showing_weight_frame = False
 
 current_thickness_entry = ""
+current_weight_entry = ""
 error_msg = tk.StringVar()
 error_msg.set("")
 error_fg_color = "red"
@@ -305,19 +304,6 @@ def update_dimensions():
 
         error_display_entry.place(x=5, y=10, width=int(screen_width * 0.7), height=25)
 
-        if hasattr(weight_frame_write_insert_value, "tree"):
-            treeview_width = middle_left_col1_width
-            treeview_height = middle_frame_height - 80
-            weight_frame_write_insert_value.tree.config(height=int(treeview_height / 20))
-            weight_frame_write_insert_value.tree.pack(fill="both", expand=True)
-            for index, col in enumerate(weight_frame_write_insert_value.tree["columns"]):
-                if index == 0:
-                    record_width = int(treeview_width * 0.1)
-                elif index == 5:
-                    record_width = int(treeview_width * 0.3)
-                else:
-                    record_width = int((treeview_width * 0.6) / 4)
-                weight_frame_write_insert_value.tree.column(col, width=record_width, anchor="center")
 
         root.update_idletasks()
         root.update()
@@ -350,6 +336,24 @@ def show_error_message(msg, fg_color_code, time_show):
             root.after(0, clear_error_message)
     error_thread = threading.Thread(target=update_message, daemon=True)
     error_thread.start()
+def convert_to_uppercase(entry_name, max_char, accept_char):
+    try:
+        input_text = entry_name.get()
+        if accept_char == 0:
+            input_text = input_text.replace(',', '.')
+            filtered_text = ''.join(char for char in input_text if char.isdigit() or char == '.')
+            if filtered_text != input_text:
+                threading.Thread(target=show_error_message, args=("Only numbers and '.' are allowed!", 0, 2000), daemon=True).start()
+            input_text = filtered_text
+        upper_entry_name = input_text.upper()
+        if len(upper_entry_name) > max_char:
+            entry_name.set(upper_entry_name[:max_char])
+            threading.Thread(target=show_error_message, args=("Exceeded character limit!", 0, 2000), daemon=True).start()
+        else:
+            entry_name.set(upper_entry_name)
+    except Exception as e:
+        threading.Thread(target=show_error_message, args=(f"{e}", 0, 3000), daemon=True).start()
+        pass
 
 """Frame"""
 top_frame = tk.Frame(root, bg=bg_app_color)
@@ -554,6 +558,7 @@ def set_registry_value(name, value):
         print(e)
         threading.Thread(target=show_error_message, args=(f"{e}", 0, 3000), daemon=True).start()
 
+
 if get_registry_value("is_current_entry", "weight") == "weight":
     showing_thickness_frame, showing_weight_frame = False, True
 else:
@@ -618,13 +623,6 @@ def exit():
 
 
 
-"""Entry"""
-middle_right_setting_frame_row1_col1_label = tk.Label(middle_right_setting_frame_row1_col1, text="Cài đặt", font=(font_name, 18, "bold"), bg=bg_app_color)
-middle_right_setting_frame_row1_col1_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
-
-middle_right_advance_setting_frame_row1_col1_label = tk.Label(middle_right_advance_setting_frame_row1_col1, text="Cài đặt bổ sung", font=(font_name, 18, "bold"), bg=bg_app_color)
-middle_right_advance_setting_frame_row1_col1_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
-
 error_display_entry = tk.Entry(bottom_left_frame, textvariable=error_msg, font=("Cambria", 12), bg=bg_app_color, fg=error_fg_color, bd=0, highlightthickness=0, readonlybackground=bg_app_color, state="readonly")
 
 
@@ -632,101 +630,16 @@ error_display_entry = tk.Entry(bottom_left_frame, textvariable=error_msg, font=(
 
 
 
-def convert_to_uppercase(entry_name, max_char, accept_char):
-    try:
-        input_text = entry_name.get()
-        if accept_char == 0:
-            input_text = input_text.replace(',', '.')
-            filtered_text = ''.join(char for char in input_text if char.isdigit() or char == '.')
-            if filtered_text != input_text:
-                threading.Thread(target=show_error_message, args=("Only numbers and '.' are allowed!", 0, 2000), daemon=True).start()
-            input_text = filtered_text
-        upper_entry_name = input_text.upper()
-        if len(upper_entry_name) > max_char:
-            entry_name.set(upper_entry_name[:max_char])
-            threading.Thread(target=show_error_message, args=("Exceeded character limit!", 0, 2000), daemon=True).start()
-        else:
-            entry_name.set(upper_entry_name)
-    except Exception as e:
-        threading.Thread(target=show_error_message, args=(f"{e}", 0, 3000), daemon=True).start()
-        pass
+
 
 def weight_frame_mouser_pointer_in(event):
+    global current_weight_entry
     if 'name_var' in event.widget.__dict__:
+        current_weight_entry = event.widget.name_var
         print(f"Current Entry: {event.widget.name_var}")
 
-def weight_frame_write_insert_value(device_id, operator_id, runcard_id, weight_value):
-    try:
-        global weight_record_id
-        weight_record_id += 1
-        root.update_idletasks()
-        root.update()
-        frame_width = int(1000)
-        if not hasattr(weight_frame_write_insert_value, "tree"):
-            columns = ("ID", "Device ID", "Operator ID", "Runcard ID", "Weight", "Timestamp")
-            style = ttk.Style()
-            style.theme_use("classic")
-            style.configure("Treeview.Heading", font=("Arial", 12, "bold"), relief="flat", background="white", foreground="black", borderwidth=1, highlightthickness=0)
-            style.configure("Treeview", font=("Cambria", 13), borderwidth=0, relief="flat", background="white", fieldbackground="white")
-            style.map("Treeview", background=[("selected", "lightblue")])
-            weight_frame_write_insert_value.tree = ttk.Treeview(middle_left_weight_frame_left_2_scrollable_frame, columns=columns, show="headings", style="Treeview", height=int(middle_left_weight_frame_left_2_canvas.winfo_height() - 80))
-            for index, col in enumerate(columns):
-                if index == 0:
-                    record_width = int(frame_width*0.1)
-                elif index == 5:
-                    record_width = int(frame_width*0.3)
-                else:
-                    record_width = int(frame_width*0.6/4)
-                weight_frame_write_insert_value.tree.heading(col, text=col)
-                weight_frame_write_insert_value.tree.column(col, width=record_width, anchor="center")
-            weight_frame_write_insert_value.tree.pack(fill="both", expand=True)
-        weight_frame_write_insert_value.tree.insert("", "0", values=(weight_record_id, device_id, operator_id, runcard_id, weight_value, datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
-    except Exception as e:
-        threading.Thread(target=show_error_message, args=(f"{e}", 0, 3000), daemon=True).start()
-
 def weight_frame_hit_enter_button(event):
-    try:
-        current_widget = event.widget
-        if hasattr(current_widget, 'name_var') and current_widget.name_var == "entry_weight_weight_value_entry":
-            is_connected = int(get_registry_value("is_connected", "0"))
-            if is_connected == 1:
-                if all([entry_weight_device_name_entry.get(), entry_weight_operator_id_entry.get(), entry_weight_runcard_id_entry.get(), current_widget.get()]):
-                    if int(is_check_runcard_switch.get()) == 1:
-                        if check_runcard_correction(entry_weight_runcard_id_entry.get()):
-                            # weight_insert_data_to_db(entry_weight_device_name_entry.get(),
-                            #                          entry_weight_runcard_id_entry.get(), current_widget.get(),
-                            #                          entry_weight_operator_id_entry.get())
-                            weight_frame_write_insert_value(entry_weight_device_name_entry.get(),
-                                                            entry_weight_operator_id_entry.get(),
-                                                            entry_weight_runcard_id_entry.get(), current_widget.get())
-                    else:
-                        # weight_insert_data_to_db(entry_weight_device_name_entry.get(),
-                        #                          entry_weight_runcard_id_entry.get(), current_widget.get(),
-                        #                          entry_weight_operator_id_entry.get())
-                        weight_frame_write_insert_value(entry_weight_device_name_entry.get(),
-                                                        entry_weight_operator_id_entry.get(),
-                                                        entry_weight_runcard_id_entry.get(), current_widget.get())
-                    entry_weight_weight_value_entry.delete(0, tk.END)
-                    entry_weight_runcard_id_entry.delete(0, tk.END)
-                    entry_weight_runcard_id_entry.focus_set()
-
-                else:
-                    threading.Thread(target=show_error_message, args=("Empty field detected!", 0, 3000), daemon=True).start()
-            else:
-                messagebox.showerror("Error", "Connect to database first!")
-        else:
-            if hasattr(current_widget, 'name_var') and current_widget.name_var == "entry_weight_runcard_id_entry":
-                # if int(is_check_runcard_switch.get()) == 1:
-                #     if check_runcard_correction(entry_weight_runcard_id_entry.get()):
-                #         event.widget.tk_focusNext().focus()
-                # else:
-                    event.widget.tk_focusNext().focus()
-            else:
-                event.widget.tk_focusNext().focus()
-            return "break"
-    except Exception as e:
-        threading.Thread(target=show_error_message, args=(f"{e}", 0, 3000), daemon=True).start()
-        pass
+    return None
 
 
 entry_weight_device_name_var = tk.StringVar()
@@ -809,9 +722,9 @@ def thickness_frame_mouser_pointer_in(event):
         current_thickness_entry = event.widget.name_var
         print(f"Current Entry: {event.widget.name_var}")
 
-
 def thickness_frame_hit_enter_button(event):
     return None
+
 
 entry_thickness_runcard_id_var = tk.StringVar()
 entry_thickness_runcard_id_var.trace_add("write", lambda *args: convert_to_uppercase(entry_thickness_runcard_id_var, 12, 1))
@@ -823,6 +736,7 @@ entry_thickness_runcard_id_entry.grid(row=1, column=0, padx=5, pady=0, sticky='e
 entry_thickness_runcard_id_entry.bind('<FocusIn>', thickness_frame_mouser_pointer_in)
 entry_thickness_runcard_id_entry.bind('<Return>', thickness_frame_hit_enter_button)
 middle_left_thickness_frame_col1_frame_row1.columnconfigure(0, weight=1)
+
 
 
 entry_thickness_cuon_bien_var = tk.StringVar()
@@ -848,7 +762,6 @@ entry_thickness_co_tay_entry.grid(row=1, column=2, padx=5, pady=0, sticky='ew')
 entry_thickness_co_tay_entry.bind('<FocusIn>', thickness_frame_mouser_pointer_in)
 entry_thickness_co_tay_entry.bind('<Return>', thickness_frame_hit_enter_button)
 middle_left_thickness_frame_col1_frame_row1.columnconfigure(2, weight=1)
-
 
 
 
@@ -904,85 +817,6 @@ middle_left_thickness_frame_col1_frame_row1.columnconfigure(5, weight=1)
 
 
 
-"""Settings"""
-def update_com_ports(*menus):
-    try:
-        def monitor_com_ports():
-            global com_ports
-            while True:
-                new_com_ports = [port.device for port in serial.tools.list_ports.comports() if "Bluetooth" not in port.description]
-                if set(new_com_ports) != set(com_ports):
-                    com_ports = new_com_ports
-                    root.after(0, lambda: populate_com_menus(menus))
-                time.sleep(2)
-        def populate_com_menus(menus):
-            for menu in menus:
-                menu['menu'].delete(0, 'end')
-                menu['menu'].add_command(label="-------", command=lambda m=menu: m.setvar(m.cget("textvariable"), value="-------"))
-                for port in com_ports:
-                    menu['menu'].add_command(label=port, command=lambda p=port, m=menu: m.setvar(m.cget("textvariable"), value=p))
-        global com_ports
-        com_ports = [port.device for port in serial.tools.list_ports.comports() if "Bluetooth" not in port.description]
-        populate_com_menus(menus)
-        if not hasattr(update_com_ports, "thread_started"):
-            update_com_ports.thread_started = True
-            com_port_thread = threading.Thread(target=monitor_com_ports, daemon=True)
-            com_port_thread.start()
-    except Exception as e:
-        threading.Thread(target=show_error_message, args=(f"{e}", 0, 3000), daemon=True).start()
-        pass
-
-def get_selected_frame():
-    """Retrieve the last selected frame from the Windows Registry."""
-    return get_registry_value("SelectedFrame", "Trọng lượng")
-
-def set_selected_frame(value):
-    """Save the selected frame to the Windows Registry."""
-    set_registry_value("SelectedFrame", value)
-
-def save_setting_frame():
-    try:
-        threading.Thread(target=show_error_message, args=(f"Save setting", 1, 3000), daemon=True).start()
-        set_registry_value("COM1", selected_weight_com.get())
-        set_registry_value("COM2", selected_thickness_com.get())
-        switch_middle_left_frame()
-        set_selected_frame(selected_middle_left_frame.get())
-        messagebox.showinfo("Success", "Save setting success!\nApplication will close automatically\nRe-open the app")
-        root.destroy()
-    except Exception as e:
-        threading.Thread(target=show_error_message, args=(f"{e}", 0, 3000), daemon=True).start()
-        pass
-
-def save_advance_setting_frame():
-    try:
-        threading.Thread(target=show_error_message, args=(f"Save setting", 1, 3000), daemon=True).start()
-        set_registry_value("COM1", selected_weight_com.get())
-        set_registry_value("COM2", selected_thickness_com.get())
-        set_registry_value("ServerIP", server_ip.get())
-        switch_middle_left_frame()
-        set_selected_frame(selected_middle_left_frame.get())
-        set_registry_value("is_plant_name", plant_name.get())
-        set_registry_value("is_show_runcard_switch", is_show_runcard_switch.get())
-        set_registry_value("is_check_runcard_switch", is_check_runcard_switch.get())
-        set_registry_value("is_input_runcard_switch", is_input_runcard_switch.get())
-        set_registry_value("is_weight_keyboard", is_weight_keyboard.get())
-        set_registry_value("is_weight_timeout", is_weight_timeout.get())
-        set_registry_value("is_weight_delay", is_weight_delay.get())
-        set_registry_value("is_thickness_keyboard", is_thickness_keyboard.get())
-        set_registry_value("is_thickness_timeout", is_thickness_timeout.get())
-        set_registry_value("is_thickness_delay", is_thickness_delay.get())
-        messagebox.showinfo("Success", "Save setting success!\nApplication will close automatically\nRe-open the app")
-        root.destroy()
-    except Exception as e:
-        threading.Thread(target=show_error_message, args=(f"{e}", 0, 3000), daemon=True).start()
-        pass
-
-
-
-
-
-
-
 
 
 """Button"""
@@ -998,6 +832,7 @@ top_open_weight_frame_button.bind("<Enter>", on_enter_top_open_weight_frame_butt
 top_open_weight_frame_button.bind("<Leave>", on_leave_top_open_weight_frame_button)
 
 
+
 def on_enter_top_open_thickness_frame_button(event):
     top_open_thickness_frame_button.config(image=top_open_thickness_frame_button_hover_icon)
 def on_leave_top_open_thickness_frame_button(event):
@@ -1008,7 +843,6 @@ top_open_thickness_frame_button = tk.Button(top_right_frame, image=top_open_thic
 top_open_thickness_frame_button.grid(row=0, column=4, padx=5, pady=5, sticky="e")
 top_open_thickness_frame_button.bind("<Enter>", on_enter_top_open_thickness_frame_button)
 top_open_thickness_frame_button.bind("<Leave>", on_leave_top_open_thickness_frame_button)
-
 
 
 
@@ -1024,6 +858,7 @@ middle_open_setting_frame_button.bind("<Enter>", on_enter_middle_open_setting_fr
 middle_open_setting_frame_button.bind("<Leave>", on_leave_middle_open_setting_frame_button)
 
 
+
 def on_enter_middle_open_advance_setting_frame_button(event):
     middle_open_advance_setting_frame_button.config(image=advance_setting_hover_icon)
 def on_leave_middle_open_advance_setting_frame_button(event):
@@ -1034,6 +869,7 @@ middle_open_advance_setting_frame_button = tk.Button(middle_right_setting_frame_
 middle_open_advance_setting_frame_button.grid(row=0, column=0, padx=20, pady=5, sticky="e")
 middle_open_advance_setting_frame_button.bind("<Enter>", on_enter_middle_open_advance_setting_frame_button)
 middle_open_advance_setting_frame_button.bind("<Leave>", on_leave_middle_open_advance_setting_frame_button)
+
 
 
 def on_enter_middle_open_return_frame_button(event):
@@ -1048,6 +884,7 @@ middle_open_return_frame_button.bind("<Enter>", on_enter_middle_open_return_fram
 middle_open_return_frame_button.bind("<Leave>", on_leave_middle_open_return_frame_button)
 
 
+
 def on_enter_middle_open_runcard_frame_button(event):
     middle_open_runcard_frame_button.config(image=barcode_hover_icon)
 def on_leave_middle_open_runcard_frame_button(event):
@@ -1058,6 +895,7 @@ middle_open_runcard_frame_button = tk.Button(top_left_frame, image=barcode_icon,
 middle_open_runcard_frame_button.grid(row=0, column=2, padx=5, pady=5, sticky="w")
 middle_open_runcard_frame_button.bind("<Enter>", on_enter_middle_open_runcard_frame_button)
 middle_open_runcard_frame_button.bind("<Leave>", on_leave_middle_open_runcard_frame_button)
+
 
 
 close_icon = ImageTk.PhotoImage(Image.open(os.path.join(base_path, "theme", "icons", "close.png")).resize((134, 34)))
@@ -1080,13 +918,15 @@ close_advance_setting_frame_button.grid(row=0, column=0, padx=5, pady=5, sticky=
 close_advance_setting_frame_button.bind("<Enter>", on_enter_close_advance_setting_frame_button)
 close_advance_setting_frame_button.bind("<Leave>", on_leave_close_advance_setting_frame_button)
 
+
+
 save_icon = ImageTk.PhotoImage(Image.open(os.path.join(base_path, "theme", "icons", "save.png")).resize((134, 34)))
 save_icon_hover = ImageTk.PhotoImage(Image.open(os.path.join(base_path, "theme", "icons", "save_hover.png")).resize((134, 34)))
 def on_enter_save_setting_frame_button(event):
     save_setting_frame_button.config(image=save_icon_hover)
 def on_leave_save_setting_frame_button(event):
     save_setting_frame_button.config(image=save_icon)
-save_setting_frame_button = tk.Button(middle_right_setting_frame_row3_col1, image=save_icon, command=save_setting_frame, bg=bg_app_color, width=134, height=34, relief="flat", borderwidth=0)
+save_setting_frame_button = tk.Button(middle_right_setting_frame_row3_col1, image=save_icon, command=None, bg=bg_app_color, width=134, height=34, relief="flat", borderwidth=0)
 save_setting_frame_button.grid(row=0, column=0, padx=5, pady=5, sticky="e")
 save_setting_frame_button.bind("<Enter>", on_enter_save_setting_frame_button)
 save_setting_frame_button.bind("<Leave>", on_leave_save_setting_frame_button)
@@ -1095,10 +935,11 @@ def on_enter_save_advance_setting_frame_button(event):
     save_advance_setting_frame_button.config(image=save_icon_hover)
 def on_leave_save_advance_setting_frame_button(event):
     save_advance_setting_frame_button.config(image=save_icon)
-save_advance_setting_frame_button = tk.Button(middle_right_advance_setting_frame_row3_col1, image=save_icon, command=save_advance_setting_frame, bg=bg_app_color, width=134, height=34, relief="flat", borderwidth=0)
+save_advance_setting_frame_button = tk.Button(middle_right_advance_setting_frame_row3_col1, image=save_icon, command=None, bg=bg_app_color, width=134, height=34, relief="flat", borderwidth=0)
 save_advance_setting_frame_button.grid(row=0, column=0, padx=5, pady=5, sticky="e")
 save_advance_setting_frame_button.bind("<Enter>", on_enter_save_advance_setting_frame_button)
 save_advance_setting_frame_button.bind("<Leave>", on_leave_save_advance_setting_frame_button)
+
 
 
 def on_enter_database_test_connection_button(event):
@@ -1112,6 +953,8 @@ database_test_connection_button.grid(row=4, column=1, padx=5, pady=5, sticky="e"
 database_test_connection_button.bind("<Enter>", on_enter_database_test_connection_button)
 database_test_connection_button.bind("<Leave>", on_leave_database_test_connection_button)
 
+
+
 def on_enter_bottom_exit_button(event):
     bottom_exit_button.config(image=exit_icon_hover)
 def on_leave_bottom_exit_button(event):
@@ -1122,264 +965,6 @@ bottom_exit_button = tk.Button(bottom_right_frame, image=exit_icon, command=exit
 bottom_exit_button.grid(row=0, column=0, columnspan=5, padx=5, pady=5, sticky="e")
 bottom_exit_button.bind("<Enter>", on_enter_bottom_exit_button)
 bottom_exit_button.bind("<Leave>", on_leave_bottom_exit_button)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-def weight_frame_com_port_insert_data():
-    global weight_record_log_id
-    if "COM" in get_registry_value("COM1", ""):
-        print(f"Weight COM: {selected_weight_com.get()}")
-        ser = serial.Serial(selected_weight_com.get(), baudrate=9600, timeout=float(get_registry_value("is_weight_timeout", "0.3")))
-        try:
-            while True:
-                if ser.is_open:
-                    value = ser.readline().decode('utf-8').strip()
-                    if len(value):
-                        weight_record_log_id += 1
-                        # threading.Thread(target=root.after, args=(
-                        # 0, update_com_port_weight_log_display, f"{str(weight_record_log_id).zfill(4)}   {value}"),
-                        #                  daemon=True).start()
-                        if "g" not in value[-2:]:
-                            threading.Thread(target=show_error_message,
-                                             args=(f"Change your weight unit to gram!", 0, 3000), daemon=True).start()
-                        if 'ST' in value:
-                            weight_value = float(
-                                re.sub(r'[a-zA-Z]', '', ((value.replace(" ", "")).split(':')[-1])[:-1]))
-                            if weight_value >= 0:
-                                entry_weight_runcard_id_entry.event_generate("<Return>")
-                                entry_weight_weight_value_entry.insert(0, weight_value)
-                                entry_weight_weight_value_entry.event_generate("<Return>")
-                                entry_weight_weight_value_entry.delete(0, tk.END)
-                                entry_weight_runcard_id_entry.delete(0, tk.END)
-                                entry_weight_runcard_id_entry.focus_set()
-                else:
-                    ser.open()
-        except Exception as e:
-            threading.Thread(target=show_error_message, args=(f"{e}", 0, 3000), daemon=True).start()
-            pass
-        finally:
-            if ser.is_open:
-                ser.close()
-    else:
-        pass
-
-com_data_labels = []
-def update_com_port_weight_log_display(data):
-    try:
-        global com_data_labels
-        def add_data():
-            label = tk.Label(middle_left_weight_frame_right_frame_log_scrollable_frame, text=data, font=("Arial", 13), bg='white', anchor="w", justify="left")
-            label.pack(fill="x", padx=5, pady=2)
-            com_data_labels.append(label)
-            if len(com_data_labels) > 20:
-                com_data_labels[0].destroy()
-                com_data_labels.pop(0)
-            middle_left_weight_frame_right_frame_log_scrollable_frame.update_idletasks()
-            middle_left_weight_frame_right_frame_log_canvas.configure(scrollregion=middle_left_weight_frame_right_frame_log_canvas.bbox("all"))
-        root.after(0, add_data)
-    except Exception as e:
-        threading.Thread(target=show_error_message, args=(f"{e}", 0, 3000), daemon=True).start()
-        pass
-
-def switch_middle_left_frame(*args):
-    global weight_com_thread, thickness_com_thread
-    try:
-        print(f"Switching to: {selected_middle_left_frame.get()}")
-        if selected_middle_left_frame.get() == "Trọng lượng":
-            middle_left_thickness_frame.pack_forget()
-            middle_left_weight_frame.pack(fill=tk.BOTH, expand=True)
-            middle_left_weight_frame.lift()
-        else:
-            middle_left_weight_frame.pack_forget()
-            middle_left_thickness_frame.pack(fill=tk.BOTH, expand=True)
-            middle_left_thickness_frame.lift()
-        if "COM" in str(get_registry_value("COM1", "")):
-            if weight_com_thread is None or not weight_com_thread.is_alive():
-                pass
-                # weight_com_thread = threading.Thread(target=weight_frame_com_port_insert_data, daemon=True)
-                # weight_com_thread.start()
-        if "COM" in str(get_registry_value("COM2", "")):
-            if thickness_com_thread is None or not thickness_com_thread.is_alive():
-                pass
-                # thickness_com_thread = threading.Thread(target=thickness_frame_com_port_insert_data, daemon=True)
-                # thickness_com_thread.start()
-        set_selected_frame(selected_middle_left_frame.get())
-    except Exception as e:
-        threading.Thread(target=show_error_message, args=(f"{e}", 0, 3000), daemon=True).start()
-        pass
-
-selected_middle_left_frame = tk.StringVar(value=get_selected_frame())
-switch_middle_left_frame()
-
-selected_weight_com = tk.StringVar(value=get_registry_value("COM1", ""))
-selected_thickness_com = tk.StringVar(value=get_registry_value("COM2", ""))
-
-weight_label = tk.Label(middle_right_setting_frame_row2_row1, text="Trọng lượng:      ", font=(font_name, 14, "bold"), bg=bg_param_color)
-weight_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
-weight_menu = CustomOptionMenu(middle_right_setting_frame_row2_row1, selected_weight_com, "")
-weight_menu.grid(row=0, column=1, padx=5, pady=5, sticky="w")
-
-thickness_label = tk.Label(middle_right_setting_frame_row2_row1, text="Độ dày:", font=(font_name, 14, "bold"), bg=bg_param_color)
-thickness_label.grid(row=1, column=0, padx=5, pady=5, sticky="w")
-thickness_menu = CustomOptionMenu(middle_right_setting_frame_row2_row1, selected_thickness_com, "")
-thickness_menu.grid(row=1, column=1, padx=5, pady=5, sticky="w")
-
-frame_select_label = tk.Label(middle_right_setting_frame_row2_row1, text="Mặc định:", font=(font_name, 14, "bold"), bg=bg_param_color)
-frame_select_label.grid(row=2, column=0, padx=5, pady=5, sticky="w")
-frame_select_menu = CustomOptionMenu(middle_right_setting_frame_row2_row1, selected_middle_left_frame, "Trọng lượng", "Độ dày",command=switch_middle_left_frame)
-frame_select_menu.grid(row=2, column=1, padx=5, pady=5, sticky="w")
-
-
-advance_weight_label = tk.Label(middle_right_advance_setting_frame_row2_col1_row2, text="Trọng lượng:      ", font=(font_name, 14, "bold"), bg='white')
-advance_weight_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
-advance_weight_menu = CustomOptionMenu(middle_right_advance_setting_frame_row2_col1_row2, selected_weight_com, "")
-advance_weight_menu.grid(row=0, column=1, padx=5, pady=5, sticky="w")
-
-advance_thickness_label = tk.Label(middle_right_advance_setting_frame_row2_col1_row2, text="Độ dày:", font=(font_name, 14, "bold"), bg='white')
-advance_thickness_label.grid(row=1, column=0, padx=5, pady=5, sticky="w")
-advance_thickness_menu = CustomOptionMenu(middle_right_advance_setting_frame_row2_col1_row2, selected_thickness_com, "")
-advance_thickness_menu.grid(row=1, column=1, padx=5, pady=5, sticky="w")
-
-advance_frame_select_label = tk.Label(middle_right_advance_setting_frame_row2_col1_row2, text="Mặc định:", font=(font_name, 14, "bold"), bg='white')
-advance_frame_select_label.grid(row=2, column=0, padx=5, pady=5, sticky="w")
-advance_frame_select_menu = CustomOptionMenu(middle_right_advance_setting_frame_row2_col1_row2, selected_middle_left_frame, "Trọng lượng", "Độ dày",command=switch_middle_left_frame)
-advance_frame_select_menu.grid(row=2, column=1, padx=5, pady=5, sticky="w")
-
-update_com_ports(weight_menu, thickness_menu)
-update_com_ports(advance_weight_menu, advance_thickness_menu)
-
-
-
-server_ip_label = tk.Label(middle_right_advance_setting_frame_row2_col1_row5_col1_row1, text="Server IP:", font=(font_name, 14, "bold"), bg='white')
-server_ip_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
-server_ip = tk.StringVar(value=get_registry_value("ServerIP", ""))
-server_ip_entry = tk.Entry(middle_right_advance_setting_frame_row2_col1_row5_col2_row1, textvariable=server_ip, font=(font_name, 16), width=12, bg='white')
-server_ip_entry.grid(row=0, column=0, padx=5, pady=5, sticky="w")
-
-
-db_name_label = tk.Label(middle_right_advance_setting_frame_row2_col1_row5_col1_row2, text="Database:", font=(font_name, 14, "bold"), bg='white')
-db_name_label.grid(row=1, column=0, padx=5, pady=5, sticky="w")
-db_name = tk.StringVar(value=get_registry_value("Database", "PMG_DEVICE"))
-db_name_entry = tk.Entry(middle_right_advance_setting_frame_row2_col1_row5_col2_row2, textvariable=db_name, font=(font_name, 16), width=12, bg='white', fg='red', readonlybackground='white', state='readonly')
-db_name_entry.grid(row=1, column=0, padx=5, pady=5, sticky="w")
-
-
-user_id_label = tk.Label(middle_right_advance_setting_frame_row2_col1_row5_col1_row3, text="User ID:", font=(font_name, 14, "bold"), bg='white')
-user_id_label.grid(row=2, column=0, padx=5, pady=5, sticky="w")
-user_id = tk.StringVar(value=get_registry_value("UserID", "scadauser"))
-user_id_entry = tk.Entry(middle_right_advance_setting_frame_row2_col1_row5_col2_row3, textvariable=user_id, font=(font_name, 16), width=12, bg='white', fg='red', readonlybackground='white', state='readonly')
-user_id_entry.grid(row=2, column=0, padx=5, pady=5, sticky="w")
-
-
-
-password_label = tk.Label(middle_right_advance_setting_frame_row2_col1_row5_col1_row4, text="Password:", font=(font_name, 14, "bold"), bg='white')
-password_label.grid(row=3, column=0, padx=5, pady=5, sticky="w")
-password = tk.StringVar(value=get_registry_value("Password", "pmgscada+123"))
-password_entry = tk.Entry(middle_right_advance_setting_frame_row2_col1_row5_col2_row4, textvariable=password, font=(font_name, 16), width=12, show='*', bg='white', fg='red', readonlybackground='white', state='readonly')
-password_entry.grid(row=3, column=0, padx=5, pady=5, sticky="w")
-
-
-plant_name_label = tk.Label(middle_right_advance_setting_frame_row2_col1_row9_col1_row1, text="Plant name:", font=(font_name, 14, "bold"), bg='white')
-plant_name_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
-plant_name = tk.StringVar(value=get_registry_value("is_plant_name", ""))
-plant_name.trace_add("write", lambda *args: convert_to_uppercase(plant_name, 3, 1))
-plant_name_entry = tk.Entry(middle_right_advance_setting_frame_row2_col1_row9_col2_row1, textvariable=plant_name, font=(font_name, 16), width=12, bg='white')
-plant_name_entry.grid(row=0, column=0, padx=5, pady=5, sticky="w")
-
-
-
-
-
-weight_setting_label = tk.Label(middle_right_advance_setting_frame_row2_col3_row1, text="Trọng lượng", font=(font_name, 14, "bold"), bg=bg_app_color)
-weight_setting_label.grid(row=0, column=0, padx=0, pady=0)
-
-is_weight_keyboard_label = tk.Label(middle_right_advance_setting_frame_row2_col3_row3_11, text="Keyboard:", font=(font_name, 12, "bold"), bg=bg_param_color)
-is_weight_keyboard_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
-is_weight_keyboard = tk.StringVar(value=get_registry_value("is_weight_keyboard", "0"))
-is_weight_keyboard_button = ttk.Checkbutton(middle_right_advance_setting_frame_row2_col3_row3_12, variable=is_weight_keyboard, onvalue='1', offvalue='0', style="Switch")
-is_weight_keyboard_button.grid(row=0, column=0, padx=5, pady=5, sticky="w")
-
-is_weight_timeout_label = tk.Label(middle_right_advance_setting_frame_row2_col3_row3_21, text="Timeout:", font=(font_name, 12, "bold"), bg=bg_param_color)
-is_weight_timeout_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
-is_weight_timeout = tk.StringVar(value=get_registry_value("is_weight_timeout", "0.3"))
-is_weight_timeout_entry = tk.Entry(middle_right_advance_setting_frame_row2_col3_row3_22, textvariable=is_weight_timeout, font=(font_name, 14), width=6, bg='white', fg='black')
-is_weight_timeout_entry.grid(row=1, column=0, padx=5, pady=5, sticky="w")
-
-is_weight_delay_label = tk.Label(middle_right_advance_setting_frame_row2_col3_row3_31, text="Delay:", font=(font_name, 12, "bold"), bg=bg_param_color)
-is_weight_delay_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
-is_weight_delay = tk.StringVar(value=get_registry_value("is_weight_delay", "0.0"))
-is_weight_delay_entry = tk.Entry(middle_right_advance_setting_frame_row2_col3_row3_32, textvariable=is_weight_delay, font=(font_name, 14), width=6, bg='white', fg='black')
-is_weight_delay_entry.grid(row=1, column=0, padx=5, pady=5, sticky="w")
-
-thickness_setting_label = tk.Label(middle_right_advance_setting_frame_row2_col3_row5, text="Độ dày", font=(font_name, 14, "bold"), bg=bg_app_color)
-thickness_setting_label.grid(row=0, column=0, padx=0, pady=0)
-
-
-is_thickness_keyboard_label = tk.Label(middle_right_advance_setting_frame_row2_col3_row7_11, text="Keyboard:", font=(font_name, 12, "bold"), bg=bg_param_color)
-is_thickness_keyboard_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
-is_thickness_keyboard = tk.StringVar(value=get_registry_value("is_thickness_keyboard", "0"))
-is_thickness_keyboard_button = ttk.Checkbutton(middle_right_advance_setting_frame_row2_col3_row7_12, variable=is_thickness_keyboard, onvalue='1', offvalue='0', style="Switch")
-is_thickness_keyboard_button.grid(row=0, column=0, padx=5, pady=5, sticky="w")
-
-is_thickness_timeout_label = tk.Label(middle_right_advance_setting_frame_row2_col3_row7_21, text="Timeout:", font=(font_name, 12, "bold"), bg=bg_param_color)
-is_thickness_timeout_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
-is_thickness_timeout = tk.StringVar(value=get_registry_value("is_thickness_timeout", "0.3"))
-is_thickness_timeout_entry = tk.Entry(middle_right_advance_setting_frame_row2_col3_row7_22, textvariable=is_thickness_timeout, font=(font_name, 14), width=6, bg='white', fg='black')
-is_thickness_timeout_entry.grid(row=1, column=0, padx=5, pady=5, sticky="w")
-
-is_thickness_delay_label = tk.Label(middle_right_advance_setting_frame_row2_col3_row7_31, text="Delay:", font=(font_name, 12, "bold"), bg=bg_param_color)
-is_thickness_delay_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
-is_thickness_delay = tk.StringVar(value=get_registry_value("is_thickness_delay", "0"))
-is_thickness_delay_entry = tk.Entry(middle_right_advance_setting_frame_row2_col3_row7_32, textvariable=is_thickness_delay, font=(font_name, 14), width=6, bg='white', fg='black')
-is_thickness_delay_entry.grid(row=1, column=0, padx=5, pady=5, sticky="w")
-
-
-
-
-
-runcard_setting_label = tk.Label(middle_right_advance_setting_frame_row2_col3_row9, text="Runcard", font=(font_name, 14, "bold"), bg=bg_app_color)
-runcard_setting_label.grid(row=0, column=0, padx=0, pady=0)
-
-
-
-is_show_runcard_label = tk.Label(middle_right_advance_setting_frame_row2_col3_row11_11, text="Runcard show:", font=(font_name, 12, "bold"), bg=bg_param_color)
-is_show_runcard_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
-is_show_runcard_switch = tk.StringVar(value=get_registry_value("is_show_runcard", "0"))
-is_show_runcard_switch_button = ttk.Checkbutton(middle_right_advance_setting_frame_row2_col3_row11_21, variable=is_show_runcard_switch, onvalue='1', offvalue='0', style="Switch")
-is_show_runcard_switch_button.grid(row=0, column=0, padx=5, pady=5, sticky="w")
-
-
-is_check_runcard_label = tk.Label(middle_right_advance_setting_frame_row2_col3_row11_21, text="Runcard check:", font=(font_name, 12, "bold"), bg=bg_param_color)
-is_check_runcard_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
-is_check_runcard_switch = tk.StringVar(value=get_registry_value("is_check_runcard_switch", "0"))
-is_check_runcard_switch_button = ttk.Checkbutton(middle_right_advance_setting_frame_row2_col3_row11_22, variable=is_check_runcard_switch, onvalue='1', offvalue='0', style="Switch")
-is_check_runcard_switch_button.grid(row=0, column=0, padx=5, pady=5, sticky="w")
-
-
-is_input_runcard_label = tk.Label(middle_right_advance_setting_frame_row2_col3_row11_31, text="Runcard input:", font=(font_name, 12, "bold"), bg=bg_param_color)
-is_input_runcard_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
-is_input_runcard_switch = tk.StringVar(value=get_registry_value("is_input_runcard_switch", "0"))
-is_input_runcard_switch_button = ttk.Checkbutton(middle_right_advance_setting_frame_row2_col3_row11_32, variable=is_input_runcard_switch, onvalue='1', offvalue='0', style="Switch")
-is_input_runcard_switch_button.grid(row=0, column=0, padx=5, pady=5, sticky="w")
-
-
 
 
 """Update loop"""
