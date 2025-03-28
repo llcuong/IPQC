@@ -305,6 +305,19 @@ def update_dimensions():
 
         error_display_entry.place(x=5, y=10, width=int(screen_width * 0.7), height=25)
 
+        if hasattr(weight_frame_write_insert_value, "tree"):
+            treeview_width = middle_left_col1_width
+            treeview_height = middle_frame_height - 80
+            weight_frame_write_insert_value.tree.config(height=int(treeview_height / 20))
+            weight_frame_write_insert_value.tree.pack(fill="both", expand=True)
+            for index, col in enumerate(weight_frame_write_insert_value.tree["columns"]):
+                if index == 0:
+                    record_width = int(treeview_width * 0.1)
+                elif index == 5:
+                    record_width = int(treeview_width * 0.3)
+                else:
+                    record_width = int((treeview_width * 0.6) / 4)
+                weight_frame_write_insert_value.tree.column(col, width=record_width, anchor="center")
 
         root.update_idletasks()
         root.update()
@@ -642,8 +655,79 @@ def weight_frame_mouser_pointer_in(event):
     if 'name_var' in event.widget.__dict__:
         print(f"Current Entry: {event.widget.name_var}")
 
+def weight_frame_write_insert_value(device_id, operator_id, runcard_id, weight_value):
+    try:
+        global weight_record_id
+        weight_record_id += 1
+        root.update_idletasks()
+        root.update()
+        frame_width = int(1000)
+        if not hasattr(weight_frame_write_insert_value, "tree"):
+            columns = ("ID", "Device ID", "Operator ID", "Runcard ID", "Weight", "Timestamp")
+            style = ttk.Style()
+            style.theme_use("classic")
+            style.configure("Treeview.Heading", font=("Arial", 12, "bold"), relief="flat", background="white", foreground="black", borderwidth=1, highlightthickness=0)
+            style.configure("Treeview", font=("Cambria", 13), borderwidth=0, relief="flat", background="white", fieldbackground="white")
+            style.map("Treeview", background=[("selected", "lightblue")])
+            weight_frame_write_insert_value.tree = ttk.Treeview(middle_left_weight_frame_left_2_scrollable_frame, columns=columns, show="headings", style="Treeview", height=int(middle_left_weight_frame_left_2_canvas.winfo_height() - 80))
+            for index, col in enumerate(columns):
+                if index == 0:
+                    record_width = int(frame_width*0.1)
+                elif index == 5:
+                    record_width = int(frame_width*0.3)
+                else:
+                    record_width = int(frame_width*0.6/4)
+                weight_frame_write_insert_value.tree.heading(col, text=col)
+                weight_frame_write_insert_value.tree.column(col, width=record_width, anchor="center")
+            weight_frame_write_insert_value.tree.pack(fill="both", expand=True)
+        weight_frame_write_insert_value.tree.insert("", "0", values=(weight_record_id, device_id, operator_id, runcard_id, weight_value, datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
+    except Exception as e:
+        threading.Thread(target=show_error_message, args=(f"{e}", 0, 3000), daemon=True).start()
+
 def weight_frame_hit_enter_button(event):
-    return None
+    try:
+        current_widget = event.widget
+        if hasattr(current_widget, 'name_var') and current_widget.name_var == "entry_weight_weight_value_entry":
+            is_connected = int(get_registry_value("is_connected", "0"))
+            if is_connected == 1:
+                if all([entry_weight_device_name_entry.get(), entry_weight_operator_id_entry.get(), entry_weight_runcard_id_entry.get(), current_widget.get()]):
+                    if int(is_check_runcard_switch.get()) == 1:
+                        if check_runcard_correction(entry_weight_runcard_id_entry.get()):
+                            # weight_insert_data_to_db(entry_weight_device_name_entry.get(),
+                            #                          entry_weight_runcard_id_entry.get(), current_widget.get(),
+                            #                          entry_weight_operator_id_entry.get())
+                            weight_frame_write_insert_value(entry_weight_device_name_entry.get(),
+                                                            entry_weight_operator_id_entry.get(),
+                                                            entry_weight_runcard_id_entry.get(), current_widget.get())
+                    else:
+                        # weight_insert_data_to_db(entry_weight_device_name_entry.get(),
+                        #                          entry_weight_runcard_id_entry.get(), current_widget.get(),
+                        #                          entry_weight_operator_id_entry.get())
+                        weight_frame_write_insert_value(entry_weight_device_name_entry.get(),
+                                                        entry_weight_operator_id_entry.get(),
+                                                        entry_weight_runcard_id_entry.get(), current_widget.get())
+                    entry_weight_weight_value_entry.delete(0, tk.END)
+                    entry_weight_runcard_id_entry.delete(0, tk.END)
+                    entry_weight_runcard_id_entry.focus_set()
+
+                else:
+                    threading.Thread(target=show_error_message, args=("Empty field detected!", 0, 3000), daemon=True).start()
+            else:
+                messagebox.showerror("Error", "Connect to database first!")
+        else:
+            if hasattr(current_widget, 'name_var') and current_widget.name_var == "entry_weight_runcard_id_entry":
+                # if int(is_check_runcard_switch.get()) == 1:
+                #     if check_runcard_correction(entry_weight_runcard_id_entry.get()):
+                #         event.widget.tk_focusNext().focus()
+                # else:
+                    event.widget.tk_focusNext().focus()
+            else:
+                event.widget.tk_focusNext().focus()
+            return "break"
+    except Exception as e:
+        threading.Thread(target=show_error_message, args=(f"{e}", 0, 3000), daemon=True).start()
+        pass
+
 
 entry_weight_device_name_var = tk.StringVar()
 entry_weight_device_name_var.trace_add("write", lambda *args: convert_to_uppercase(entry_weight_device_name_var, 12, 1))
@@ -1058,7 +1142,61 @@ bottom_exit_button.bind("<Leave>", on_leave_bottom_exit_button)
 
 
 
+def weight_frame_com_port_insert_data():
+    global weight_record_log_id
+    if "COM" in get_registry_value("COM1", ""):
+        print(f"Weight COM: {selected_weight_com.get()}")
+        ser = serial.Serial(selected_weight_com.get(), baudrate=9600, timeout=float(get_registry_value("is_weight_timeout", "0.3")))
+        try:
+            while True:
+                if ser.is_open:
+                    value = ser.readline().decode('utf-8').strip()
+                    if len(value):
+                        weight_record_log_id += 1
+                        # threading.Thread(target=root.after, args=(
+                        # 0, update_com_port_weight_log_display, f"{str(weight_record_log_id).zfill(4)}   {value}"),
+                        #                  daemon=True).start()
+                        if "g" not in value[-2:]:
+                            threading.Thread(target=show_error_message,
+                                             args=(f"Change your weight unit to gram!", 0, 3000), daemon=True).start()
+                        if 'ST' in value:
+                            weight_value = float(
+                                re.sub(r'[a-zA-Z]', '', ((value.replace(" ", "")).split(':')[-1])[:-1]))
+                            if weight_value >= 0:
+                                entry_weight_runcard_id_entry.event_generate("<Return>")
+                                entry_weight_weight_value_entry.insert(0, weight_value)
+                                entry_weight_weight_value_entry.event_generate("<Return>")
+                                entry_weight_weight_value_entry.delete(0, tk.END)
+                                entry_weight_runcard_id_entry.delete(0, tk.END)
+                                entry_weight_runcard_id_entry.focus_set()
+                else:
+                    ser.open()
+        except Exception as e:
+            threading.Thread(target=show_error_message, args=(f"{e}", 0, 3000), daemon=True).start()
+            pass
+        finally:
+            if ser.is_open:
+                ser.close()
+    else:
+        pass
 
+com_data_labels = []
+def update_com_port_weight_log_display(data):
+    try:
+        global com_data_labels
+        def add_data():
+            label = tk.Label(middle_left_weight_frame_right_frame_log_scrollable_frame, text=data, font=("Arial", 13), bg='white', anchor="w", justify="left")
+            label.pack(fill="x", padx=5, pady=2)
+            com_data_labels.append(label)
+            if len(com_data_labels) > 20:
+                com_data_labels[0].destroy()
+                com_data_labels.pop(0)
+            middle_left_weight_frame_right_frame_log_scrollable_frame.update_idletasks()
+            middle_left_weight_frame_right_frame_log_canvas.configure(scrollregion=middle_left_weight_frame_right_frame_log_canvas.bbox("all"))
+        root.after(0, add_data)
+    except Exception as e:
+        threading.Thread(target=show_error_message, args=(f"{e}", 0, 3000), daemon=True).start()
+        pass
 
 def switch_middle_left_frame(*args):
     global weight_com_thread, thickness_com_thread
