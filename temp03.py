@@ -131,12 +131,8 @@ def update_dimensions():
             middle_right_frame_width = 520
             middle_center_frame_width = 10
             middle_left_frame_width = screen_width - middle_right_frame_width - middle_center_frame_width
-            if showing_thickness_frame:
-                middle_left_col3_width = 210
-                middle_left_col2_width = 10
-            elif showing_weight_frame:
-                middle_left_col3_width = 210
-                middle_left_col2_width = 10
+            middle_left_col3_width = 210
+            middle_left_col2_width = 10
             middle_left_col1_width = middle_left_frame_width - middle_left_col3_width - middle_left_col2_width
         elif showing_advance_setting:
             middle_right_frame_width = 552
@@ -175,19 +171,35 @@ def update_dimensions():
         middle_left_thickness_frame_col2_frame.place(x=middle_left_col1_width, y=0, width=middle_left_col2_width, height=middle_frame_height)
         middle_left_thickness_frame_col3_frame.place(x=middle_left_col1_width + middle_left_col2_width, y=0, width=middle_left_col3_width, height=middle_frame_height)
 
+        middle_left_weight_frame_col3_frame_row1.place(x=0, y=0, width=210, height=140)
+        middle_left_weight_frame_col3_frame_row2.place(x=0, y=140, width=210, height=middle_frame_height-140)
+
+        middle_left_thickness_frame_col3_frame_row1.place(x=0, y=0, width=210, height=140)
+        middle_left_thickness_frame_col3_frame_row2.place(x=0, y=140, width=210, height=middle_frame_height-140)
+
+        middle_left_weight_frame_col3_frame_row1_row1.place(x=0, y=20, width=120, height=40)
+        middle_left_weight_frame_col3_frame_row1_row2.place(x=0, y=80, width=40, height=40)
+
+        middle_left_thickness_frame_col3_frame_row1_row1.place(x=0, y=20, width=120, height=40)
+        middle_left_thickness_frame_col3_frame_row1_row2.place(x=0, y=80, width=40, height=40)
+
         middle_left_weight_frame_col1_frame_row1.place(x=0, y=0, width=middle_left_col1_width, height=80)
         middle_left_weight_frame_col1_frame_row2.place(x=0, y=80, width=middle_left_col1_width, height=middle_frame_height - 80)
 
         middle_left_thickness_frame_col1_frame_row1.place(x=0, y=0, width=middle_left_col1_width, height=80)
         middle_left_thickness_frame_col1_frame_row2.place(x=0, y=80, width=middle_left_col1_width, height=middle_frame_height - 80)
 
-        # middle_left_weight_frame_left_2_canvas.place(x=0, y=0, width=middle_left_col1_width, height=middle_frame_height - 80)
-        # middle_left_weight_frame_left_2_scrollbar.place(x=middle_left_col1_width - 20, y=0, width=20, height=middle_frame_height - 80)
-        # middle_left_weight_frame_left_2_scrollable_frame.place(x=0, y=0, width=middle_left_col1_width - 20, height=middle_frame_height - 80)
-        #
-        #
+        middle_left_weight_frame_col1_frame_row2_canvas.place(x=0, y=0, width=middle_left_col1_width, height=middle_frame_height - 80)
+        middle_left_weight_frame_col1_frame_row2_scrollbar.place(x=middle_left_col1_width - 20, y=0, width=20, height=middle_frame_height - 80)
+        middle_left_weight_frame_col1_frame_row2_scrollable_frame.place(x=0, y=0, width=middle_left_col1_width - 20, height=middle_frame_height - 80)
 
+        middle_left_thickness_frame_col1_frame_row2_canvas.place(x=0, y=0, width=middle_left_col1_width, height=middle_frame_height - 80)
+        middle_left_thickness_frame_col1_frame_row2_scrollbar.place(x=middle_left_col1_width - 20, y=0, width=20, height=middle_frame_height - 80)
+        middle_left_thickness_frame_col1_frame_row2_scrollable_frame.place(x=0, y=0, width=middle_left_col1_width - 20, height=middle_frame_height - 80)
 
+        middle_left_weight_frame_col3_frame_row2_canvas.place(x=0, y=0, width=210, height=middle_frame_height - 80)
+        middle_left_weight_frame_col3_frame_row2_scrollbar.place(x=190, y=0, width=20, height=middle_frame_height - 80)
+        middle_left_weight_frame_col3_frame_row2_scrollable_frame.place(x=0, y=0, width=190, height=middle_frame_height - 80)
 
         middle_right_runcard_frame.place(x=0, y=0, width=middle_right_frame_width-5, height=middle_frame_height)
         middle_right_setting_frame.place(x=0, y=0, width=middle_right_frame_width-5, height=middle_frame_height)
@@ -390,14 +402,29 @@ middle_left_thickness_frame = tk.Frame(middle_left_frame, bg=bg_app_class_color_
 middle_left_weight_frame.pack(fill=tk.BOTH, expand=True)
 
 
-middle_left_weight_frame_col1_frame = tk.Frame(middle_left_weight_frame, bg=bg_app_class_color_layer_2 )
+middle_left_weight_frame_col1_frame = tk.Frame(middle_left_weight_frame, bg=bg_app_class_color_layer_2)
 middle_left_weight_frame_col2_frame = tk.Frame(middle_left_weight_frame, bg=bg_app_class_color_layer_1)
-middle_left_weight_frame_col3_frame = tk.Frame(middle_left_weight_frame, bg=bg_app_class_color_layer_2 )
+middle_left_weight_frame_col3_frame = tk.Frame(middle_left_weight_frame, bg=bg_app_class_color_layer_1)
 
 middle_left_thickness_frame_col1_frame = tk.Frame(middle_left_thickness_frame, bg=bg_app_class_color_layer_2 )
 middle_left_thickness_frame_col2_frame = tk.Frame(middle_left_thickness_frame, bg=bg_app_class_color_layer_1)
-middle_left_thickness_frame_col3_frame = tk.Frame(middle_left_thickness_frame, bg=bg_app_class_color_layer_2 )
+middle_left_thickness_frame_col3_frame = tk.Frame(middle_left_thickness_frame, bg=bg_app_class_color_layer_1)
 
+
+middle_left_weight_frame_col3_frame_row1 = tk.Frame(middle_left_weight_frame_col3_frame, bg=bg_app_class_color_layer_1)
+middle_left_weight_frame_col3_frame_row2 = tk.Frame(middle_left_weight_frame_col3_frame, bg=bg_app_class_color_layer_1)
+
+middle_left_thickness_frame_col3_frame_row1 = tk.Frame(middle_left_thickness_frame_col3_frame, bg=bg_app_class_color_layer_1)
+middle_left_thickness_frame_col3_frame_row2 = tk.Frame(middle_left_thickness_frame_col3_frame, bg=bg_app_class_color_layer_1)
+
+
+
+middle_left_weight_frame_col3_frame_row1_row1 = tk.Frame(middle_left_weight_frame_col3_frame_row1, bg=bg_app_class_color_layer_1)
+middle_left_weight_frame_col3_frame_row1_row2 = tk.Frame(middle_left_weight_frame_col3_frame_row1, bg=bg_app_class_color_layer_1)
+
+
+middle_left_thickness_frame_col3_frame_row1_row1 = tk.Frame(middle_left_thickness_frame_col3_frame_row1, bg=bg_app_class_color_layer_1)
+middle_left_thickness_frame_col3_frame_row1_row2 = tk.Frame(middle_left_thickness_frame_col3_frame_row1, bg=bg_app_class_color_layer_1)
 
 
 middle_left_weight_frame_col1_frame_row1 = tk.Frame(middle_left_weight_frame_col1_frame, bg=bg_app_class_color_layer_1)
@@ -413,18 +440,18 @@ middle_left_thickness_frame_col1_frame_row2 = tk.Frame(middle_left_thickness_fra
 
 
 
-middle_center_frame = tk.Frame(middle_frame, bg=bg_app_class_color_layer_1 )
+middle_center_frame = tk.Frame(middle_frame, bg=bg_app_class_color_layer_1)
 middle_center_frame.place(x=0, y=0)
 
-middle_right_frame = tk.Frame(middle_frame, bg=bg_app_class_color_layer_1 )
+middle_right_frame = tk.Frame(middle_frame, bg=bg_app_class_color_layer_1)
 middle_right_frame.place(x=0, y=0)
 
 
 
-middle_right_runcard_frame = tk.Frame(middle_right_frame, bg=bg_app_class_color_layer_1 )
+middle_right_runcard_frame = tk.Frame(middle_right_frame, bg=bg_app_class_color_layer_1)
 middle_right_runcard_frame.place(x=0, y=0)
 
-middle_right_setting_frame = tk.Frame(middle_right_frame, bg=bg_app_class_color_layer_1 )
+middle_right_setting_frame = tk.Frame(middle_right_frame, bg=bg_app_class_color_layer_1)
 middle_right_setting_frame.place(x=0, y=0)
 
 middle_right_advance_setting_frame = tk.Frame(middle_right_frame, bg=bg_app_class_color_layer_1 )
@@ -559,61 +586,6 @@ if get_registry_value("is_current_entry", "weight") == "weight":
 else:
     showing_thickness_frame, showing_weight_frame = True, False
 
-def open_weight_frame():
-    global showing_thickness_frame, showing_weight_frame
-    set_registry_value("is_current_entry", "weight")
-    showing_thickness_frame = False
-    showing_weight_frame = True
-    middle_left_thickness_frame.pack_forget()
-    middle_left_weight_frame.pack(fill=tk.BOTH, expand=True)
-    middle_left_weight_frame.lift()
-def open_thickness_frame():
-    global showing_thickness_frame, showing_weight_frame
-    set_registry_value("is_current_entry", "thickness")
-    showing_weight_frame = False
-    showing_thickness_frame = True
-    middle_left_weight_frame.pack_forget()
-    middle_left_thickness_frame.pack(fill=tk.BOTH, expand=True)
-    middle_left_thickness_frame.lift()
-def open_runcard_frame():
-    global showing_settings, showing_runcards, showing_advance_setting
-    showing_settings = False
-    showing_advance_setting = False
-    showing_runcards = True
-    middle_right_setting_frame.pack_forget()
-    middle_right_advance_setting_frame.pack_forget()
-    middle_right_runcard_frame.pack(fill=tk.BOTH, expand=True)
-    middle_right_runcard_frame.lift()
-    set_registry_value("is_runcard_open", "1")
-def open_setting_frame():
-    global showing_settings, showing_runcards, showing_advance_setting
-    showing_settings = True
-    showing_runcards = False
-    showing_advance_setting = False
-    middle_right_runcard_frame.pack_forget()
-    middle_right_advance_setting_frame.pack_forget()
-    middle_right_setting_frame.pack(fill=tk.BOTH, expand=True)
-    middle_right_setting_frame.lift()
-def open_advance_setting_frame():
-    global showing_settings, showing_runcards, showing_advance_setting
-    showing_settings = False
-    showing_advance_setting = True
-    showing_runcards = False
-    middle_right_runcard_frame.pack_forget()
-    middle_right_setting_frame.pack_forget()
-    middle_right_advance_setting_frame.pack(fill=tk.BOTH, expand=True)
-    middle_right_advance_setting_frame.lift()
-def close_frame():
-    global showing_settings, showing_runcards, showing_advance_setting
-    showing_settings = False
-    showing_advance_setting = False
-    showing_runcards = False
-    middle_right_setting_frame.pack_forget()
-    middle_right_runcard_frame.pack_forget()
-    middle_right_advance_setting_frame.pack_forget()
-def exit():
-    set_registry_value("is_runcard_open", "0")
-    root.destroy()
 
 
 
@@ -639,9 +611,9 @@ def weight_frame_hit_enter_button(event):
 
 entry_weight_device_name_var = tk.StringVar()
 entry_weight_device_name_var.trace_add("write", lambda *args: convert_to_uppercase(entry_weight_device_name_var, 12, 1))
-entry_weight_device_name_label = tk.Label(middle_left_weight_frame_col1_frame_row1, text="Device ID", bg="#f4f4fe", bd=0, font=(font_name, 16, "bold"))
+entry_weight_device_name_label = tk.Label(middle_left_weight_frame_col1_frame_row1, text="Device ID", bg=bg_app_class_color_layer_1, bd=0, font=(font_name, 16, "bold"))
 entry_weight_device_name_label.grid(row=0, column=0, padx=5, pady=0, sticky='ew')
-entry_weight_device_name_entry = tk.Entry(middle_left_weight_frame_col1_frame_row1, font=(font_name, 18), bd=2, textvariable=entry_weight_device_name_var)
+entry_weight_device_name_entry = tk.Entry(middle_left_weight_frame_col1_frame_row1, font=(font_name, 18), bd=2, textvariable=entry_weight_device_name_var, bg=bg_app_class_color_layer_2)
 entry_weight_device_name_entry.name_var = "entry_weight_device_name_entry"
 entry_weight_device_name_entry.grid(row=1, column=0, padx=5, pady=0, sticky='ew')
 entry_weight_device_name_entry.bind('<FocusIn>', weight_frame_mouser_pointer_in)
@@ -689,15 +661,17 @@ middle_left_weight_frame_col1_frame_row1.columnconfigure(3, weight=1)
 
 
 
-# middle_left_weight_frame_left_2_canvas = tk.Canvas(middle_left_weight_frame_col1_frame_row2, bg=bg_app_class_color_layer_2 , highlightthickness=0)
-# middle_left_weight_frame_left_2_scrollbar = tk.Scrollbar(middle_left_weight_frame_col1_frame_row2, orient="vertical", command=middle_left_weight_frame_left_2_canvas.yview)
-# middle_left_weight_frame_left_2_canvas.configure(yscrollcommand=middle_left_weight_frame_left_2_scrollbar.set)
-# middle_left_weight_frame_left_2_scrollable_frame = tk.Frame(middle_left_weight_frame_left_2_canvas, bg='white')
-# middle_left_weight_frame_left_2_canvas.create_window((0, 0), window=middle_left_weight_frame_left_2_scrollable_frame, anchor="nw")
-# middle_left_weight_frame_left_2_scrollable_frame.bind("<Configure>", lambda e: middle_left_weight_frame_left_2_canvas.configure(scrollregion=middle_left_weight_frame_left_2_canvas.bbox("all")))
-# middle_left_weight_frame_left_2_canvas.pack(side="left", fill="both", expand=True)
-# middle_left_weight_frame_left_2_scrollbar.pack(side="right", fill="y")
-# all_entries = []
+middle_left_weight_frame_col1_frame_row2_canvas = tk.Canvas(middle_left_weight_frame_col1_frame_row2, bg=bg_app_class_color_layer_2 , highlightthickness=0)
+middle_left_weight_frame_col1_frame_row2_scrollbar = tk.Scrollbar(middle_left_weight_frame_col1_frame_row2, orient="vertical", command=middle_left_weight_frame_col1_frame_row2_canvas.yview)
+middle_left_weight_frame_col1_frame_row2_canvas.configure(yscrollcommand=middle_left_weight_frame_col1_frame_row2_scrollbar.set)
+middle_left_weight_frame_col1_frame_row2_scrollable_frame = tk.Frame(middle_left_weight_frame_col1_frame_row2_canvas, bg=bg_app_class_color_layer_2)
+middle_left_weight_frame_col1_frame_row2_canvas.create_window((0, 0), window=middle_left_weight_frame_col1_frame_row2_scrollable_frame, anchor="nw")
+middle_left_weight_frame_col1_frame_row2_scrollable_frame.bind("<Configure>", lambda e: middle_left_weight_frame_col1_frame_row2_canvas.configure(scrollregion=middle_left_weight_frame_col1_frame_row2_canvas.bbox("all")))
+middle_left_weight_frame_col1_frame_row2_canvas.pack(side="left", fill="both", expand=True)
+middle_left_weight_frame_col1_frame_row2_scrollbar.pack(side="right", fill="y")
+all_entries = []
+
+
 
 
 
@@ -801,11 +775,25 @@ middle_left_thickness_frame_col1_frame_row1.columnconfigure(5, weight=1)
 
 
 
+middle_left_thickness_frame_col1_frame_row2_canvas = tk.Canvas(middle_left_thickness_frame_col1_frame_row2, bg=bg_app_class_color_layer_2 , highlightthickness=0)
+middle_left_thickness_frame_col1_frame_row2_scrollbar = tk.Scrollbar(middle_left_thickness_frame_col1_frame_row2, orient="vertical", command=middle_left_thickness_frame_col1_frame_row2_canvas.yview)
+middle_left_thickness_frame_col1_frame_row2_canvas.configure(yscrollcommand=middle_left_thickness_frame_col1_frame_row2_scrollbar.set)
+middle_left_thickness_frame_col1_frame_row2_scrollable_frame = tk.Frame(middle_left_thickness_frame_col1_frame_row2_canvas, bg=bg_app_class_color_layer_2)
+middle_left_thickness_frame_col1_frame_row2_canvas.create_window((0, 0), window=middle_left_thickness_frame_col1_frame_row2_scrollable_frame, anchor="nw")
+middle_left_thickness_frame_col1_frame_row2_scrollable_frame.bind("<Configure>", lambda e: middle_left_thickness_frame_col1_frame_row2_canvas.configure(scrollregion=middle_left_thickness_frame_col1_frame_row2_canvas.bbox("all")))
+middle_left_thickness_frame_col1_frame_row2_canvas.pack(side="left", fill="both", expand=True)
+middle_left_thickness_frame_col1_frame_row2_scrollbar.pack(side="right", fill="y")
+all_entries = []
 
 
 
-
-
+middle_left_weight_frame_col3_frame_row2_canvas = tk.Canvas(middle_left_weight_frame_col3_frame_row2, bg=bg_app_class_color_layer_2, highlightthickness=0)
+middle_left_weight_frame_col3_frame_row2_scrollbar = tk.Scrollbar(middle_left_weight_frame_col3_frame_row2, orient="vertical", command=middle_left_weight_frame_col3_frame_row2_canvas.yview)
+middle_left_weight_frame_col3_frame_row2_scrollable_frame = tk.Frame(middle_left_weight_frame_col3_frame_row2_canvas, bg=bg_app_class_color_layer_2)
+middle_left_weight_frame_col3_frame_row2_canvas.create_window((0, 0), window=middle_left_weight_frame_col3_frame_row2_scrollable_frame, anchor="nw")
+middle_left_weight_frame_col3_frame_row2_canvas.configure(yscrollcommand=middle_left_weight_frame_col3_frame_row2_scrollbar.set)
+middle_left_weight_frame_col3_frame_row2_canvas.pack(side="left", fill="both", expand=True)
+middle_left_weight_frame_col3_frame_row2_scrollbar.pack(side="right", fill="y")
 
 
 
@@ -815,6 +803,63 @@ middle_left_thickness_frame_col1_frame_row1.columnconfigure(5, weight=1)
 
 
 """Button"""
+def open_weight_frame():
+    global showing_thickness_frame, showing_weight_frame
+    set_registry_value("is_current_entry", "weight")
+    showing_thickness_frame = False
+    showing_weight_frame = True
+    middle_left_thickness_frame.pack_forget()
+    middle_left_weight_frame.pack(fill=tk.BOTH, expand=True)
+    middle_left_weight_frame.lift()
+def open_thickness_frame():
+    global showing_thickness_frame, showing_weight_frame
+    set_registry_value("is_current_entry", "thickness")
+    showing_weight_frame = False
+    showing_thickness_frame = True
+    middle_left_weight_frame.pack_forget()
+    middle_left_thickness_frame.pack(fill=tk.BOTH, expand=True)
+    middle_left_thickness_frame.lift()
+def open_runcard_frame():
+    global showing_settings, showing_runcards, showing_advance_setting
+    showing_settings = False
+    showing_advance_setting = False
+    showing_runcards = True
+    middle_right_setting_frame.pack_forget()
+    middle_right_advance_setting_frame.pack_forget()
+    middle_right_runcard_frame.pack(fill=tk.BOTH, expand=True)
+    middle_right_runcard_frame.lift()
+    set_registry_value("is_runcard_open", "1")
+def open_setting_frame():
+    global showing_settings, showing_runcards, showing_advance_setting
+    showing_settings = True
+    showing_runcards = False
+    showing_advance_setting = False
+    middle_right_runcard_frame.pack_forget()
+    middle_right_advance_setting_frame.pack_forget()
+    middle_right_setting_frame.pack(fill=tk.BOTH, expand=True)
+    middle_right_setting_frame.lift()
+def open_advance_setting_frame():
+    global showing_settings, showing_runcards, showing_advance_setting
+    showing_settings = False
+    showing_advance_setting = True
+    showing_runcards = False
+    middle_right_runcard_frame.pack_forget()
+    middle_right_setting_frame.pack_forget()
+    middle_right_advance_setting_frame.pack(fill=tk.BOTH, expand=True)
+    middle_right_advance_setting_frame.lift()
+def close_frame():
+    global showing_settings, showing_runcards, showing_advance_setting
+    showing_settings = False
+    showing_advance_setting = False
+    showing_runcards = False
+    middle_right_setting_frame.pack_forget()
+    middle_right_runcard_frame.pack_forget()
+    middle_right_advance_setting_frame.pack_forget()
+def exit():
+    set_registry_value("is_runcard_open", "0")
+    root.destroy()
+
+
 def on_enter_top_open_weight_frame_button(event):
     top_open_weight_frame_button.config(image=top_open_weight_frame_button_hover_icon)
 def on_leave_top_open_weight_frame_button(event):
@@ -941,12 +986,56 @@ def on_enter_database_test_connection_button(event):
     database_test_connection_button.config(image=database_test_connection_button_hover_icon)
 def on_leave_database_test_connection_button(event):
     database_test_connection_button.config(image=database_test_connection_button_icon)
-database_test_connection_button_icon = ImageTk.PhotoImage(Image.open(os.path.join(base_path, "theme", "icons", "test_db.png")).resize((146, 38)))
-database_test_connection_button_hover_icon = ImageTk.PhotoImage(Image.open(os.path.join(base_path, "theme", "icons", "test_db_hover.png")).resize((146, 38)))
-database_test_connection_button = tk.Button(middle_right_advance_setting_frame_row2_col1_row6, image=database_test_connection_button_icon, command=None, bg='#f0f2f6', width=146, height=38, relief="flat", borderwidth=0)
+database_test_connection_button_icon = ImageTk.PhotoImage(Image.open(os.path.join(base_path, "theme", "icons", "connect.png")).resize((146, 38)))
+database_test_connection_button_hover_icon = ImageTk.PhotoImage(Image.open(os.path.join(base_path, "theme", "icons", "connect_hover.png")).resize((146, 38)))
+database_test_connection_button = tk.Button(middle_right_advance_setting_frame_row2_col1_row6, image=database_test_connection_button_icon, command=None, bg=bg_app_class_color_layer_1, width=146, height=38, relief="flat", borderwidth=0)
 database_test_connection_button.grid(row=4, column=1, padx=5, pady=5, sticky="e")
 database_test_connection_button.bind("<Enter>", on_enter_database_test_connection_button)
 database_test_connection_button.bind("<Leave>", on_leave_database_test_connection_button)
+
+
+delete_entry_button_icon = ImageTk.PhotoImage(Image.open(os.path.join(base_path, "theme", "icons", "delete.png")).resize((117, 36)))
+delete_entry_button_hover_icon = ImageTk.PhotoImage(Image.open(os.path.join(base_path, "theme", "icons", "delete_hover.png")).resize((117, 36)))
+def on_enter_delete_weight_entry_button(event):
+    delete_weight_entry_button.config(image=delete_entry_button_hover_icon)
+def on_leave_delete_weight_entry_button(event):
+    delete_weight_entry_button.config(image=delete_entry_button_icon)
+delete_weight_entry_button = tk.Button(middle_left_weight_frame_col3_frame_row1_row1, image=delete_entry_button_icon, command=None, bg='#f0f2f6', width=120, height=40, relief="flat", borderwidth=0)
+delete_weight_entry_button.grid(row=0, column=0, padx=0, pady=0, sticky="e")
+delete_weight_entry_button.bind("<Enter>", on_enter_delete_weight_entry_button)
+delete_weight_entry_button.bind("<Leave>", on_leave_delete_weight_entry_button)
+
+def on_enter_delete_thickness_entry_button(event):
+    delete_thickness_entry_button.config(image=delete_entry_button_hover_icon)
+def on_leave_delete_thickness_entry_button(event):
+    delete_thickness_entry_button.config(image=delete_entry_button_icon)
+delete_thickness_entry_button = tk.Button(middle_left_thickness_frame_col3_frame_row1_row1, image=delete_entry_button_icon, command=None, bg='#f0f2f6', width=120, height=40, relief="flat", borderwidth=0)
+delete_thickness_entry_button.grid(row=0, column=0, padx=0, pady=0, sticky="e")
+delete_thickness_entry_button.bind("<Enter>", on_enter_delete_thickness_entry_button)
+delete_thickness_entry_button.bind("<Leave>", on_leave_delete_thickness_entry_button)
+
+
+
+delete_log_button_icon = ImageTk.PhotoImage(Image.open(os.path.join(base_path, "theme", "icons", "delete_all.png")).resize((36, 36)))
+delete_log_button_hover_icon = ImageTk.PhotoImage(Image.open(os.path.join(base_path, "theme", "icons", "delete_all_hover.png")).resize((36, 36)))
+def on_enter_delete_weight_log_button(event):
+    delete_weight_log_button.config(image=delete_log_button_hover_icon)
+def on_leave_delete_weight_log_button(event):
+    delete_weight_log_button.config(image=delete_log_button_icon)
+delete_weight_log_button = tk.Button(middle_left_weight_frame_col3_frame_row1_row2, image=delete_log_button_icon, command=None, bg=bg_app_class_color_layer_1, width=40, height=40, relief="flat", borderwidth=0)
+delete_weight_log_button.grid(row=0, column=0, padx=0, pady=0, sticky="e")
+delete_weight_log_button.bind("<Enter>", on_enter_delete_weight_log_button)
+delete_weight_log_button.bind("<Leave>", on_leave_delete_weight_log_button)
+
+def on_enter_delete_thickness_log_button(event):
+    delete_thickness_log_button.config(image=delete_log_button_hover_icon)
+def on_leave_delete_thickness_log_button(event):
+    delete_thickness_log_button.config(image=delete_log_button_icon)
+delete_thickness_log_button = tk.Button(middle_left_thickness_frame_col3_frame_row1_row2, image=delete_log_button_icon, command=None, bg=bg_app_class_color_layer_1, width=40, height=40, relief="flat", borderwidth=0)
+delete_thickness_log_button.grid(row=0, column=0, padx=0, pady=0, sticky="e")
+delete_thickness_log_button.bind("<Enter>", on_enter_delete_thickness_log_button)
+delete_thickness_log_button.bind("<Leave>", on_leave_delete_thickness_log_button)
+
 
 
 
