@@ -93,7 +93,7 @@ class CustomOptionMenu(tk.OptionMenu):
             options = ["No COM"]
         super().__init__(master, variable, *options, **kwargs)
         self.config(font=("Helvetica", 14, "bold"),
-                    bg="white",
+                    bg=bg_app_class_color_layer_2,
                     fg="#333333",
                     activebackground="#f0f0f0",
                     activeforeground="black",
@@ -907,15 +907,78 @@ middle_left_weight_frame_col3_frame_row2_scrollbar.pack(side="right", fill="y")
 
 """Settings"""
 
+selected_middle_left_frame = tk.StringVar(value=get_registry_value("SelectedFrame", "Trọng lượng"))
+def update_com_ports(*menus):
+    try:
+        def monitor_com_ports():
+            global com_ports
+            while True:
+                new_com_ports = [port.device for port in serial.tools.list_ports.comports() if "Bluetooth" not in port.description]
+                if set(new_com_ports) != set(com_ports):
+                    com_ports = new_com_ports
+                    root.after(0, lambda: populate_com_menus(menus))
+                time.sleep(2)
+        def populate_com_menus(menus):
+            for menu in menus:
+                menu['menu'].delete(0, 'end')
+                menu['menu'].add_command(label="-------", command=lambda m=menu: m.setvar(m.cget("textvariable"), value="-------"))
+                for port in com_ports:
+                    menu['menu'].add_command(label=port, command=lambda p=port, m=menu: m.setvar(m.cget("textvariable"), value=p))
+        global com_ports
+        com_ports = [port.device for port in serial.tools.list_ports.comports() if "Bluetooth" not in port.description]
+        populate_com_menus(menus)
+        if not hasattr(update_com_ports, "thread_started"):
+            update_com_ports.thread_started = True
+            com_port_thread = threading.Thread(target=monitor_com_ports, daemon=True)
+            com_port_thread.start()
+    except Exception as e:
+        threading.Thread(target=show_error_message, args=(f"{e}", 0, 3000), daemon=True).start()
+        pass
+def switch_middle_left_frame(*args):
+    global weight_com_thread, thickness_com_thread
+    try:
+        print(f"Switching to: {selected_middle_left_frame.get()}")
+        if selected_middle_left_frame.get() == "Trọng lượng":
+            middle_left_thickness_frame.pack_forget()
+            middle_left_weight_frame.pack(fill=tk.BOTH, expand=True)
+            middle_left_weight_frame.lift()
+        else:
+            middle_left_weight_frame.pack_forget()
+            middle_left_thickness_frame.pack(fill=tk.BOTH, expand=True)
+            middle_left_thickness_frame.lift()
+        if "COM" in str(get_registry_value("COM1", "")):
+            if weight_com_thread is None or not weight_com_thread.is_alive():
+                pass
+                # weight_com_thread = threading.Thread(target=weight_frame_com_port_insert_data, daemon=True)
+                # weight_com_thread.start()
+        if "COM" in str(get_registry_value("COM2", "")):
+            if thickness_com_thread is None or not thickness_com_thread.is_alive():
+                pass
+                # thickness_com_thread = threading.Thread(target=thickness_frame_com_port_insert_data, daemon=True)
+                # thickness_com_thread.start()
+        set_registry_value("SelectedFrame", selected_middle_left_frame.get())
+    except Exception as e:
+        threading.Thread(target=show_error_message, args=(f"{e}", 0, 3000), daemon=True).start()
+        pass
+switch_middle_left_frame()
+selected_weight_com = tk.StringVar(value=get_registry_value("COM1", ""))
+selected_thickness_com = tk.StringVar(value=get_registry_value("COM2", ""))
 
+weight_label = tk.Label(middle_right_setting_frame_row2_row1, text="Trọng lượng:      ", font=(font_name, 14, "bold"), bg=bg_app_class_color_layer_2)
+weight_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+weight_menu = CustomOptionMenu(middle_right_setting_frame_row2_row1, selected_weight_com, "")
+weight_menu.grid(row=0, column=1, padx=5, pady=5, sticky="w")
 
+thickness_label = tk.Label(middle_right_setting_frame_row2_row1, text="Độ dày:", font=(font_name, 14, "bold"), bg=bg_app_class_color_layer_2)
+thickness_label.grid(row=1, column=0, padx=5, pady=5, sticky="w")
+thickness_menu = CustomOptionMenu(middle_right_setting_frame_row2_row1, selected_thickness_com, "")
+thickness_menu.grid(row=1, column=1, padx=5, pady=5, sticky="w")
 
-
-
-
-
-
-
+frame_select_label = tk.Label(middle_right_setting_frame_row2_row1, text="Mặc định:", font=(font_name, 14, "bold"), bg=bg_app_class_color_layer_2)
+frame_select_label.grid(row=2, column=0, padx=5, pady=5, sticky="w")
+frame_select_menu = CustomOptionMenu(middle_right_setting_frame_row2_row1, selected_middle_left_frame, "Trọng lượng", "Độ dày",command=switch_middle_left_frame)
+frame_select_menu.grid(row=2, column=1, padx=5, pady=5, sticky="w")
+update_com_ports(weight_menu, thickness_menu)
 
 
 
@@ -981,10 +1044,25 @@ def close_frame():
     middle_right_setting_frame.pack_forget()
     middle_right_runcard_frame.pack_forget()
     middle_right_advance_setting_frame.pack_forget()
+def save_setting():
+    try:
+        threading.Thread(target=show_error_message, args=(f"Save setting", 1, 3000), daemon=True).start()
+        set_registry_value("COM1", selected_weight_com.get())
+        set_registry_value("COM2", selected_thickness_com.get())
+        switch_middle_left_frame()
+        set_registry_value("SelectedFrame", selected_middle_left_frame.get())
+        messagebox.showinfo("Success", "Save setting success!\nApplication will close automatically\nRe-open the app")
+        root.destroy()
+    except Exception as e:
+        threading.Thread(target=show_error_message, args=(f"def save_setting() => {e}", 0, 3000), daemon=True).start()
+        pass
 def exit():
-    set_registry_value("is_runcard_open", "0")
-    root.destroy()
-
+    try:
+        set_registry_value("is_runcard_open", "0")
+        root.destroy()
+    except Exception as e:
+        threading.Thread(target=show_error_message, args=(f"def exit() => {e}", 0, 3000), daemon=True).start()
+        pass
 
 def on_enter_top_open_weight_frame_button(event):
     top_open_weight_frame_button.config(image=top_open_weight_frame_button_hover_icon)
@@ -1101,7 +1179,7 @@ def on_enter_save_setting_frame_button(event):
     save_setting_frame_button.config(image=save_icon_hover)
 def on_leave_save_setting_frame_button(event):
     save_setting_frame_button.config(image=save_icon)
-save_setting_frame_button = tk.Button(middle_right_setting_frame_row3_col1, image=save_icon, command=None, bg=bg_app_class_color_layer_1 , width=134, height=34, relief="flat", borderwidth=0)
+save_setting_frame_button = tk.Button(middle_right_setting_frame_row3_col1, image=save_icon, command=save_setting, bg=bg_app_class_color_layer_1 , width=134, height=34, relief="flat", borderwidth=0)
 save_setting_frame_button.grid(row=0, column=0, padx=5, pady=5, sticky="e")
 save_setting_frame_button.bind("<Enter>", on_enter_save_setting_frame_button)
 save_setting_frame_button.bind("<Leave>", on_leave_save_setting_frame_button)
