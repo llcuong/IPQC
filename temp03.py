@@ -89,8 +89,11 @@ thickness_com_thread = None
 
 
 current_date = (datetime.datetime.now() - datetime.timedelta(hours=5) + datetime.timedelta(minutes=22)).date()
+current_time = str(int((datetime.datetime.now() + datetime.timedelta(minutes=39)).strftime('%H')))
 period_times = ['6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17',
                 '18', '19', '20', '21', '22', '23', '0', '1', '2', '3', '4', '5']
+
+selected_date = current_date
 class CustomOptionMenu(tk.OptionMenu):
     def __init__(self, master, variable, *options, command=None, **kwargs):
         if options is None:
@@ -339,7 +342,6 @@ def update_dimensions():
 
         error_display_entry.place(x=5, y=10, width=int(screen_width * 0.7), height=25)
 
-
         root.update_idletasks()
         root.update()
 
@@ -402,7 +404,13 @@ def set_registry_value(name, value):
     except Exception as e:
         threading.Thread(target=show_error_message, args=(f"def set_registry_value => {e}", 0, 3000), daemon=True).start()
 
-
+conn_str = (
+    f'DRIVER={{SQL Server}};'
+    f'SERVER={get_registry_value("is_server_ip", "10.13.102.22")};'
+    f'DATABASE={get_registry_value("is_db_name", "PMG_DEVICE")};'
+    f'UID={get_registry_value("is_user_id", "scadauser")};'
+    f'PWD={get_registry_value("is_password", "pmgscada+123")};'
+)
 
 """Frame"""
 top_frame = tk.Frame(root, bg=bg_app_class_color_layer_1)
@@ -649,53 +657,66 @@ middle_right_runcard_frame_label = tk.Label(middle_right_runcard_frame_row1, tex
 middle_right_runcard_frame_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 
 
-calendar_style = ttk.Style()
-calendar_style.theme_use('clam')
-calendar_style.map('Custom.DateEntry.TEntry',
-    foreground=[('readonly', fg_app_class_color_layer_1)],
-    fieldbackground=[('readonly', bg_app_class_color_layer_2)],
-    background=[('readonly', bg_app_class_color_layer_2)],
-    bordercolor=[('focus', bg_app_class_color_layer_2), ('!focus', bg_app_class_color_layer_2)],
-    lightcolor=[('focus', bg_app_class_color_layer_2), ('!focus', bg_app_class_color_layer_2)],
-    highlightcolor=[('focus', bg_app_class_color_layer_2), ('!focus', bg_app_class_color_layer_2)],
-)
-calendar_style.configure('Custom.DateEntry.TEntry', font=(font_name, 12), padding=4, borderwidth=1, relief='flat')
-calendar = DateEntry(middle_right_runcard_frame_row1,
-    width=12,
-    year=int(current_date.strftime("%Y")),
-    month=int(current_date.strftime("%m")),
-    day=int(current_date.strftime("%d")),
-    background=bg_app_class_color_layer_2,
-    foreground=fg_app_class_color_layer_1,
-    disabledbackground=bg_app_class_color_layer_2,
-    disabledforeground=fg_app_class_color_layer_2,
-    bordercolor=bg_app_class_color_layer_2,
-    headersbackground=bg_app_class_color_layer_2,
-    headersforeground=fg_app_class_color_layer_1,
-    normalbackground=bg_app_class_color_layer_2,
-    normalforeground=fg_app_class_color_layer_1,
-    weekendbackground=bg_app_class_color_layer_2,
-    weekendforeground=fg_app_class_color_layer_1,
-    othermonthforeground=bg_app_class_color_layer_2,
-    othermonthbackground=fg_app_class_color_layer_2,
-    othermonthweforeground=bg_app_class_color_layer_2,
-    othermonthwebackground=fg_app_class_color_layer_2,
-    disableddaybackground=bg_app_class_color_layer_2,
-    disableddayforeground="#aeaeae",
-    locale='vi_VN',
-    showweeknumbers=False,
-    mindate=current_date - datetime.timedelta(days=7),
-    maxdate=current_date,
-    borderwidth=2,
-    font=(font_name, 12),
-    date_pattern='dd-mm-yyyy',
-    style='Custom.DateEntry.TEntry',
-    state="readonly",
-    )
-calendar.grid(row=0, column=1, padx=5, pady=5, sticky="e")
-def on_date_change(event):
-    print("Selected date:", calendar.get_date().strftime("%d-%m-%Y"))
-calendar.bind("<<DateEntrySelected>>", on_date_change)
+def runcard_date():
+    global selected_date
+    calendar_style = ttk.Style()
+    calendar_style.theme_use('clam')
+    calendar_style.map('Custom.DateEntry.TEntry',
+                       foreground=[('readonly', fg_app_class_color_layer_1)],
+                       fieldbackground=[('readonly', bg_app_class_color_layer_2)],
+                       background=[('readonly', bg_app_class_color_layer_2)],
+                       bordercolor=[('focus', bg_app_class_color_layer_2), ('!focus', bg_app_class_color_layer_2)],
+                       lightcolor=[('focus', bg_app_class_color_layer_2), ('!focus', bg_app_class_color_layer_2)],
+                       highlightcolor=[('focus', bg_app_class_color_layer_2), ('!focus', bg_app_class_color_layer_2)],
+                       )
+    calendar_style.configure('Custom.DateEntry.TEntry', font=(font_name, 12), padding=4, borderwidth=1, relief='flat')
+    calendar = DateEntry(middle_right_runcard_frame_row1,
+                         width=12,
+                         year=int(current_date.strftime("%Y")),
+                         month=int(current_date.strftime("%m")),
+                         day=int(current_date.strftime("%d")),
+                         background=bg_app_class_color_layer_2,
+                         foreground=fg_app_class_color_layer_1,
+                         disabledbackground=bg_app_class_color_layer_2,
+                         disabledforeground=fg_app_class_color_layer_2,
+                         bordercolor=bg_app_class_color_layer_2,
+                         headersbackground=bg_app_class_color_layer_2,
+                         headersforeground=fg_app_class_color_layer_1,
+                         normalbackground=bg_app_class_color_layer_2,
+                         normalforeground=fg_app_class_color_layer_1,
+                         weekendbackground=bg_app_class_color_layer_2,
+                         weekendforeground=fg_app_class_color_layer_1,
+                         othermonthforeground=bg_app_class_color_layer_2,
+                         othermonthbackground=fg_app_class_color_layer_2,
+                         othermonthweforeground=bg_app_class_color_layer_2,
+                         othermonthwebackground=fg_app_class_color_layer_2,
+                         disableddaybackground=bg_app_class_color_layer_2,
+                         disableddayforeground="#aeaeae",
+                         locale='vi_VN',
+                         showweeknumbers=False,
+                         mindate=current_date - datetime.timedelta(days=7),
+                         maxdate=current_date,
+                         borderwidth=2,
+                         font=(font_name, 12),
+                         date_pattern='dd-mm-yyyy',
+                         style='Custom.DateEntry.TEntry',
+                         state="readonly",
+                         )
+    calendar.grid(row=0, column=1, padx=5, pady=5, sticky="e")
+    def on_date_change(event):
+        global selected_date
+        # print("Selected date:", calendar.get_date().strftime("%d-%m-%Y"))
+        selected_date = calendar.get_date().strftime("%Y-%m-%d")
+        runcard_period_button()
+        runcard_machine_button()
+        runcard_line_button()
+        runcard_wo_button()
+        print(f"=> {selected_date}")
+    calendar.bind("<<DateEntrySelected>>", on_date_change)
+    runcard_period_button()
+    runcard_machine_button()
+    runcard_line_button()
+    return calendar.get_date().strftime("%d-%m-%Y")
 """Function"""
 
 
@@ -933,6 +954,240 @@ middle_left_weight_frame_col3_frame_row2_scrollbar.pack(side="right", fill="y")
 
 
 
+selected_period_icon = None
+selected_period_button = None
+selected_period_button_hover = None
+middle_right_runcard_frame_row2_col3_frame_dict = {}
+middle_right_runcard_frame_row2_col3_button_dict = {}
+middle_right_runcard_frame_row2_col3_button_icon_dict = {}
+middle_right_runcard_frame_row2_col3_button_icon_hover_dict = {}
+
+def runcard_manage_period_button(value, btn):
+    global selected_period_button, selected_period_icon, selected_period_button_hover
+    if selected_period_button:
+        selected_period_button.config(image=middle_right_runcard_frame_row2_col3_button_icon_dict[selected_period_button_hover])
+    btn.config(image=middle_right_runcard_frame_row2_col3_button_icon_hover_dict[value])
+    selected_period_button = btn
+    selected_period_icon = middle_right_runcard_frame_row2_col3_button_icon_hover_dict[value]
+    selected_period_button_hover = value
+    runcard_wo_button()
+def runcard_period_button():
+    if int(get_registry_value("is_connected", "1")) == 1:
+        for index, period in enumerate(period_times):
+            period_icon_path = os.path.join(base_path, "theme", "icons", "period", f"time_{period}.png")
+            period_hover_icon_path = os.path.join(base_path, "theme", "icons", "period", f"time_{period}_hover.png")
+            period_icon = ImageTk.PhotoImage(Image.open(period_icon_path).resize((36, 26)))
+            period_hover_icon = ImageTk.PhotoImage(Image.open(period_hover_icon_path).resize((36, 26)))
+
+            middle_right_runcard_frame_row2_col3_button_icon_dict[period] = period_icon
+            middle_right_runcard_frame_row2_col3_button_icon_hover_dict[period] = period_hover_icon
+            period_frame_name = f"middle_right_runcard_frame_row2_col3_row{index + 1}"
+            middle_right_runcard_frame_row2_col3_frame_dict[period_frame_name] = tk.Frame(middle_right_runcard_frame_row2_col3, bg=bg_app_class_color_layer_1)
+            middle_right_runcard_frame_row2_col3_frame_dict[period_frame_name].place(x=0, y=index * 29, width=36, height=26)
+
+            button = tk.Button(middle_right_runcard_frame_row2_col3_frame_dict[period_frame_name], image=period_icon, width=36, height=26, relief="flat")
+            button.config(command=lambda p=period, b=button: runcard_manage_period_button(p,b))
+
+            button.place(x=0, y=0, relwidth=1.0, relheight=1.0)
+            middle_right_runcard_frame_row2_col3_button_dict[period] = button
+        if current_time in middle_right_runcard_frame_row2_col3_button_dict:
+            runcard_manage_period_button(current_time, middle_right_runcard_frame_row2_col3_button_dict[current_time])
+
+
+
+
+
+
+
+selected_machine_icon = None
+selected_machine_button = None
+selected_machine_button_hover = None
+middle_right_machine_frame_row2_col1_frame_dict = {}
+middle_right_machine_frame_row2_col1_button_dict = {}
+middle_right_machine_frame_row2_col1_button_icon_dict = {}
+middle_right_machine_frame_row2_col1_button_icon_hover_dict = {}
+def runcard_get_machine_list(plant):
+    global conn_str
+    sql = f"""SELECT DISTINCT(Name) FROM [PMGMES].[dbo].[PMG_DML_DataModelList]
+            WHERE DataModelTypeId = 'DMT000003' AND Name LIKE ?  ORDER BY Name"""
+    with pyodbc.connect(conn_str) as conn:
+        cursor = conn.cursor()
+        cursor.execute(sql, (f"%{plant}%",))
+        result = cursor.fetchall()
+        return [machine[0] for machine in result] if result else []
+
+def runcard_manage_machine_button(value, btn):
+    global selected_machine_button, selected_machine_icon, selected_machine_button_hover
+    if selected_machine_button:
+        selected_machine_button.config(image=middle_right_machine_frame_row2_col1_button_icon_dict[selected_machine_button_hover])
+    btn.config(image=middle_right_machine_frame_row2_col1_button_icon_hover_dict[value])
+    selected_machine_button = btn
+    selected_machine_icon = middle_right_machine_frame_row2_col1_button_icon_hover_dict[value]
+    selected_machine_button_hover = value
+    runcard_wo_button()
+def runcard_machine_button():
+    if int(get_registry_value("is_connected", "1")) == 1:
+        machine_list = runcard_get_machine_list(get_registry_value("is_plant_name", "NBR"))
+        for index, machine in enumerate(machine_list):
+            machine_icon_path = os.path.join(base_path, "theme", "icons", "machine", f"machine_{index+1}.png")
+            machine_hover_icon_path = os.path.join(base_path, "theme", "icons", "machine", f"machine_{index+1}_hover.png")
+            machine_icon = ImageTk.PhotoImage(Image.open(machine_icon_path).resize((36, 26)))
+            machine_hover_icon = ImageTk.PhotoImage(Image.open(machine_hover_icon_path).resize((36, 26)))
+
+            middle_right_machine_frame_row2_col1_button_icon_dict[machine] = machine_icon
+            middle_right_machine_frame_row2_col1_button_icon_hover_dict[machine] = machine_hover_icon
+            machine_frame_name = f"middle_right_machine_frame_row2_col1_row{index + 1}"
+            middle_right_machine_frame_row2_col1_frame_dict[machine_frame_name] = tk.Frame(middle_right_runcard_frame_row2_col1, bg=bg_app_class_color_layer_1)
+            middle_right_machine_frame_row2_col1_frame_dict[machine_frame_name].place(x=0, y=index * 29, width=36, height=26)
+
+            button = tk.Button(middle_right_machine_frame_row2_col1_frame_dict[machine_frame_name], image=machine_icon, width=36, height=26, relief="flat")
+            button.config(command=lambda p=machine, b=button: runcard_manage_machine_button(p,b))
+
+            button.place(x=0, y=0, relwidth=1.0, relheight=1.0)
+            middle_right_machine_frame_row2_col1_button_dict[machine] = button
+        if machine_list:
+            runcard_manage_machine_button(machine_list[0], middle_right_machine_frame_row2_col1_button_dict[machine_list[0]])
+
+
+
+
+
+selected_line_icon = None
+selected_line_button = None
+selected_line_button_hover = None
+middle_right_line_frame_row2_col1_row3_frame_dict = {}
+middle_right_line_frame_row2_col1_row3_button_dict = {}
+middle_right_line_frame_row2_col1_row3_button_icon_dict = {}
+middle_right_line_frame_row2_col1_row3_button_icon_hover_dict = {}
+
+def runcard_get_line_list(machine):
+    global conn_str
+    return ['A1', 'B1'] if 'PVC' in str(machine).upper() else ['A1', 'B1', 'A2', 'B2']
+
+def runcard_manage_line_button(value, btn):
+    global selected_line_button, selected_line_icon, selected_line_button_hover
+    if selected_line_button:
+        selected_line_button.config(image=middle_right_line_frame_row2_col1_row3_button_icon_dict[selected_line_button_hover])
+    btn.config(image=middle_right_line_frame_row2_col1_row3_button_icon_hover_dict[value])
+    selected_line_button = btn
+    selected_line_icon = middle_right_line_frame_row2_col1_row3_button_icon_dict[value]
+    selected_line_button_hover = value
+    runcard_wo_button()
+
+def runcard_line_button():
+    global selected_machine_button_hover
+    line_list = runcard_get_line_list(selected_machine_button_hover)
+    middle_width = int(len(line_list) * 48)
+    side_width = int((432 - middle_width) / 2)
+    middle_right_runcard_frame_row2_col2_row3_left_frame = tk.Frame(middle_right_runcard_frame_row2_col2_row3, bg=bg_app_class_color_layer_2)
+    middle_right_runcard_frame_row2_col2_row3_left_frame.place(x=0, y=0, width=side_width, height=40)
+    middle_right_runcard_frame_row2_col2_row3_middle_frame = tk.Frame(middle_right_runcard_frame_row2_col2_row3, bg=bg_app_class_color_layer_2)
+    middle_right_runcard_frame_row2_col2_row3_middle_frame.place(x=side_width, y=0, width=middle_width, height=40)
+    middle_right_runcard_frame_row2_col2_row3_right_frame = tk.Frame(middle_right_runcard_frame_row2_col2_row3, bg=bg_app_class_color_layer_2)
+    middle_right_runcard_frame_row2_col2_row3_right_frame.place(x=side_width + middle_width, y=0, width=side_width, height=40)
+    if int(get_registry_value("is_connected", "1")) == 1:
+        for index, line in enumerate(line_list):
+            line_icon_path = os.path.join(base_path, "theme", "icons", "line", f"line_{line}.png")
+            line_hover_icon_path = os.path.join(base_path, "theme", "icons", "line", f"line_{line}_hover.png")
+            line_icon = ImageTk.PhotoImage(Image.open(line_icon_path).resize((36, 26)))
+            line_hover_icon = ImageTk.PhotoImage(Image.open(line_hover_icon_path).resize((36, 26)))
+
+            middle_right_line_frame_row2_col1_row3_button_icon_dict[line] = line_icon
+            middle_right_line_frame_row2_col1_row3_button_icon_hover_dict[line] = line_hover_icon
+            line_frame_name = f"middle_right_runcard_frame_row2_col2_row3_col{index + 1}"
+            middle_right_line_frame_row2_col1_row3_frame_dict[line_frame_name] = tk.Frame(middle_right_runcard_frame_row2_col2_row3_middle_frame, bg=bg_app_class_color_layer_1)
+            middle_right_line_frame_row2_col1_row3_frame_dict[line_frame_name].place(x=index * 48, y=0, width=40, height=29)
+
+            button = tk.Button(middle_right_line_frame_row2_col1_row3_frame_dict[line_frame_name], image=line_icon, width=36, height=26, relief="flat")
+            button.config(command=lambda p=line, b=button: runcard_manage_line_button(p,b))
+
+            button.place(x=0, y=0, relwidth=1.0, relheight=1.0)
+            middle_right_line_frame_row2_col1_row3_button_dict[line] = button
+        if line_list:
+            runcard_manage_line_button(line_list[0], middle_right_line_frame_row2_col1_row3_button_dict[line_list[0]])
+
+
+
+
+def runcard_get_runcard_id(date, machine, line, time):
+    global conn_str
+    sql = f"""SELECT rc.Id as runcard, wo.Id as workorder
+            FROM [PMGMES].[dbo].[PMG_MES_RunCard] rc
+            JOIN [PMGMES].[dbo].[PMG_MES_WorkOrder] wo
+            on rc.WorkOrderId = wo.Id
+            where rc.MachineName = ? and rc.LineName = ?
+            and cast(Period as int) = ? and wo.StartDate is not NULL
+            and ((rc.Period > 5 AND rc.InspectionDate = ?)
+            OR (rc.Period <= 5 AND rc.InspectionDate = CAST(DATEADD(DAY, 1, CAST(? AS DATE)) AS DATE)))"""
+    try:
+        with pyodbc.connect(conn_str) as conn:
+            cursor = conn.cursor()
+            cursor.execute(sql, (machine, line, int(time), str(date), str(date), ))
+            result = cursor.fetchall()
+            return [wo for wo in result] if result else []
+    except:
+        def format_sql(sql, params):
+            for p in params:
+                if isinstance(p, str):
+                    p_str = f"'{p}'"
+                else:
+                    p_str = str(p)
+                sql = sql.replace('?', p_str, 1)
+            return sql
+        print(format_sql(sql, (machine, line, int(time), str(date), str(date))))
+selected_wo_button = None
+
+def runcard_wo_button():
+    global selected_wo_button, selected_wo_value, current_runcard_id
+    for widget in middle_right_runcard_frame_row2_col2_row2.winfo_children():
+        widget.destroy()
+    wo_list = runcard_get_runcard_id(selected_date, selected_machine_button_hover, selected_line_button_hover, selected_period_button_hover)
+    if not wo_list:
+        return
+    button_width = 0 if len(wo_list) == 1 else 120
+    button_height = 36
+    padding = 8
+    total_width = len(wo_list) * (button_width + padding)
+    side_width = max((438 - total_width) // 2, 0)
+
+    tk.Frame(middle_right_runcard_frame_row2_col2_row2, bg='white').place(x=0, y=0, width=side_width, height=40)
+    middle_frame = tk.Frame(middle_right_runcard_frame_row2_col2_row2, bg='white')
+    middle_frame.place(x=side_width, y=0, width=total_width, height=40)
+
+    tk.Frame(middle_right_runcard_frame_row2_col2_row2, bg='white').place(x=side_width + total_width, y=0, width=side_width, height=40)
+
+    wo_button_dict = {}
+    first_button = None
+    def wo_button_clicked(wo_value, btn):
+        global selected_wo_button, selected_wo_value, current_runcard_id
+        if selected_wo_button:
+            try:
+                selected_wo_button.config(bg="#007bff" if len(wo_list) > 1 else "white", fg="white")
+            except tk.TclError:
+                selected_wo_button = None
+
+        btn.config(bg="#E84A41" if len(wo_list) > 1 else "white", fg="white")
+        selected_wo_button = btn
+        selected_wo_value = wo_value
+        current_runcard_id = wo_value
+        print(f"Selected WorkOrder: {wo_value}")
+    for index, (runcard, workorder) in enumerate(wo_list):
+        frame = tk.Frame(middle_frame, bg='white')
+        frame.place(x=index * (button_width + padding), y=2, width=button_width, height=button_height)
+        btn = tk.Button(frame, text=workorder, bg="#007bff", fg="white", relief="flat", font=("Arial", 11), command=lambda p=runcard, b=None: None)
+        btn.place(x=0, y=0, relwidth=1.0, relheight=1.0)
+
+        btn.configure(command=lambda p=runcard, b=btn: wo_button_clicked(p, b))
+        wo_button_dict[runcard] = btn
+
+        if first_button is None:
+            first_button = (runcard, btn)
+
+    if first_button:
+        wo_button_clicked(first_button[0], first_button[1])
+
+
+# runcard_date()
 
 
 
@@ -942,22 +1197,9 @@ middle_left_weight_frame_col3_frame_row2_scrollbar.pack(side="right", fill="y")
 
 
 
-if int(get_registry_value("is_show_runcard", "1")) == 1:
-    middle_right_runcard_frame_row2_col3_frame_dict = {}
-    middle_right_runcard_frame_row2_col3_button_dict = {}
-    middle_right_runcard_frame_row2_col3_button_icon_dict = {}
-    middle_right_runcard_frame_row2_col3_button_icon_hover_dict = {}
 
-    for index, period in enumerate(period_times):
-        period_icon_path = f"icon/period/time_{period}.png"
-        period_time_icon_path = f"icon/period/time_{period}_hover.png"
-        period_icon = ImageTk.PhotoImage(Image.open(period_icon_path).resize((40, 26)))
-        period_hover_icon = ImageTk.PhotoImage(Image.open(period_time_icon_path).resize((40, 26)))
 
-        middle_right_runcard_frame_row2_col3_button_icon_dict[period] = period_icon
-        middle_right_runcard_frame_row2_col3_button_icon_hover_dict[period] = period_hover_icon
-        period_frame_name = f"middle_right_runcard_frame_row2_col3_row{index + 1}"
-        middle_right_runcard_frame_row2_col3_frame_dict[period_frame_name] = tk.Frame(middle_right_runcard_frame_row2_col3, bg=bg_app_class_color_layer_1, width=36, height=30)
+
 
 
 
@@ -1417,3 +1659,8 @@ end_time = time.time()
 print(f"App loaded in {end_time - start_time:.4f} seconds")
 root.mainloop()
 
+
+
+"""
+=> pyinstaller --windowed --onefile --name temp03 --add-data "theme/icons;theme/icons" --add-data "theme/assets;theme/assets" temp03.py --icon=theme/icons/logo.ico
+"""

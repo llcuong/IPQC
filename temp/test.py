@@ -1965,7 +1965,7 @@ period_button_icons = {}
 period_selected_icons = {}
 
 for index, period in enumerate(period_times):
-    normal_icon_path = f"icon/period/time_{period}.png"
+    normal_icon_path = f"icons/period/time_{period}.png"
     selected_icon_path = f"icon/period/time_{period}_hover.png"
     icon = ImageTk.PhotoImage(Image.open(normal_icon_path).resize((40, 26)))
     icon_selected = ImageTk.PhotoImage(Image.open(selected_icon_path).resize((40, 26)))
