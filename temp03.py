@@ -18,6 +18,7 @@ from barcode.writer import ImageWriter
 import os
 import sys
 from tkcalendar import DateEntry
+barcode.base.Barcode.default_writer_options['write_text'] = False
 
 base_path = sys._MEIPASS if getattr(sys, 'frozen', False) else os.path.abspath(".")
 
@@ -94,6 +95,7 @@ period_times = ['6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '1
                 '18', '19', '20', '21', '22', '23', '0', '1', '2', '3', '4', '5']
 
 selected_date = current_date
+runcard_selected = ''
 class CustomOptionMenu(tk.OptionMenu):
     def __init__(self, master, variable, *options, command=None, **kwargs):
         if options is None:
@@ -117,8 +119,9 @@ class CustomOptionMenu(tk.OptionMenu):
                             bd=0)
         if command:
             variable.trace_add("write", lambda *args: command(variable.get()))
+count = 0
 def update_dimensions():
-    global screen_width, screen_height, showing_settings, showing_runcards
+    global screen_width, screen_height, showing_settings, showing_runcards, count
     while True:
         current_date = (datetime.datetime.now() - datetime.timedelta(hours=5) + datetime.timedelta(minutes=22)).date()
 
@@ -219,7 +222,7 @@ def update_dimensions():
         middle_right_advance_setting_frame.place(x=0, y=0, width=middle_right_frame_width-5, height=middle_frame_height)
 
         middle_right_runcard_frame_row1.place(x=0, y=0, width=middle_right_frame_width-10, height=40)
-        middle_right_runcard_frame_row2.place(x=0, y=40, width=middle_right_frame_width-10, height=middle_frame_height - 40 - 40)
+        middle_right_runcard_frame_row2.place(x=0, y=40, width=middle_right_frame_width-10, height=720)
         middle_right_runcard_frame_row3.place(x=0, y=middle_frame_height - 40, width=middle_right_frame_width-5, height=40)
 
         middle_right_runcard_frame_row2_col1.place(x=0, y=0, width=36, height=middle_frame_height - 40 - 40)
@@ -229,9 +232,16 @@ def update_dimensions():
         middle_right_runcard_frame_row2_col2_row1.place(x=0, y=0, width=middle_right_frame_width - 10 - 36 - 36, height=250)
         middle_right_runcard_frame_row2_col2_row2.place(x=0, y=250, width=middle_right_frame_width - 10 - 36 - 36, height=50)
         middle_right_runcard_frame_row2_col2_row3.place(x=0, y=300, width=middle_right_frame_width - 10 - 36 - 36, height=50)
-        middle_right_runcard_frame_row2_col2_row4.place(x=0, y=350, width=middle_right_frame_width - 10 - 36 - 36, height=150)
-        middle_right_runcard_frame_row2_col2_row5.place(x=0, y=500, width=middle_right_frame_width - 10 - 36 - 36, height=200)
+        middle_right_runcard_frame_row2_col2_row4.place(x=0, y=350, width=middle_right_frame_width - 10 - 36 - 36, height=200)
+        middle_right_runcard_frame_row2_col2_row5.place(x=0, y=550, width=middle_right_frame_width - 10 - 36 - 36, height=200)
 
+        middle_right_runcard_frame_row2_col2_row1_row1.place(x=10, y=0, width=middle_right_frame_width - 10 - 36 - 36 - 20, height=250)
+
+        middle_right_runcard_frame_row2_col2_row4_row1.place(x=0, y=0, width=middle_right_frame_width - 10 - 36 - 36, height=30)
+        middle_right_runcard_frame_row2_col2_row4_row2.place(x=0, y=30, width=middle_right_frame_width - 10 - 36 - 36, height=80)
+        middle_right_runcard_frame_row2_col2_row4_row3.place(x=0, y=110, width=middle_right_frame_width - 10 - 36 - 36, height=30)
+        # print(f"-----> {middle_right_runcard_frame_row2_col2_row1_row1.winfo_height()}")
+        # print(f"-----> {middle_right_runcard_frame_row2_col2_row1_row1.winfo_width()}")
         middle_right_setting_frame_row1.place(x=0, y=0, width=middle_right_frame_width, height=40)
         middle_right_setting_frame_row2.place(x=0, y=40, width=middle_right_frame_width, height=180)
         middle_right_setting_frame_row3.place(x=0, y=40 + 200, width=middle_right_frame_width, height=50)
@@ -344,7 +354,9 @@ def update_dimensions():
 
         root.update_idletasks()
         root.update()
-
+        if count == 0:
+            print(f"-->==>===>{time.time() - start_time}")
+            count = 1
 
 def show_error_message(msg, fg_color_code, time_show):
     global error_thread, error_event
@@ -504,16 +516,23 @@ middle_right_runcard_frame_row2_col3 = tk.Frame(middle_right_runcard_frame_row2,
 
 
 middle_right_runcard_frame_row2_col2_row1 = tk.Frame(middle_right_runcard_frame_row2_col2, bg=bg_app_class_color_layer_2)
-middle_right_runcard_frame_row2_col2_row2 = tk.Frame(middle_right_runcard_frame_row2_col2, bg=bg_app_class_color_layer_1)
+middle_right_runcard_frame_row2_col2_row2 = tk.Frame(middle_right_runcard_frame_row2_col2, bg=bg_app_class_color_layer_2)
 middle_right_runcard_frame_row2_col2_row3 = tk.Frame(middle_right_runcard_frame_row2_col2, bg=bg_app_class_color_layer_2)
-middle_right_runcard_frame_row2_col2_row4 = tk.Frame(middle_right_runcard_frame_row2_col2, bg=bg_app_class_color_layer_1)
+middle_right_runcard_frame_row2_col2_row4 = tk.Frame(middle_right_runcard_frame_row2_col2, bg=bg_app_class_color_layer_2)
 middle_right_runcard_frame_row2_col2_row5 = tk.Frame(middle_right_runcard_frame_row2_col2, bg=bg_app_class_color_layer_2)
 
+middle_right_runcard_frame_row2_col2_row1_row1 = tk.Frame(middle_right_runcard_frame_row2_col2_row1, bg=bg_app_class_color_layer_2)
+
+middle_right_runcard_frame_row2_col2_row4_row1 = tk.Frame(middle_right_runcard_frame_row2_col2_row4, bg=bg_app_class_color_layer_2)
+middle_right_runcard_frame_row2_col2_row4_row2 = tk.Frame(middle_right_runcard_frame_row2_col2_row4, bg=bg_app_class_color_layer_2)
+middle_right_runcard_frame_row2_col2_row4_row3 = tk.Frame(middle_right_runcard_frame_row2_col2_row4, bg=bg_app_class_color_layer_2)
 
 
-
-
-
+# bg_image = Image.open("theme/images/button-disabled.png")
+# bg_image = bg_image.resize((400, 300), Image.LANCZOS)
+# bg_photo = ImageTk.PhotoImage(bg_image)
+# bg_label = tk.Label(middle_right_runcard_frame_row2_col2_row5, image=bg_photo)
+# bg_label.place(x=0, y=0, relwidth=1, relheight=1)
 
 
 middle_right_setting_frame_row1 = tk.Frame(middle_right_setting_frame, bg=bg_app_class_color_layer_1 )
@@ -707,15 +726,16 @@ def runcard_date():
         global selected_date
         # print("Selected date:", calendar.get_date().strftime("%d-%m-%Y"))
         selected_date = calendar.get_date().strftime("%Y-%m-%d")
-        runcard_period_button()
-        runcard_machine_button()
-        runcard_line_button()
-        runcard_wo_button()
+        root.after(0, runcard_period_button)
+        root.after(0, runcard_machine_button)
+        root.after(0, runcard_line_button)
+        root.after(0, runcard_wo_button)
         print(f"=> {selected_date}")
     calendar.bind("<<DateEntrySelected>>", on_date_change)
-    runcard_period_button()
-    runcard_machine_button()
-    runcard_line_button()
+    root.after(0, runcard_period_button)
+    root.after(0, runcard_machine_button)
+    root.after(0, runcard_line_button)
+    root.after(0, runcard_wo_button)
     return calendar.get_date().strftime("%d-%m-%Y")
 """Function"""
 
@@ -954,6 +974,18 @@ middle_left_weight_frame_col3_frame_row2_scrollbar.pack(side="right", fill="y")
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 selected_period_icon = None
 selected_period_button = None
 selected_period_button_hover = None
@@ -997,8 +1029,6 @@ def runcard_period_button():
 
 
 
-
-
 selected_machine_icon = None
 selected_machine_button = None
 selected_machine_button_hover = None
@@ -1027,7 +1057,7 @@ def runcard_manage_machine_button(value, btn):
     runcard_wo_button()
 def runcard_machine_button():
     if int(get_registry_value("is_connected", "1")) == 1:
-        machine_list = runcard_get_machine_list(get_registry_value("is_plant_name", "NBR"))
+        machine_list = runcard_get_machine_list(get_registry_value("is_plant_name", "PVC1"))
         for index, machine in enumerate(machine_list):
             machine_icon_path = os.path.join(base_path, "theme", "icons", "machine", f"machine_{index+1}.png")
             machine_hover_icon_path = os.path.join(base_path, "theme", "icons", "machine", f"machine_{index+1}_hover.png")
@@ -1135,14 +1165,26 @@ def runcard_get_runcard_id(date, machine, line, time):
                 sql = sql.replace('?', p_str, 1)
             return sql
         print(format_sql(sql, (machine, line, int(time), str(date), str(date))))
-selected_wo_button = None
 
+selected_wo_button = None
 def runcard_wo_button():
     global selected_wo_button, selected_wo_value, current_runcard_id
+    global selected_date, selected_machine_button_hover, selected_line_button_hover
     for widget in middle_right_runcard_frame_row2_col2_row2.winfo_children():
         widget.destroy()
+
     wo_list = runcard_get_runcard_id(selected_date, selected_machine_button_hover, selected_line_button_hover, selected_period_button_hover)
     if not wo_list:
+        global middle_right_runcard_frame_row2_col2_row4_row2
+        global middle_right_runcard_frame_row2_col2_row4_row3
+        # runcard_info_empty()
+        root.after(0, lambda: runcard_info_show([selected_date, '', selected_machine_button_hover[-8:-5], '', selected_machine_button_hover[-3:], selected_line_button_hover] + [""] * 13))
+        for widget in middle_right_runcard_frame_row2_col2_row4_row2.winfo_children():
+            widget.destroy()
+        for widget in middle_right_runcard_frame_row2_col2_row4_row3.winfo_children():
+            widget.destroy()
+        barcode_label = tk.Label(middle_right_runcard_frame_row2_col2_row4_row2, text=f"沒有 Runcard !\nKhông có Runcard !", bg="white", bd=0, font=(font_name, 16))
+        barcode_label.pack(expand=True)
         return
     button_width = 0 if len(wo_list) == 1 else 120
     button_height = 36
@@ -1155,7 +1197,6 @@ def runcard_wo_button():
     middle_frame.place(x=side_width, y=0, width=total_width, height=40)
 
     tk.Frame(middle_right_runcard_frame_row2_col2_row2, bg='white').place(x=side_width + total_width, y=0, width=side_width, height=40)
-
     wo_button_dict = {}
     first_button = None
     def wo_button_clicked(wo_value, btn):
@@ -1165,12 +1206,14 @@ def runcard_wo_button():
                 selected_wo_button.config(bg="#007bff" if len(wo_list) > 1 else "white", fg="white")
             except tk.TclError:
                 selected_wo_button = None
-
         btn.config(bg="#E84A41" if len(wo_list) > 1 else "white", fg="white")
         selected_wo_button = btn
         selected_wo_value = wo_value
         current_runcard_id = wo_value
-        print(f"Selected WorkOrder: {wo_value}")
+        print(f"==>--> {wo_value}")
+        runcard_id_barcode(wo_value)
+        root.after(0, lambda: runcard_info_show(get_runcard_info(wo_value)))
+        # runcard_info_show()
     for index, (runcard, workorder) in enumerate(wo_list):
         frame = tk.Frame(middle_frame, bg='white')
         frame.place(x=index * (button_width + padding), y=2, width=button_width, height=button_height)
@@ -1182,27 +1225,193 @@ def runcard_wo_button():
 
         if first_button is None:
             first_button = (runcard, btn)
-
     if first_button:
         wo_button_clicked(first_button[0], first_button[1])
 
 
-# runcard_date()
+def runcard_info_show(info):
+    for widget in middle_right_runcard_frame_row2_col2_row1_row1.winfo_children():
+        widget.destroy()
+
+    runcard_row1_frame = tk.Frame(middle_right_runcard_frame_row2_col2_row1_row1, bg='white', bd=1, highlightbackground="black", highlightthickness=1)
+    runcard_row1_frame.place(x=0, y=0, width=418, height=25)
+    runcard_row1_label = tk.Label(runcard_row1_frame, text=f"工站生產流程卡 Thẻ quy trình sản xuất", bg="white", bd=1, font=(font_name, 12, 'bold'))
+    runcard_row1_label.pack(expand=True)
+
+    runcard_row2_col1_frame = tk.Frame(middle_right_runcard_frame_row2_col2_row1_row1, bg='white', bd=1, highlightbackground="black", highlightthickness=1)
+    runcard_row2_col1_frame.place(x=0, y=24, width=102, height=25)
+    runcard_row2_col1_label = tk.Label(runcard_row2_col1_frame, text=f"Ngày", bg="white", bd=1, font=(font_name, 11))
+    runcard_row2_col1_label.pack(expand=True)
+
+    runcard_row2_col2_frame = tk.Frame(middle_right_runcard_frame_row2_col2_row1_row1, bg='white', bd=1, highlightbackground="black", highlightthickness=1)
+    runcard_row2_col2_frame.place(x=101, y=24, width=108, height=25)
+    runcard_row2_col2_label = tk.Label(runcard_row2_col2_frame, text=f"{info[0]}", bg="white", bd=1, font=(font_name, 11))
+    runcard_row2_col2_label.pack(expand=True)
+
+    runcard_row2_col3_frame = tk.Frame(middle_right_runcard_frame_row2_col2_row1_row1, bg='white', bd=1, highlightbackground="black", highlightthickness=1)
+    runcard_row2_col3_frame.place(x=208, y=24, width=102, height=25)
+    runcard_row2_col3_label = tk.Label(runcard_row2_col3_frame, text=f"Mã vật tư", bg="white", bd=1, font=(font_name, 11))
+    runcard_row2_col3_label.pack(expand=True)
+
+    runcard_row2_col4_frame = tk.Frame(middle_right_runcard_frame_row2_col2_row1_row1, bg='white', bd=1, highlightbackground="black", highlightthickness=1)
+    runcard_row2_col4_frame.place(x=309, y=24, width=109, height=25)
+    runcard_row2_col4_label = tk.Label(runcard_row2_col4_frame, text=f"{info[1]}", bg="white", bd=1, font=(font_name, 11))
+    runcard_row2_col4_label.pack(expand=True)
+
+    runcard_row3_col1_frame = tk.Frame(middle_right_runcard_frame_row2_col2_row1_row1, bg='white', bd=1,
+                                       highlightbackground="black", highlightthickness=1)
+    runcard_row3_col1_frame.place(x=0, y=48, width=102, height=25)
+    runcard_row3_col1_label = tk.Label(runcard_row3_col1_frame, text=f"Xưởng", bg="white", bd=1, font=(font_name, 11))
+    runcard_row3_col1_label.pack(expand=True)
+
+    runcard_row3_col2_frame = tk.Frame(middle_right_runcard_frame_row2_col2_row1_row1, bg='white', bd=1, highlightbackground="black", highlightthickness=1)
+    runcard_row3_col2_frame.place(x=101, y=48, width=108, height=25)
+    runcard_row3_col2_label = tk.Label(runcard_row3_col2_frame, text=f"{info[2]}", bg="white", bd=1, font=(font_name, 11))
+    runcard_row3_col2_label.pack(expand=True)
+
+    runcard_row3_col3_frame = tk.Frame(middle_right_runcard_frame_row2_col2_row1_row1, bg='white', bd=1, highlightbackground="black", highlightthickness=1)
+    runcard_row3_col3_frame.place(x=208, y=48, width=102, height=25)
+    runcard_row3_col3_label = tk.Label(runcard_row3_col3_frame, text=f"Mã khách hàng", bg="white", bd=1, font=(font_name, 11))
+    runcard_row3_col3_label.pack(expand=True)
+
+    runcard_row3_col4_frame = tk.Frame(middle_right_runcard_frame_row2_col2_row1_row1, bg='white', bd=1, highlightbackground="black", highlightthickness=1)
+    runcard_row3_col4_frame.place(x=309, y=48, width=109, height=25)
+    runcard_row3_col4_label = tk.Label(runcard_row3_col4_frame, text=f"{info[3]}", bg="white", bd=1, font=(font_name, 11))
+    runcard_row3_col4_label.pack(expand=True)
+
+    runcard_row4_col1_frame = tk.Frame(middle_right_runcard_frame_row2_col2_row1_row1, bg='white', bd=1, highlightbackground="black", highlightthickness=1)
+    runcard_row4_col1_frame.place(x=0, y=72, width=102, height=25)
+    runcard_row4_col1_label = tk.Label(runcard_row4_col1_frame, text=f"Máy", bg="white", bd=1, font=(font_name, 11))
+    runcard_row4_col1_label.pack(expand=True)
+
+    runcard_row4_col2_frame = tk.Frame(middle_right_runcard_frame_row2_col2_row1_row1, bg='white', bd=1, highlightbackground="black", highlightthickness=1)
+    runcard_row4_col2_frame.place(x=101, y=72, width=108, height=25)
+    runcard_row4_col2_label = tk.Label(runcard_row4_col2_frame, text=f"{info[4]}", bg="white", bd=1, font=(font_name, 11))
+    runcard_row4_col2_label.pack(expand=True)
+
+    runcard_row5_col1_frame = tk.Frame(middle_right_runcard_frame_row2_col2_row1_row1, bg='white', bd=1, highlightbackground="black", highlightthickness=1)
+    runcard_row5_col1_frame.place(x=0, y=96, width=102, height=25)
+    runcard_row5_col1_label = tk.Label(runcard_row5_col1_frame, text=f"Line", bg="white", bd=1, font=(font_name, 11))
+    runcard_row5_col1_label.pack(expand=True)
+
+    runcard_row5_col2_frame = tk.Frame(middle_right_runcard_frame_row2_col2_row1_row1, bg='white', bd=1, highlightbackground="black", highlightthickness=1)
+    runcard_row5_col2_frame.place(x=101, y=96, width=108, height=25)
+    runcard_row5_col2_label = tk.Label(runcard_row5_col2_frame, text=f"{info[5]}", bg="white", bd=1, font=(font_name, 11))
+    runcard_row5_col2_label.pack(expand=True)
+
+    runcard_row45_col3_frame = tk.Frame(middle_right_runcard_frame_row2_col2_row1_row1, bg='white', bd=1, highlightbackground="black", highlightthickness=1)
+    runcard_row45_col3_frame.place(x=208, y=72, width=102, height=49)
+    runcard_row45_col3_label = tk.Label(runcard_row45_col3_frame, text=f"Tên viết tắt\nkhách hàng", bg="white", bd=1, font=(font_name, 11))
+    runcard_row45_col3_label.pack(expand=True)
+
+    runcard_row45_col4_frame = tk.Frame(middle_right_runcard_frame_row2_col2_row1_row1, bg='white', bd=1, highlightbackground="black", highlightthickness=1)
+    runcard_row45_col4_frame.place(x=309, y=72, width=109, height=49)
+    runcard_row45_col4_label = tk.Label(runcard_row45_col3_frame, text=f"", bg="white", bd=1, font=(font_name, 11))
+    runcard_row45_col4_label.pack(expand=True)
+
+    runcard_row6_col1_frame = tk.Frame(middle_right_runcard_frame_row2_col2_row1_row1, bg='white', bd=1, highlightbackground="black", highlightthickness=1)
+    runcard_row6_col1_frame.place(x=0, y=120, width=102, height=25)
+    runcard_row6_col1_label = tk.Label(runcard_row6_col1_frame, text=f"Công đơn", bg="white", bd=1, font=(font_name, 11))
+    runcard_row6_col1_label.pack(expand=True)
+
+    runcard_row6_col2_frame = tk.Frame(middle_right_runcard_frame_row2_col2_row1_row1, bg='white', bd=1, highlightbackground="black", highlightthickness=1)
+    runcard_row6_col2_frame.place(x=101, y=120, width=108, height=25)
+    runcard_row6_col2_label = tk.Label(runcard_row6_col2_frame, text=f"{info[7]}", bg="white", bd=1, font=(font_name, 11))
+    runcard_row6_col2_label.pack(expand=True)
+
+    runcard_row7_col1_frame = tk.Frame(middle_right_runcard_frame_row2_col2_row1_row1, bg='white', bd=1, highlightbackground="black", highlightthickness=1)
+    runcard_row7_col1_frame.place(x=0, y=144, width=102, height=25)
+    runcard_row7_col1_label = tk.Label(runcard_row7_col1_frame, text=f"AQL", bg="white", bd=1, font=(font_name, 11))
+    runcard_row7_col1_label.pack(expand=True)
+
+    runcard_row7_col2_frame = tk.Frame(middle_right_runcard_frame_row2_col2_row1_row1, bg='white', bd=1, highlightbackground="black", highlightthickness=1)
+    runcard_row7_col2_frame.place(x=101, y=144, width=108, height=25)
+    runcard_row7_col2_label = tk.Label(runcard_row7_col2_frame, text=f"{info[8]}", bg="white", bd=1, font=(font_name, 11))
+    runcard_row7_col2_label.pack(expand=True)
+
+    runcard_row67_col3_frame = tk.Frame(middle_right_runcard_frame_row2_col2_row1_row1, bg='white', bd=1, highlightbackground="black", highlightthickness=1)
+    runcard_row67_col3_frame.place(x=208, y=120, width=102, height=49)
+    runcard_row67_col3_label = tk.Label(runcard_row67_col3_frame, text=f"Loại", bg="white", bd=1, font=(font_name, 11))
+    runcard_row67_col3_label.pack(expand=True)
+
+    runcard_row67_col4_frame = tk.Frame(middle_right_runcard_frame_row2_col2_row1_row1, bg='white', bd=1, highlightbackground="black", highlightthickness=1)
+    runcard_row67_col4_frame.place(x=309, y=120, width=109, height=49)
+    runcard_row67_col4_label = tk.Label(runcard_row67_col4_frame, text=f"{info[9]}", bg="white", bd=1, font=(font_name, 11))
+    runcard_row67_col4_label.pack(expand=True)
+
+    runcard_row8_col1_frame = tk.Frame(middle_right_runcard_frame_row2_col2_row1_row1, bg='white', bd=1, highlightbackground="black", highlightthickness=1)
+    runcard_row8_col1_frame.place(x=0, y=168, width=102, height=49)
+    runcard_row8_col1_label = tk.Label(runcard_row8_col1_frame, text=f"Người kiểm tra", bg="white", bd=1, font=(font_name, 11))
+    runcard_row8_col1_label.pack(expand=True)
+
+    runcard_row8_col2_frame = tk.Frame(middle_right_runcard_frame_row2_col2_row1_row1, bg='white', bd=1, highlightbackground="black", highlightthickness=1)
+    runcard_row8_col2_frame.place(x=101, y=168, width=108, height=49)
+    runcard_row8_col2_label = tk.Label(runcard_row8_col2_frame, text=f"{info[10]}", bg="white", bd=1, font=(font_name, 11))
+    runcard_row8_col2_label.pack(expand=True)
+
+    runcard_row8_col3_frame = tk.Frame(middle_right_runcard_frame_row2_col2_row1_row1, bg='white', bd=1, highlightbackground="black", highlightthickness=1)
+    runcard_row8_col3_frame.place(x=208, y=168, width=102, height=49)
+    runcard_row8_col3_label = tk.Label(runcard_row8_col3_frame, text=f"Kích cỡ", bg="white", bd=1, font=(font_name, 11))
+    runcard_row8_col3_label.pack(expand=True)
+
+    runcard_row8_col4_frame = tk.Frame(middle_right_runcard_frame_row2_col2_row1_row1, bg='white', bd=1, highlightbackground="black", highlightthickness=1)
+    runcard_row8_col4_frame.place(x=309, y=168, width=109, height=49)
+    runcard_row8_col4_label = tk.Label(runcard_row8_col4_frame, text=f"{info[11]}", bg="white", bd=1, font=(font_name, 11))
+    runcard_row8_col4_label.pack(expand=True)
 
 
 
+def get_runcard_info(runcard):
+    global conn_str
+    sql = """SELECT  rc.InspectionDate, wo.PartNo, rc.WorkCenterTypeName, wo.CustomerCode,
+            rc.MachineName, rc.LineName, wo.CustomerName,  rc.WorkOrderId, wo.AQL, 
+            wo.ProductItem, au.Name, std.Size
+            FROM [PMGMES].[dbo].[PMG_MES_RunCard] rc
+            join [PMGMES].[dbo].[PMG_MES_WorkOrder] wo
+            on wo.id = rc.WorkOrderId
+            left join [PMGMES].[dbo].[PMG_MES_IPQCInspectingRecord] ir
+            on ir.RunCardId = rc.id
+            join [PMGMES].[dbo].[AbpUsers] au
+            on rc.CreatorUserId = au.Id
+            join [PMGMES].[dbo].[PMG_MES_PVC_SCADA_Std] std
+            on std.PartNo = wo.PartNo                    
+            WHERE rc.Id = ?
+            Group by rc.InspectionDate, wo.PartNo, rc.WorkCenterTypeName, wo.CustomerCode,
+            rc.MachineName, rc.LineName, wo.CustomerName,  rc.WorkOrderId, wo.AQL, 
+            wo.ProductItem, au.Name, std.Size"""
+    with pyodbc.connect(conn_str) as conn:
+        cursor = conn.cursor()
+        cursor.execute(sql, (runcard,))
+        result = cursor.fetchall()
+        return [info[-3:] if index == 4 else info for index, info in enumerate(result[0])] if result else []
 
+def runcard_id_barcode(runcard):
+    global middle_right_runcard_frame_row2_col2_row4_row2
+    global middle_right_runcard_frame_row2_col2_row4_row3
+    for widget in middle_right_runcard_frame_row2_col2_row4_row2.winfo_children():
+        widget.destroy()
+    for widget in middle_right_runcard_frame_row2_col2_row4_row3.winfo_children():
+        widget.destroy()
+    middle_right_runcard_frame_row2_col2_row4_row2 = tk.Frame(middle_right_runcard_frame_row2_col2_row4, bg=bg_app_class_color_layer_2)
+    middle_right_runcard_frame_row2_col2_row4_row2.pack()
+    barcode_class = barcode.get_barcode_class('code128')
+    barcode_png = barcode_class(runcard, writer=ImageWriter())
+    buffer = BytesIO()
+    barcode_png.write(buffer)
+    buffer.seek(0)
+    pil_image = Image.open(buffer)
+    pil_image = pil_image.resize((300, 100), Image.ANTIALIAS)
+    barcode_image = ImageTk.PhotoImage(pil_image)
 
+    barcode_runcard = tk.Label(middle_right_runcard_frame_row2_col2_row4_row2, image=barcode_image)
+    barcode_runcard.image = barcode_image
+    barcode_runcard.place(x=int((438-300)/2), y=0, width=300, height=60)
 
+    barcode_label = tk.Label(middle_right_runcard_frame_row2_col2_row4_row3, text=f"{runcard}", bg="white", bd=0, font=(font_name, 16))
+    barcode_label.pack(expand=True)
 
-
-
-
-
-
-
-
-
+if int(get_registry_value("is_runcard_open", "0")) == 1:
+    root.after(0, runcard_date)
 
 
 
@@ -1258,7 +1467,7 @@ def thickness_frame_com_port_insert_data():
     global current_thickness_entry
     if "COM" in get_registry_value("COM2", ""):
         print(f'Thickness COM: {get_registry_value("COM2", "")}')
-        ser = serial.Serial(get_registry_value("COM2", ""), baudrate=9600, timeout=1)
+        ser = serial.Serial(get_registry_value("COM2", ""), baudrate=9600, timeout=0.4)
         try:
             while ser.is_open:
                 if ser.in_waiting > 0:
@@ -1348,6 +1557,7 @@ def switch_middle_left_frame(*args):
     except Exception as e:
         threading.Thread(target=show_error_message, args=(f"def switch_middle_left_frame => {e}", 0, 3000), daemon=True).start()
         pass
+
 switch_middle_left_frame()
 selected_weight_com = tk.StringVar(value=get_registry_value("COM1", ""))
 selected_thickness_com = tk.StringVar(value=get_registry_value("COM2", ""))
@@ -1652,11 +1862,12 @@ bottom_exit_button.bind("<Enter>", on_enter_bottom_exit_button)
 bottom_exit_button.bind("<Leave>", on_leave_bottom_exit_button)
 
 
+
+# Hook close event
+root.protocol("WM_DELETE_WINDOW", on_close)
 """Update loop"""
 update_thread = threading.Thread(target=update_dimensions, daemon=True)
 update_thread.start()
-end_time = time.time()
-print(f"App loaded in {end_time - start_time:.4f} seconds")
 root.mainloop()
 
 

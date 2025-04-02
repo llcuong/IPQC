@@ -113,6 +113,7 @@ class CustomOptionMenu(tk.OptionMenu):
 def update_dimensions():
     global screen_width, screen_height, showing_settings, showing_runcards
     while True:
+        print(f"App loaded in {time.time() - start_time:.4f} seconds")
         current_date = (datetime.datetime.now() - datetime.timedelta(hours=5) + datetime.timedelta(minutes=22)).date()
 
         """Define height - width size parameters"""
