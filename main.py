@@ -1445,8 +1445,8 @@ def on_enter_database_test_connection_button(event):
     database_test_connection_button.config(image=database_test_connection_button_hover_icon)
 def on_leave_database_test_connection_button(event):
     database_test_connection_button.config(image=database_test_connection_button_icon)
-database_test_connection_button_icon = ImageTk.PhotoImage(Image.open(os.path.join(base_path, "theme", "icons", "test_db.png")).resize((146, 38)))
-database_test_connection_button_hover_icon = ImageTk.PhotoImage(Image.open(os.path.join(base_path, "theme", "icons", "test_db_hover.png")).resize((146, 38)))
+database_test_connection_button_icon = ImageTk.PhotoImage(Image.open(os.path.join(base_path, "theme", "icons", "connect.png")).resize((146, 38)))
+database_test_connection_button_hover_icon = ImageTk.PhotoImage(Image.open(os.path.join(base_path, "theme", "icons", "connect_hover.png")).resize((146, 38)))
 database_test_connection_button = tk.Button(middle_right_advance_setting_frame_row2_col1_row6, image=database_test_connection_button_icon, command=database_test_connection, bg='#f0f2f6', width=146, height=38, relief="flat", borderwidth=0)
 database_test_connection_button.grid(row=4, column=1, padx=5, pady=5, sticky="e")
 database_test_connection_button.bind("<Enter>", on_enter_database_test_connection_button)
